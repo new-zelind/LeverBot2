@@ -1,0 +1,19 @@
+{
+  "name": "byrnesbot",
+  "version": "2.0.1",
+  "description": "A resource and moderation bot for the Byrnes Hall 7th Floor Discord Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/new-zelind/LeverBot2.git"
+  },
+  "author": "Segfault#2289",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/new-zelind/LeverBot2/issues"
+  },
+  "homepage": "https://github.com/new-zelind/LeverBot2#readme"
+}

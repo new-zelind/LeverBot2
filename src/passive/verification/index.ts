@@ -150,7 +150,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
         const invite = await member.guild.channels.cache
             .sort((a, b) => b.calculatedPosition - a.calculatedPosition)
             .first()
-            ?.createInvite({
+            .createInvite({
                 reason: `Invite for ${name} | ${room} (${member.user.username}#${member.user.discriminator})`,
                 maxUses: 1,
                 maxAge: 300,

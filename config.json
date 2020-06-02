@@ -1,0 +1,37 @@
+{
+  "majors": {
+    "ENGINEERING": [
+      "Bioengineering",
+      "Biosystems",
+      "Chemical",
+      "Computer",
+      "Electrical",
+      "Environmental",
+      "Industrial",
+      "Materials",
+      "Mechanical"
+    ],
+    "SCIENCE": [
+      "Biology",
+      "Materials Science",
+      "Microbiology",
+      "Biochemistry",
+      "Chemistry",
+      "Genetics",
+      "Math",
+      "Physics"
+    ],
+    "COMPUTING": ["Computer Science", "Computer Information Systems"],
+    "PRE-PROFESSIONAL HEALTH": [
+      "Pre-Professional Health Studies",
+      "Pre-Pharmacy",
+      "Pre-Rehabilitation Sciences"
+    ]
+  },
+  "pairs": {
+	 "C12345678": "A5",
+	 "C24682468": "B4",
+	 "C00000001": "C7",
+	 "C00002048": "D1"
+  }
+}

@@ -20,11 +20,11 @@ export const lift = (member: GuildMember) => async () => {
 
 export default async function timeout(
     member: GuildMember,
-    by: GuildMember | null,
+    invoker: GuildMember | null,
     time: string,
     reason: string
 ) {
-    console.log(`${by} timed out ${member} for ${parse(time)} ms. Reason: ${reason}.`);
+    console.log(`${invoker} timed out ${member} for ${parse(time)} ms. Reason: ${reason}.`);
 
     //add "timeout" role
     await member.roles.add(timeoutRole);
@@ -32,6 +32,6 @@ export default async function timeout(
     //notify the infractor of their probation.
     const dm = await member.createDM();
     dm.send(
-        `You've been placed on probation by ${by} for ${time} for the following reason: ${reason}. While on probation, you are not permitted to post in any text channel or join any voice channel. If you feel that this was in error, please speak to the admins in _#appeals_.`
+        `You've been placed on probation by ${invoker} for ${time} for the following reason: ${reason}. While on probation, you are not permitted to post in any text channel or join any voice channel. If you feel that this was in error, please speak to the admins in _#appeals_.`
     );
 };

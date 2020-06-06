@@ -12,7 +12,7 @@ export default Command({
     documentation:{
         description:"Times out target members for a specified amount of time.",
         group: "ADMIN",
-        usage: "probate [<@User> ... <@User>] <Duration> <Reason>",
+        usage: "timeout [<@User> ... <@User>] <Duration> <Reason>",
     },
     
     check: Permissions.admin,

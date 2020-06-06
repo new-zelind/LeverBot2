@@ -7,7 +7,7 @@ import {authorization} from "../lib/access";
 const owner = authorization("discord.owner");
 
 export default Command({
-    names: ["probate"],
+    names: ["timeout"],
     
     documentation:{
         description:"Times out target members for a specified amount of time.",

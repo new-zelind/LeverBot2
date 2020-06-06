@@ -3,7 +3,7 @@ import {handleMessage, addMessageHandler} from "./lib/message";
 import verify from "./passive/verification";
 import {client} from "./client";
 import {handle, isCommand, RESPONSES} from "./lib/command";
-import "./comm";
+import "./cmd";
 
 const statuses = [
     "Watching over the server",

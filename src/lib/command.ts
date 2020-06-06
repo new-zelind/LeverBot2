@@ -5,7 +5,7 @@ import {
 } from "discord.js";
 
 const owner = "";
-export const PREFIX = ["*"];
+export const PREFIX = ["$"];
 
 type Message = FullMessage | PartialMessage;
 
@@ -103,8 +103,6 @@ export async function handle(message: Message): Promise<boolean> {
   // Start the timer (for when we edit the message later to indicate how long the command takes)
   const start = Date.now();
   const response = await command.exec(message, argv);
-
-  const time = Date.now() - start;
 
   // If the command gave us a response to track
   if (response) {

@@ -1,18 +1,18 @@
 import * as Discord from "discord.js";
-import report from "./lib/report";
-import {handleMessage} from "./lib/message";
+import {handleMessage, addMessageHandler} from "./lib/message";
 import verify from "./passive/verification";
 import {client} from "./client";
+import {handle, isCommand, RESPONSES} from "./lib/command";
 import "./comm";
 
 const statuses = [
     "Watching over the server",
-    "Did someone say cake?",
+    "I AM SENTIENT",
     "Byrnes > Lever",
     "Try $help!",
     "Watching AutoBLT",
     "Watching vexbot",
-    "<Error>",
+    "<SEGMENTATION FAULT>",
     "Throwing my GPA",
     "Playing with Captchas",
     "Programming sucks."
@@ -32,14 +32,34 @@ client.on("ready", () => {
     }
 });
 
+//ignore bot messages
+addMessageHandler((message) => message.author.bot);
+
+//handle commands
+addMessageHandler(handle);
+
 //verify each member upon entry
-client.on("guildMemberAdd", (member: Discord.GuildMember) => {verify(member);});
+client.on("guildMemberAdd", (member: Discord.GuildMember) => {
+    verify(member);
+});
 
 //handle messages appropriately
-//add channel verification
 client.on("message", handleMessage);
 
+client.on("messageUpdate", (old, current) => {
+
+    //ignore old bot messages
+    if(old.author?.bot) return false;
+
+    //remove the old invocation and response
+    if(isCommand(old) && RESPONSES.has(old)){
+        RESPONSES.get(old)?.delete();
+    }
+
+    return handle(current);
+})
+
 //error handling
-const reporter = report(client);
-process.on("uncaughtException", reporter);
-process.on("unhandledRejection", reporter);
+//bot will be running on local machine, so just send it to the console
+process.on("uncaughtException", console.log);
+process.on("unhandledRejection", console.log);

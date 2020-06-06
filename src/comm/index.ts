@@ -11,6 +11,5 @@ import "./calendar";
 import "./contact"; 
 import "./help";
 import "./ping";
-import "./probate";
 import "./timeout";
 import "./verify";

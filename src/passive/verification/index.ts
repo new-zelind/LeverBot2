@@ -1,14 +1,12 @@
-import {addMessageHandler} from "../../lib/message";
-import {Guild, GuildMember, PartialGuildMember, ClientUser, TextChannel} from "discord.js";
-import {client} from "../../client";
-import {askString, choose, questionValidate} from "../../lib/prompt";
+import {Guild, GuildMember, PartialGuildMember} from "discord.js";
+import {askString, choose} from "../../lib/prompt";
 import approve from "./approve";
 
 const config: {
     majors: {[college: string]: string[]};
 } = require("../../../config.json");
 
-const rooms = require("./rooms.json");
+const rooms = require("../../../rooms.json").pairs;
 
 export function getRoom(cuid: string){
     return rooms.pairs[cuid] || null;

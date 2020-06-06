@@ -28,6 +28,7 @@ function addOneTimeMessageHandler(handler: MessageHandler) {
 
 //Handle the actual message
 async function handleMessage(message: Message) {
+  console.log("handle message");
   let i = 0;
   while (!(await handlers[i++](message)) && i < handlers.length) {}
   return handlers[i];

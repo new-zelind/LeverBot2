@@ -9,3 +9,8 @@ export function config(access: string | string[]){
     const file = require("../../config.json");
     return delve(file, access);
 }
+
+export function rooms(access: string | string[]){
+    const file = require("../../rooms.json");
+    return delve(file, access);
+}

@@ -3,8 +3,6 @@ import "./command";
 import {handle, isCommand, RESPONSES} from "./command";
 import {client} from "../client";
 import {Message} from "discord.js";
-import {config, authorization} from "./access";
-import { prependOnceListener } from "cluster";
 
 //ignore messages from the bot
 addMessageHandler((message) => message.author.bot);

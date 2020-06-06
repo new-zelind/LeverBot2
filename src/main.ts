@@ -1,11 +1,8 @@
 import * as Discord from "discord.js";
-import {handle, isCommand, RESPONSES} from "./lib/command";
-import report, {information} from "./lib/report";
+import report from "./lib/report";
 import {handleMessage} from "./lib/message";
-import * as Probation from "./passive/probation";
 import verify from "./passive/verification";
 import {client} from "./client";
-import "./passive";
 import "./comm";
 
 const statuses = [

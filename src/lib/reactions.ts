@@ -1,6 +1,5 @@
 import{
     Message,
-    ReactionEmoji,
     User,
     MessageReaction,
     Collector

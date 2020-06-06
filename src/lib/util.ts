@@ -1,4 +1,8 @@
-import { Message, MessageEmbed, PartialMessage } from "discord.js";
+import {
+  Message,
+  MessageEmbed,
+  PartialMessage
+} from "discord.js";
 
 export function code(text: string) {
   return `\`\`\`${text}\`\`\``;

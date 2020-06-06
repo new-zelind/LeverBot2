@@ -1,4 +1,4 @@
-import {GuildMember, Guild, Message, PartialMessage} from "discord.js";
+import {GuildMember} from "discord.js";
 import parse from "parse-duration";
 
 //timeout role

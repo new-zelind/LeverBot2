@@ -5,11 +5,8 @@ import {
     Message,
     User,
     MessageReaction,
-    VoiceState,
-    PartialGroupDMChannel,
     PartialGuildMember
 } from "discord.js";
-import {client} from "../../client";
 
 export default async function approve(
     member: GuildMember | PartialGuildMember,

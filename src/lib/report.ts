@@ -1,4 +1,4 @@
-import {Client, DiscordAPIError, Message} from "discord.js";
+import {Client} from "discord.js";
 import {authorization} from "../lib/access";
 //import {Debug} from "../commands/debug";
 const owner = authorization("discord.owner");

@@ -4,6 +4,7 @@ import verify from "./passive/verification";
 import {client} from "./client";
 import {handle, isCommand, RESPONSES} from "./lib/command";
 import "./cmd";
+import "./passive/easterEggs";
 
 const statuses = [
     "Watching over the server",

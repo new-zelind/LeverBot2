@@ -1,5 +1,5 @@
 import {Message, GuildMember} from "discord.js";
-import timeout, {lift} from "../lib/timeout";
+import {timeoutCounts, timeout, lift, logTimeout, counts, setTimeoutCounts} from "../lib/timeout";
 import parse from "parse-duration";
 import Command, {Permissions} from "../lib/command";
 import {authorization} from "../lib/access";
@@ -67,7 +67,11 @@ export default Command({
                 duration,
                 reason.join(" ")
             );
+            logTimeout(member);
             setTimeout(lift(member), parse(duration));
         });
+
+        //reset timeoutCounts structure
+        setTimeoutCounts();
     }
 });

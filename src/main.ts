@@ -3,6 +3,7 @@ import {handleMessage, addMessageHandler} from "./lib/message";
 import verify from "./passive/verification";
 import {client} from "./client";
 import {handle, isCommand, RESPONSES} from "./lib/command";
+import {setTimeoutCounts} from "./lib/timeout";
 import "./cmd";
 import "./passive/easterEggs";
 
@@ -21,6 +22,9 @@ const statuses = [
 
 client.on("ready", () => {
     console.log(`${client.user.tag} is online!`);
+
+    //initialize timeoutCounts structure on startup
+    setTimeoutCounts();
 
     //automatically update status once every minute
     try{

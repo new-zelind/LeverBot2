@@ -7,7 +7,7 @@ type MessageHandler = (message: Message) => Promise<boolean> | boolean;
 const handlers: MessageHandler[] = [];
 
 //push a handler onto the stack.
-function addMessageHandler(handler: MessageHandler) {
+function addMessageHandler(handler: MessageHandler): number {
   return handlers.push(handler) - 1;
 }
 

@@ -14,7 +14,7 @@ export default Command({
 
     async exec(message: Message){
         return message.channel.send(
-            "**Here's my source code:**\nhttps://github.com/new-zelind/LeverBot2\n_Consider following and starring the repo!_"
+            "**Here's my source code:**\nhttps://github.com/new-zelind/LeverBot2 \n_Consider following and starring the repo!_"
         );
     }
 });

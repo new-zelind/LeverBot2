@@ -13,9 +13,10 @@ export default Command({
     check: Permissions.all,
 
     async exec(message){
-        let userID: string = message.author.id;
+        let numCitations = timeoutCounts[message.author.id];
+        if(numCitations == null) numCitations = 0;
         return message.channel.send(
-            `You have recieved _${timeoutCounts[userID]}_ citations. Maintain your compliance. Glory to Byrnes/Lever.`
+            `You have recieved **${numCitations}** citations.\nMaintain your compliance.\n_Glory to Byrnes/Lever._`
         );
     }
 });

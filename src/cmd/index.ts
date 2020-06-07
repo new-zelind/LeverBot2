@@ -9,6 +9,7 @@
 
 import "./about";
 import "./calendar";
+import "./compliance";
 import "./contact";
 import "./gpa"; 
 import "./help";

@@ -14,6 +14,7 @@ import "./gpa";
 import "./help";
 import "./map";
 import "./ping";
+import "./source";
 import "./timeout";
 import "./uptime";
 import "./verify";

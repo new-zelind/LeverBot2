@@ -7,9 +7,13 @@
  * DEV: Commands restricted to the bot devs.
 */
 
+import "./about";
 import "./calendar";
-import "./contact"; 
+import "./contact";
+import "./gpa"; 
 import "./help";
+import "./map";
 import "./ping";
 import "./timeout";
+import "./uptime";
 import "./verify";

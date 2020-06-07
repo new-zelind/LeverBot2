@@ -4,7 +4,7 @@
  * ADMIN: Commands reserved for those with administrator powers
  * META: Commands regarding the bot or server itself
  * GENERAL: Informational and utility commands
- * DEV: Commands restricted to the bot devs.
+ * DEV: Commands restricted to the bot devs
 */
 
 import "./about";

@@ -42,7 +42,7 @@ export function logTimeout(member: GuildMember,) {
     //write the member's ID to The File of Shame
     let memberID: string = member.user.id;
     let toLog = memberID.concat("\n");
-    fs.writeFile("../../timeouts.txt", toLog, (err) => {
+    fs.writeFile('timeouts.txt', toLog, (err) => {
         if(err) console.log(err);
     });
 }
@@ -59,7 +59,7 @@ export function counts(): Promise<TOCounts> {
     return new Promise<TOCounts>((resolve, reject) => {
 
         //read data in from The File of Shame
-        fs.readFile("../../timeouts.txt", (err, data) => {
+        fs.readFile('timeouts.txt', (err, data) => {
             if(err) reject(err);
 
             //split the data by newline characters and init counts

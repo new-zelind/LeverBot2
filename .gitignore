@@ -8,3 +8,4 @@ out
 *.log
 authorization.json
 rooms.json
+timeouts.txt

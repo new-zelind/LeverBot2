@@ -6,6 +6,7 @@ import {handle, isCommand, RESPONSES} from "./lib/command";
 import {setTimeoutCounts} from "./lib/timeout";
 import "./cmd";
 import "./passive/easterEggs";
+import "./passive/log/index";
 
 const statuses = [
     "Watching over the server",

@@ -32,21 +32,12 @@ async function cleanUp(message: Message) {
             ),
         }))
     );
-
-    //replace @ mentions in the server log
-    roles.forEach(
-        ({ key, role }) =>
-            (content = content.replace(key, `@[ROLE: ${role?.name}]`))
-    );
-    members.forEach(
-        ({ key, member }) =>
-            (content = content.replace(key, `@[MEMBER: ${member?.nickname}]`))
-    );
-
+    
     return content;
 }
 
 addMessageHandler(async (message) => {
+
     if(message.author.bot) return false;
     if(message.channel.type === "dm") return false;
     
@@ -54,10 +45,8 @@ addMessageHandler(async (message) => {
         (channel) => channel.name === "server-log"
     ) as TextChannel;
     if(!serverLog) return false;
-
     serverLog.send(
-        `[${message.author.username}#${message.author.discriminator}]
-        in ${message.channel.toString()}: ${await cleanUp(message)}`,
+        `[${message.author.username}#${message.author.discriminator}] in ${message.channel.toString()}: \`${await cleanUp(message)}\``,
         {
             files: message.attachments.map((attachment) => attachment.url),
         }
@@ -78,7 +67,6 @@ client.on("messageUpdate", async (old, current) => {
     if(!serverLog) return false;
 
     serverLog.send(
-        `${old.author.username}#${old.author.discriminator}
-        in ${old.channel.toString()}: ${old.content.toString()} => ${current.content.toString}`
+        `[${old.author.username}#${old.author.discriminator}] in ${old.channel.toString()}: \`${old.content.toString()}\` => \`${current.content.toString()}\``
     );
 });

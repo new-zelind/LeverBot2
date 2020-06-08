@@ -21,11 +21,14 @@
       "Math",
       "Physics"
     ],
-    "COMPUTING": ["Computer Science", "Computer Information Systems"],
+    "COMPUTING": [
+      "Computer Science",
+      "Computer Information Systems"
+    ],
     "PRE-PROFESSIONAL HEALTH": [
-      "Pre-Professional Health Studies",
+      "Pre-Professional Health",
       "Pre-Pharmacy",
-      "Pre-Rehabilitation Sciences"
+      "Pre-Rehabilitation"
     ]
   }
 }

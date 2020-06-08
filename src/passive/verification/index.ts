@@ -25,8 +25,8 @@ export default async function verify(member: GuildMember | PartialGuildMember){
     dm.send(
         "Hello, and welcome to the Byrnes Hall 7th Floor Discord server! I'm ByrnesBot, your friendly neighborhood Discord.js moderation bot. In order to gain access to the server, I need to verify who you are. Let's get started!"
     );
-    const name = await askString("What is your name? (First name only, please!", dm);
-    dm.send(`Greetings, ${name}. Nice to meet you!`);
+    const name = await askString("What is your name? (First name only, please!)", dm);
+    dm.send(`Greetings, ${name}.`);
     let college, major
 
     do{
@@ -48,10 +48,10 @@ export default async function verify(member: GuildMember | PartialGuildMember){
             major = confirmation === "Y" ? college : "BACK";
         }
         else {
+            dm.send("Which one of these is your major?");
             major = await choose(
-                `Thanks! Which one of these is your major?\n\n${config.majors[college]
-                    .map(j => `*${j}`)
-                    .join("\n")}\n\nYou can say "BACK" to reselect your college if you don't see your major.`,
+                `${config.majors[college].map(j => `*${j}*`).join("\n")}
+                \nEnter "BACK" to reselect your college if you don't see your major.`,
                 dm,
                 [...config.majors[college].map(k => [k]), ["back"]]
             );
@@ -118,7 +118,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
     }
 
     dm.send(
-        "Alright, I've got all your info. Sit tight and go read the server rules. Your verification should be approved shortly!"
+        "Alright, I've got all your info. Sit tight and be sure you read the server rules. Your verification should be approved shortly!"
     );
 
     console.log("VERIFY", name, room, college, major, cuid);

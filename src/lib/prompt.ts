@@ -55,10 +55,8 @@ function choose(question: string, channel: DMChannel, options: string[][]) {
       let index = options.findIndex(opt =>
         opt.includes(response.toUpperCase())
       );
-      if (index < 0){
-        console.log(`cannot find response`);
-        return false;
-      }
+      console.log(index);
+      if (index < 0) return false;
       return options[index][0];
     },
     "I can\'t quite understand what you said. Try again, please."

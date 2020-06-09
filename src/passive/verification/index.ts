@@ -1,10 +1,11 @@
-import {Guild, GuildMember, PartialGuildMember} from "discord.js";
+import {Guild, GuildMember, PartialGuildMember, DMChannel} from "discord.js";
 import {askString, choose} from "../../lib/prompt";
 import approve from "./approve";
 
-const config: {
+/*const config: {
     majors: {[college: string]: string[]};
-} = require("../../../config.json");
+} = require("../../../config.json");*/
+const config = require("../../../config.json");
 
 const rooms = require("../../../rooms.json").pairs;
 
@@ -20,7 +21,7 @@ export function findOrMakeRole(name: string, guild: Guild){
 }
 
 export default async function verify(member: GuildMember | PartialGuildMember){
-    const dm = await member.createDM();
+    const dm: DMChannel = await member.createDM();
 
     dm.send(
         "Hello, and welcome to the Byrnes Hall 7th Floor Discord server! I'm ByrnesBot, your friendly neighborhood Discord.js moderation bot. In order to gain access to the server, I need to verify who you are. Let's get started!"
@@ -31,36 +32,34 @@ export default async function verify(member: GuildMember | PartialGuildMember){
 
     do{
         college = await choose(
-            "Which college are you in? (Engineering, Science, Computing, Pre-Professional Health, Undeclared)",
-            dm,
-            [
-                ...Object.keys(config.majors).map(i => [i, `College of ${i}`]),
-                ["Undeclared", "Don't know", "idk"]
-            ]
+            "Which college are you in?",
+            [config.majors],
+            dm
         );
 
         if(college === "UNDECLARED"){
-            const confirmation = await choose("Confirm Undeclared? (Y/N)", dm, [
-                ["y", "yes", "yeah"],
-                ["n", "no", "nope"]
-            ]);
+            const confirmation = await choose(
+                "Confirm Undeclared? (Y/N)",
+                ["y", "yes", "yeah", "n", "no", "nope"],
+                dm
+            );
 
-            major = confirmation === "Y" ? college : "BACK";
+            major = confirmation >= 3 ? college : "BACK";
         }
         else {
             dm.send("Which one of these is your major?");
             major = await choose(
-                `${config.majors[college].map(j => `*${j}*`).join("\n")}
+                `${(config.majors[college]).map(j => `*${j}*`).join("\n")}
                 \nEnter "BACK" to reselect your college if you don't see your major.`,
-                dm,
-                [...config.majors[college].map(k => [`${k}`]), ["back"]]
+                config.majors[college],
+                dm
             );
         }
     } while (major === "BACK");
 
     let complete = false;
     let override = false;
-    let room: string, cuid: string;
+    let roomIndex: number, room: string, cuid: string;
 
     do{
         cuid = await askString("Alright, got it. What's your CUID?", dm);
@@ -71,30 +70,23 @@ export default async function verify(member: GuildMember | PartialGuildMember){
                 dm);
             room = getRoom(cuid);
             if(room === "OVERRIDE"){
-                room = choose(
+                roomIndex = await choose(
                     `My apologies. Alright, what is your room number? (e.g. A6, D4, etc.),`,
-                    dm,
-                    [
-                        ["A1", "A2", "A3", "A4", "A5", "A6", "A7"],
-                        ["B1", "B2", "B3", "B4", "B5", "B6", "B7"],
-                        ["C1", "C2", "C3", "C4", "C5", "C6", "C7"],
-                        ["D1", "D2", "D3", "D4", "D5", "D6", "D7"]                        
-                    ]
-                ).toString();
+                    config.rooms,
+                    dm
+                );
+                room = config.rooms[roomIndex];
                 override = true;
             }
         }
 
         let validate = await choose(
             `Alright, I have you in 7${room}. Is this correct? (Y/N)`,
-            dm,
-            [
-                ["Y", "Yes"],
-                ["N", "No"]
-            ]
+            ["Y", "Yes", "N", "No"],
+            dm
         );
 
-        if(validate === "N" || validate === "No"){
+        if(validate >= 2){
             room = (await askString(
                 "My apologies. What is your room? (e.g. A6, D4, etc.)\n_If you think this is in error, please type \"OVERRIDE\"._", 
                 dm))

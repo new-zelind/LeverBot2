@@ -44,26 +44,26 @@ export default Command({
 
             let grade = await choose(
                 `What was your letter grade in class ${i}? _(e.g. A, B, C, D, F)_`,
-                dm,
-                [["A"], ["B"], ["C"], ["D"], ["F"]]
+                ["A", "B", "C", "D", "F"],
+                dm
             );
 
             let points;
             switch (grade) {
                 default:
-                case "A":
+                case 0:
                     points = 4;
                     break;
-                case "B":
+                case 1:
                     points = 3;
                     break;
-                case "C":
+                case 2:
                     points = 2;
                     break;
-                case "D":
+                case 3:
                     points = 1;
                     break;
-                case "F":
+                case 4:
                     points = 0;
                     break;
             }

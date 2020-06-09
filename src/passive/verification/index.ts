@@ -4,9 +4,9 @@ import approve from "./approve";
 
 const config: {
     majors: {[college: string]: string[]};
-} = require("../../../config");
+} = require("../../../config.json");
 
-const rooms = require("../../../rooms").pairs;
+const rooms = require("../../../rooms.json").pairs;
 
 export function getRoom(cuid: string){
     return rooms.pairs[cuid] || null;
@@ -48,12 +48,13 @@ export default async function verify(member: GuildMember | PartialGuildMember){
             major = confirmation === "Y" ? college : "BACK";
         }
         else {
-            let majorResponse = await choose(
-                `Which one of these is your major?\n${config.majors[college].map(j => `*${j}*`).join("\n")}`,
+            dm.send("Which one of these is your major?");
+            major = await choose(
+                `${config.majors[college].map(j => `*${j}*`).join("\n")}
+                \nEnter "BACK" to reselect your college if you don't see your major.`,
                 dm,
-                [...config.majors[college].map(k => [k]), ["back"]]
+                [...config.majors[college].map(k => [`${k}`]), ["back"]]
             );
-            major = majorResponse.toUpperCase();
         }
     } while (major === "BACK");
 
@@ -62,16 +63,16 @@ export default async function verify(member: GuildMember | PartialGuildMember){
     let room: string, cuid: string;
 
     do{
-        cuid = await askString("Alright, got it. What's your CUID? _(e.g. C12345678)_", dm);
+        cuid = await askString("Alright, got it. What's your CUID?", dm);
         room = getRoom(cuid);
         while(room == null){
             cuid = await askString(
-                "I can't seem to find that CUID in my database. Try again, please.\n_If you think this is in error, please type \"OVERRIDE\"._",
+                "Hmm. I can't seem to find that CUID. Try again, please.\n_If you think this is in error, please type \"OVERRIDE\"._",
                 dm);
             room = getRoom(cuid);
             if(room === "OVERRIDE"){
                 room = choose(
-                    `My apologies. What is your room number? (e.g. A6, D4, etc.),`,
+                    `My apologies. Alright, what is your room number? (e.g. A6, D4, etc.),`,
                     dm,
                     [
                         ["A1", "A2", "A3", "A4", "A5", "A6", "A7"],

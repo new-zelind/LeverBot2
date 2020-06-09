@@ -13,6 +13,13 @@ export default Command({
 
   check: Permissions.admin,
   exec(message) {
-    message.mentions.members.forEach((member: GuildMember) => {verify(member);});
+    message.mentions.members.forEach(
+      (member: GuildMember) => {
+        verify(member);
+        console.log(
+          `Started manual verification for ${member.user.username}#${member.user.discriminator}`
+        );
+      }
+    );
   },
 });

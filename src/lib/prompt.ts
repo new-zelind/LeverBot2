@@ -52,6 +52,8 @@ function choose(question: string, channel: DMChannel, options: string[][]) {
     question,
     channel,
     response => {
+      console.log(options.toString());
+      console.log(response);
       let index = options.findIndex(opt =>
         opt.includes(response.toUpperCase())
       );

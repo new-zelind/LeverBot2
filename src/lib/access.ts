@@ -10,7 +10,7 @@ export function config(access: string | string[]){
     return delve(file, access);
 }
 
-export function rooms(access: string | string[]){
+export function room(access: string | string[]){
     const file = require("../../rooms.json");
     return delve(file, access);
 }

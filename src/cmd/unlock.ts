@@ -2,7 +2,7 @@ import Command, {Permissions} from "../lib/command";
 import {Message, TextChannel} from "discord.js";
 
 export default Command ({
-    names: ["lock"],
+    names: ["unlock"],
 
     documentation:{
         description: "Unlocks a locked channel.",

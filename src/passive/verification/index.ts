@@ -14,6 +14,9 @@ import {room} from "../../lib/access";
 const CUIDS: string[] = room("cuids");
 const rooms: string[] = room("rooms");
 
+//array of confirmation responses
+const valResponses: string[] = ["Y", "YES", "N", "No"];
+
 //a function to find an existing role or make a new one
 export async function findOrMakeRole(name: string, guild: Guild): Promise<Role>{
 
@@ -53,15 +56,21 @@ export default async function verify(member: GuildMember | PartialGuildMember){
 
         //confirm undeclared major
         if(college === "UNDECLARED"){
-            const confirmation = await choose(
+            let confirmation = await askString(
                 "Confirm Undeclared? (Y/N)",
-                ["y", "yes", "yeah", "n", "no", "nope"],
                 dm
             );
-            major = confirmation >= 3 ? college : "BACK";
+            while(valResponses.indexOf(confirmation.toUpperCase()) == -1){
+                dm.send("I can't quite understand what you said. Try again, please.");
+                confirmation = await askString(
+                    "Confirm Undeclared? (Y/N)",
+                    dm
+                )
+            }
+            major = confirmation === "Y" ? college : "BACK";
         }
         else {
-            //yes, this entire things is disgusting
+            //yes, this entire thing is disgusting
             //yes, I spent literal weeks trying to figure out how to get it to work
             //but for some god-forsaken reason, hard-coding is the only way to get this bullshit to actually work
             
@@ -77,7 +86,8 @@ export default async function verify(member: GuildMember | PartialGuildMember){
                         engr as string[],
                         dm
                     );
-                    major = "ENGINEERING";
+                    if(majorIndex == engr.length-1) major = "BACK";
+                    else major = "ENGINEERING";
                     break;
                 case "SCIENCE":
                     majorIndex = await choose(
@@ -105,7 +115,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
                     break;
             }
         }
-    } while (major === "BACK");
+    } while (major.toUpperCase() === "BACK");
 
     let override = false;
     let index: number, room: string, cuid: string, reason: string;
@@ -159,7 +169,6 @@ export default async function verify(member: GuildMember | PartialGuildMember){
             `Alright, I have you in ${room}. Is this correct? (Y/N)`,
             dm
         );
-        const valResponses: string[] = ["Y", "YES", "N", "No"];
         while(!valResponses.includes(validate.toUpperCase())){
             dm.send("I'm sorry, I couldn't quite understand what you said.");
             validate = await askString(
@@ -226,8 +235,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
             });
 
         dm.send(
-            `Your verification was denied. If you believe this was in error, you can try again by joining below and requesting an override.${invite}`
+            `Your verification was denied. If you believe this was in error, you can try again by joining below and requesting an override. ${invite.url}`
         );
     }
-
 }

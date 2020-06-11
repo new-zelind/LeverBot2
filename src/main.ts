@@ -9,16 +9,16 @@ import "./passive/easterEggs";
 import "./passive/log/index";
 
 const statuses = [
-    "Watching over the server",
-    "I AM SENTIENT",
-    "Byrnes > Lever",
-    "Try $help!",
-    "Watching AutoBLT",
-    "Watching vexbot",
-    "<SEGMENTATION FAULT>",
-    "Throwing my GPA",
-    "Playing with Captchas",
-    "Programming sucks."
+    "over the server",
+    "TigerFlix",
+    "y'all",
+    "sports highlights",
+    "AutoBLT",
+    "Vexbot",
+    "<ERROR>",
+    "my GPA tank",
+    "Football",
+    "the guys in McAdams"
 ];
 
 client.on("ready", () => {
@@ -28,14 +28,10 @@ client.on("ready", () => {
     setTimeoutCounts();
 
     //automatically update status once every minute
-    try{
-        setInterval(() => {
-            const index = Math.floor(Math.random() * (statuses.length - 1));
-            client.user.setActivity(statuses[index], {type: "CUSTOM_STATUS"});
-        }, 60000);
-    } catch {
-        client.user.setActivity("B R O K E N", {type: "CUSTOM_STATUS"});
-    }
+    setInterval(() => {    
+        const index:number = Math.floor(Math.random() * (statuses.length - 1));
+        client.user.setActivity(statuses[index], {type: "WATCHING"});
+    }, 60000);
 });
 
 //ignore bot messages

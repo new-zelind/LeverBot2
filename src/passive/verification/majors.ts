@@ -3,6 +3,7 @@ export const schools: string[] = [
     "SCIENCE",
     "COMPUTING",
     "PRE-PROFESSIONAL HEALTH",
+    "UNDECLARED",
     "OVERRIDE"
 ];
 

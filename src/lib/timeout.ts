@@ -30,10 +30,10 @@ export async function timeout(
     //add "timeout" role
     await member.roles.add(timeoutRole);
 
-    //notify the infractor of their probation.
+    //notify the infractor of their timeout.
     const dm = await member.createDM();
     dm.send(
-        `You've been placed on probation by ${invoker.nickname} for ${time} for the following reason: ${reason}. While on probation, you are not permitted to post in any text channel or join any voice channel. If you feel that this was in error, please speak to the admins in _#appeals_.`
+        `You've been timed out by ${invoker.nickname} for ${time} for the following reason: ${reason}. While timed out, you are not permitted to post in any text channel or join any voice channel. If you feel that this was in error, please speak to the admins in _#appeals_.`
     );
 };
 

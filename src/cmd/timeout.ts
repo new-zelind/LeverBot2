@@ -1,5 +1,5 @@
 import {Message, GuildMember} from "discord.js";
-import {timeoutCounts, timeout, lift, logTimeout, counts, setTimeoutCounts} from "../lib/timeout";
+import {timeout, lift, logTimeout, setTimeoutCounts} from "../lib/timeout";
 import parse from "parse-duration";
 import Command, {Permissions} from "../lib/command";
 import {authorization} from "../lib/access";
@@ -55,7 +55,7 @@ export default Command({
             return;
         }
         if(!reason){
-            message.channel.send("You cannot place someone on probation for no reason.");
+            message.channel.send("I cannot time someone out for no reason.");
             return;
         }
 

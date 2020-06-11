@@ -1,6 +1,5 @@
 import {addOneTimeMessageHandler} from "./message";
 import {DMChannel, Message, TextChannel} from "discord.js";
-import { promises } from "dns";
 
 //ask question and wait for response from user
 function ask(question: string, channel: DMChannel) {
@@ -55,8 +54,12 @@ async function choose(
   failureMessage = "I can't quite understand what you said. Try again, please."
 ):Promise<number> {
   options = options.map((i) => i.toUpperCase());
-  const prompt = `${question}\n*(${options.join("\n")})`;
-  const response = await askString(prompt, channel);
+  const prompt = `${question}\n*${options.join("\n")}*`;
+  const response = await (await askString(prompt, channel)).toUpperCase();
+
+  /*console.log(`OPTIONS:  ${options.toString()}`);
+  console.log(`RESPONSE: ${response}`);
+  console.log(`INDEX:    ${options.indexOf(response)}`);*/
 
   if(options.includes(response)) return options.indexOf(response);
   else{

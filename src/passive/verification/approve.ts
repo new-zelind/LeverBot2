@@ -19,7 +19,7 @@ export default async function approve(
         .setAuthor(member.user.username, member.user.avatarURL() ?? undefined)
         .setTitle(`Verification for ${name}`)
         .setDescription(
-            `${member}\nRequested Roles: ${roles
+            `Requested Roles: ${roles
                 .map((role) => member.guild.roles.cache.get(role)?.toString())
                 .join(", ")}`
         )

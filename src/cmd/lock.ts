@@ -3,7 +3,6 @@ import {Message, TextChannel} from "discord.js";
 
 export default Command ({
     names: ["lock"],
-
     documentation:{
         description: "Locks down a channel.",
         group: "ADMIN",
@@ -15,6 +14,7 @@ export default Command ({
     async exec(message: Message){
         const channel = message.channel as TextChannel;
 
+        //nobody except admins can post in the current channel
         channel.createOverwrite(channel.guild.roles.everyone, {
             SEND_MESSAGES: false,
             VIEW_CHANNEL: null,

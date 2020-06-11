@@ -13,11 +13,14 @@ export default async function listen(
         collector: Collector<string, MessageReaction>
     ) => boolean | void | Promise<boolean> | Promise<void> 
 ) {
+
+    //create a reaction collector for the provided message
     const collector = message.createReactionCollector(
         (reaction: MessageReaction, user: User) =>
             emojis.includes(reaction.emoji.name) && !user.bot
     );
 
+    //handle collections and implement callback when needed
     let handler: (element: MessageReaction) => void;
     collector.on(
         "collect",

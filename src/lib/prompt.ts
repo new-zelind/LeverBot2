@@ -1,5 +1,5 @@
 import {addOneTimeMessageHandler} from "./message";
-import {DMChannel, Message, TextChannel} from "discord.js";
+import {DMChannel, Message} from "discord.js";
 
 //ask question and wait for response from user
 function ask(question: string, channel: DMChannel) {
@@ -56,10 +56,6 @@ async function choose(
   options = options.map((i) => i.toUpperCase());
   const prompt = `${question}\n*${options.join("\n")}*`;
   const response = await (await askString(prompt, channel)).toUpperCase();
-
-  /*console.log(`OPTIONS:  ${options.toString()}`);
-  console.log(`RESPONSE: ${response}`);
-  console.log(`INDEX:    ${options.indexOf(response)}`);*/
 
   if(options.includes(response)) return options.indexOf(response);
   else{

@@ -12,7 +12,8 @@ export default Command({
 
     check: Permissions.all,
 
-    async exec(message: Message, args: string[]){
+    async exec(message: Message){
+        //ping!
         return message.reply("Pong!");
     }
 })

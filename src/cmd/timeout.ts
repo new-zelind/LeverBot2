@@ -8,7 +8,6 @@ const owner = authorization("discord.owner");
 
 export default Command({
     names: ["timeout"],
-    
     documentation:{
         description:"Times out target members for a specified amount of time.",
         group: "ADMIN",
@@ -23,7 +22,7 @@ export default Command({
         if(!message.guild) return;
         if(!message.member) return;
         if(message.mentions.members?.has(owner)){
-            message.channel.send("I'm sorry, I'm afraid I can't do that.");
+            message.channel.send("403: Forbidden");
         }
 
         //hit them with that 'no u'
@@ -59,7 +58,7 @@ export default Command({
             return;
         }
 
-        //perform and lift timeout
+        //perform and automatically lift timeout
         targets.forEach((member) => {
             timeout(
                 member,

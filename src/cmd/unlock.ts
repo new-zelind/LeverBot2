@@ -3,7 +3,6 @@ import {Message, TextChannel} from "discord.js";
 
 export default Command ({
     names: ["unlock"],
-
     documentation:{
         description: "Unlocks a locked channel.",
         group: "ADMIN",
@@ -15,6 +14,7 @@ export default Command ({
     async exec(message: Message){
         const channel = message.channel as TextChannel;
 
+        //reset the perms for the channel
         channel.lockPermissions();
 
         return message.channel.send("CHANNEL UNLOCKED");

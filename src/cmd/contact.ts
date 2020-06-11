@@ -3,7 +3,6 @@ import {makeEmbed} from "../lib/util";
 
 export default Command ({
     names: ["contact"],
-
     documentation: {
         description: "Returns important contact information.",
         group: "GENERAL",
@@ -13,6 +12,8 @@ export default Command ({
     check: Permissions.all,
 
     exec(message){
+
+        //make an embed with the following information:
         const embed = makeEmbed(message)
             .setColor("522D80")
             .setTitle("Contact Information")

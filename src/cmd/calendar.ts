@@ -3,7 +3,6 @@ import { makeEmbed } from "../lib/util";
 
 export default Command({
   names: ["calendar"],
-
   documentation: {
     description: "Returns the Fall 2020 Academic Calendar.",
     group: "GENERAL",
@@ -11,7 +10,10 @@ export default Command({
   },
 
   check: Permissions.all,
+
   exec(message) {
+
+    //make a new embed with the following information:
     const embed = makeEmbed(message)
       .setColor("#f66733")
       .setTitle("Fall 2020 Academic Calendar")

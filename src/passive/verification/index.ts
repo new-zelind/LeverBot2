@@ -186,7 +186,8 @@ export default async function verify(member: GuildMember | PartialGuildMember){
             override = true;
         }
     }
-    
+   
+    //if an override was requested, get the resident's reason why
     if(override){
         reason = await askString(
             "My records indicate that you either requested an override, or something was incorrect during the process. Please explain below:", 
@@ -198,6 +199,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
         "Alright, I've got all your info. Sit tight and be sure you read the server rules. Your verification should be approved shortly!"
     );
 
+    //log the verification
     console.log("VERIFY", name, room, college, major, cuid);
 
     //auto-grant Resident role
@@ -206,6 +208,8 @@ export default async function verify(member: GuildMember | PartialGuildMember){
     roles.push(majorRole.id);
 
     if(!override){
+
+        //assign roles for AD and BC side members
         if(room.includes("A") || room.includes("D")){
             roles.push(
                 await (await findOrMakeRole("AD-Side", member.guild)).id
@@ -218,13 +222,17 @@ export default async function verify(member: GuildMember | PartialGuildMember){
         }
     }
 
+    //send approval message
     const approved = await approve(member, name, room, cuid, roles, override, reason);
 
+    //if approved, set the user's nickname and add the roles
     if(approved){
         dm.send(`Welcome to the server, ${name}!`);
         member.setNickname(`${name} | ${room}`);
         member.roles.add(roles);
     }
+
+    //otherwise, generate a new invite link and send it to the user. Kick the user.
     else{
         const invite = await member.guild.channels.cache
             .find((channel) => channel.name === "rules")

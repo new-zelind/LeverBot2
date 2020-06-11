@@ -4,7 +4,6 @@ import {client} from "../client";
 
 export default Command({
     names: ["uptime"],
-
     documentation: {
         description: "Check how long the bot has been runing.",
         group: "META",
@@ -16,6 +15,7 @@ export default Command({
     async exec(message: Message){
         if(!client.uptime || !client.user) return;
 
+        //ms to days, hours, minutes, seconds
         let uptime = client.uptime / 1000;
         let d = Math.floor(uptime / 86400);
         let h = Math.floor(uptime / 3600);

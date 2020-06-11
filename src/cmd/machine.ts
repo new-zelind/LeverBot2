@@ -5,7 +5,6 @@ import {code} from "../lib/util";
 
 export default Command({
     names: ["machine"],
-
     documentation:{
         description: "Lists the machine that ByrnesBot is running on.",
         group: "DEV",
@@ -15,6 +14,8 @@ export default Command({
     check: Permissions.owner,
 
     exec(message: Message){
+
+        //sole purpose of this is to eliminate double runtime instances
         const {username} = os.userInfo();
         const machine = os.hostname();
         const type = os.type();

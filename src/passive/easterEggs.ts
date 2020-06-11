@@ -1,6 +1,7 @@
 import {addMessageHandler} from "../lib/message";
 import {client} from "../client";
 
+//don't ping the bot
 addMessageHandler((message) => {
     if(!client.user || !message.mentions.users.has(client.user.id)) return false;
 

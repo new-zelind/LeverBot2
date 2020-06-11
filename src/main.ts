@@ -21,6 +21,7 @@ const statuses = [
     "the guys in McAdams"
 ];
 
+//on startup
 client.on("ready", () => {
     console.log(`${client.user.tag} is online!`);
 
@@ -51,6 +52,7 @@ client.on("guildMemberAdd", (member: Discord.GuildMember) => {
 //handle messages appropriately
 client.on("message", handleMessage);
 
+//update command invocations
 client.on("messageUpdate", (old, current) => {
 
     //ignore old bot messages

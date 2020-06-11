@@ -4,7 +4,6 @@ import {client} from "../client";
 
 export default Command({
     names: ["about"],
-
     documentation:{
         description: "Returns additional information about the bot.",
         group: "META",
@@ -14,6 +13,8 @@ export default Command({
     check: Permissions.all,
 
     async exec(message){
+
+        //make a new embed with the following information:
         const embed = makeEmbed(message)
             .setColor("#3A4958")
             .setTitle(`All about ${client.user.tag}:`)

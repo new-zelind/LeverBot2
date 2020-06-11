@@ -35,7 +35,7 @@ export default Command({
         },
         { name: "November 2 - 3", value: "Fall break" },
         { name: "November 4", value: "Spring/Summer 2021 Registration begins" },
-        { name: "November 25 - 27", value: "Thanksgivingn Break" },
+        { name: "November 25 - 27", value: "Thanksgiving Break" },
         { name: "November 28", value: "Clemson vs. USC Jr. Football Game" },
         { name: "December 7 - 11", value: "Campus Dead Days; Finals Week" },
         { name: "December 14", value: "Grades for graduates due" },

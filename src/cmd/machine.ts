@@ -21,7 +21,7 @@ export default Command({
         const arch = os.arch();
 
         return message.channel.send(
-            code(`${username}@${machine}: ${type} ${arch}`)
+            code(`${username}@${machine}: ${type}${arch}`)
         );
     }
 });

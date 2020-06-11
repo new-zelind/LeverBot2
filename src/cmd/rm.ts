@@ -7,7 +7,7 @@ export default Command({
     documentation:{
         description: "Remove messages from a certain user, channel, or role",
         group: "ADMIN",
-        usage: "rm <integer> [<@User> <@Role> <#Channel>",
+        usage: "rm <integer> [<@User> <@Role> <#Channel>]",
     },
 
     check: Permissions.admin,

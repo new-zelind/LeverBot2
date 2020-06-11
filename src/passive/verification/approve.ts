@@ -13,7 +13,9 @@ export default async function approve(
     name: string,
     room: string,
     cuid: string,
-    roles: string[]
+    roles: string[],
+    override: boolean,
+    reason: string
 ): Promise<boolean> {
     const embed = new MessageEmbed()
         .setAuthor(member.user.username, member.user.avatarURL() ?? undefined)
@@ -26,6 +28,8 @@ export default async function approve(
         .addField("Room:", room)
         .addField("CUID:", cuid)
         .setTimestamp();
+
+    if(override) embed.addField("OVERRIDE:", reason);
 
     const channel = member.guild.channels.cache.find(
         (channel) => channel.name === "member-approval"

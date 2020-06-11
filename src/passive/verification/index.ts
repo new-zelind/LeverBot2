@@ -2,7 +2,8 @@ import {
     Guild,
     GuildMember, 
     PartialGuildMember, 
-    DMChannel
+    DMChannel,
+    Role
 } from "discord.js";
 import {schools, engr, sci, cpsc, pph} from "./majors";
 import {askString, choose} from "../../lib/prompt";
@@ -14,10 +15,12 @@ const CUIDS: string[] = room("cuids");
 const rooms: string[] = room("rooms");
 
 //a function to find an existing role or make a new one
-function findOrMakeRole(name: string, guild: Guild){
+export async function findOrMakeRole(name: string, guild: Guild): Promise<Role>{
 
     //find the role with the given name. If it doesn't exist, make a new one
-    let role = guild.roles.resolve(name);
+    const existingRoles = await guild.roles.fetch();
+    const role = existingRoles.cache.find(role => role.name === name);
+
     return role
         ? Promise.resolve(role)
         : guild.roles.create({data: {name}});
@@ -63,21 +66,22 @@ export default async function verify(member: GuildMember | PartialGuildMember){
             //but for some god-forsaken reason, hard-coding is the only way to get this bullshit to actually work
             
             //get major based on college
+            dm.send("Which of these is your major?");
             switch(college){
                 default:
-                    console.log(`fuck`);
+                    console.log(`borked`);
                     break;
                 case "ENGINEERING":
                     majorIndex = await choose(
-                        `Which of these is your major?\nEnter "BACK" to reselect your college if you don't see your major.`,
+                        `Enter "BACK" to reselect your college if you don't see your major.`,
                         engr as string[],
                         dm
                     );
-                    major = engr[majorIndex].toUpperCase();
+                    major = "ENGINEERING";
                     break;
                 case "SCIENCE":
                     majorIndex = await choose(
-                        `Which of these is your major?\nEnter "BACK" to reselect your college if you don't see your major.`,
+                        `Enter "BACK" to reselect your college if you don't see your major.`,
                         sci as string[],
                         dm
                     );
@@ -85,7 +89,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
                     break;
                 case "COMPUTING":
                     majorIndex = await choose(
-                        `Which of these is your major?\nEnter "BACK" to reselect your college if you don't see your major.`,
+                        `Enter "BACK" to reselect your college if you don't see your major.`,
                         cpsc as string[],
                         dm
                     );
@@ -93,7 +97,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
                     break;
                 case "PRE-PROFESSIONAL HEALTH":
                     majorIndex = await choose(
-                        `Which of these is your major?\nEnter "BACK" to reselect your college if you don't see your major.`,
+                        `Enter "BACK" to reselect your college if you don't see your major.`,
                         pph as string[],
                         dm
                     );
@@ -152,20 +156,20 @@ export default async function verify(member: GuildMember | PartialGuildMember){
     else{
         //let the resident validate their room placement
         let validate = await askString(
-            `Alright, I have you in 7${room}. Is this correct? (Y/N)`,
+            `Alright, I have you in ${room}. Is this correct? (Y/N)`,
             dm
         );
         const valResponses: string[] = ["Y", "YES", "N", "No"];
         while(!valResponses.includes(validate.toUpperCase())){
             dm.send("I'm sorry, I couldn't quite understand what you said.");
             validate = await askString(
-                `I have you in room 7${room}. Is this correct? (Y/N)`,
+                `I have you in room ${room}. Is this correct? (Y/N)`,
                 dm
             );
         }
 
         //if incorrect, ask the user for their room number
-        if(validate.toUpperCase() == "N"){
+        if(validate.toUpperCase() == "N" || validate.toUpperCase() === "NO"){
             room = (await askString(
                 "My apologies. What is your room? (e.g. A6, D4, etc.)", 
                 dm)
@@ -176,7 +180,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
     
     if(override){
         reason = await askString(
-            "Either you requested an override or something went wrong during the process. Please explain below:", 
+            "My records indicate that you either requested an override, or something was incorrect during the process. Please explain below:", 
             dm
         );
     }
@@ -185,23 +189,27 @@ export default async function verify(member: GuildMember | PartialGuildMember){
         "Alright, I've got all your info. Sit tight and be sure you read the server rules. Your verification should be approved shortly!"
     );
 
-    console.log("VERIFY", name, room, college, major, CUIDS[index]);
+    console.log("VERIFY", name, room, college, major, cuid);
 
-    //auto-grant verified and 7th floor roles
-    const roles = ["576728934075596821", "576728017154605073"];
+    //auto-grant Resident role
+    const roles = [await (await findOrMakeRole("Resident", member.guild)).id];
     let majorRole = await findOrMakeRole(major.toUpperCase(), member.guild);
     roles.push(majorRole.id);
 
     if(!override){
         if(room.includes("A") || room.includes("D")){
-            roles.push("613539269134385173");
+            roles.push(
+                await (await findOrMakeRole("AD-Side", member.guild)).id
+            );
         }
         else{
-            roles.push("613539227111784468");
+            roles.push(
+                await (await findOrMakeRole("BC-Side", member.guild)).id
+            );
         }
     }
 
-    const approved = await approve(member, name, room, CUIDS[index], roles);
+    const approved = await approve(member, name, room, cuid, roles, override, reason);
 
     if(approved){
         dm.send(`Welcome to the server, ${name}!`);
@@ -210,12 +218,10 @@ export default async function verify(member: GuildMember | PartialGuildMember){
     }
     else{
         const invite = await member.guild.channels.cache
-            .sort((a, b) => b.calculatedPosition - a.calculatedPosition)
-            .first()
+            .find((channel) => channel.name === "rules")
             .createInvite({
-                reason: `Invite for ${name} | ${room} (${member.user.username}#${member.user.discriminator})`,
+                reason: `Invite for ${member.user.username}#${member.user.discriminator}`,
                 maxUses: 1,
-                maxAge: 300,
                 temporary: true
             });
 

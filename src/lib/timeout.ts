@@ -21,11 +21,11 @@ export const lift = (member: GuildMember) => async () => {
 
 export async function timeout(
     member: GuildMember,
-    invoker: GuildMember | null,
+    invoker: GuildMember,
     time: string,
     reason: string
 ) {
-    console.log(`${invoker.nickname} timed out ${member.nickname} for ${parse(time)} ms. Reason: ${reason}.`);
+    console.log(`${invoker.user.username} timed out ${member.nickname} for ${parse(time)} ms. Reason: ${reason}.`);
 
     //add "timeout" role
     await member.roles.add(timeoutRole);
@@ -33,7 +33,7 @@ export async function timeout(
     //notify the infractor of their timeout.
     const dm = await member.createDM();
     dm.send(
-        `You've been timed out by ${invoker.nickname} for ${time} for the following reason: ${reason}. While timed out, you are not permitted to post in any text channel or join any voice channel. If you feel that this was in error, please speak to the admins in _#appeals_.`
+        `You've been timed out by ${invoker.user.username} for ${time} for the following reason: ${reason}. While timed out, you are not permitted to post in any text channel or join any voice channel. If you feel that this was in error, please speak to the admins in _#appeals_.`
     );
 };
 

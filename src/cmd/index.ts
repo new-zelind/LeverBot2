@@ -14,6 +14,7 @@ import "./contact";
 import "./gpa"; 
 import "./help";
 import "./lock";
+import "./machine";
 import "./map";
 import "./ping";
 import "./rm";

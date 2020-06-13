@@ -1,4 +1,4 @@
-export const colleges: string[] = [
+export const COLLEGES: string[] = [
     "AGRICULTURE, FORESTRY, AND LIFE SCIENCES",
     "ARCHITECTURE, ART, AND HUMANITIES",
     "BEHAVIORAL, SOCIAL, AND HEALTH SCIENCES",
@@ -119,4 +119,12 @@ export const CSCI: string[] = [
     "MATH",
     "PHYSICS",
     "BACK"
+];
+
+// rooms - A6/C6 omitted, they're the RA rooms
+export const roomNumbers: string[] = [
+    "A1", "A2", "A3", "A4", "A5", "A7",
+    "B1", "B2", "B3", "B4", "B5", "B6", "B7",
+    "C1", "C2", "C3", "C4", "C5", "C7",
+    "D1", "D2", "D3", "D4", "D5", "D6", "D7"
 ];

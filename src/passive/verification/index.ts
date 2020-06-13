@@ -5,17 +5,14 @@ import {
     DMChannel,
     Role
 } from "discord.js";
-import {schools, engr, sci, cpsc, pph} from "./majors";
 import {askString, choose} from "../../lib/prompt";
 import approve from "./approve";
 import {room} from "../../lib/access";
-
-//lists of all valid CUIDS and room numbers on the floor
-const CUIDS: string[] = room("cuids");
-const rooms: string[] = room("rooms");
+import {selectMajor} from "./selection";
+import {roomNumbers} from "./majors";
 
 //array of confirmation responses
-const valResponses: string[] = ["Y", "YES", "N", "No"];
+const valResponses: string[] = ["Y", "YES", "N", "NO"];
 
 //a function to find an existing role or make a new one
 export async function findOrMakeRole(name: string, guild: Guild): Promise<Role>{
@@ -42,151 +39,39 @@ export default async function verify(member: GuildMember | PartialGuildMember){
     dm.send(`Greetings, ${name}.`);
     
     //indeces and strings for college and major
-    let collegeIndex: number, majorIndex: number;
-    let college: string, major: string;
+    let major: string, override: boolean;
+    let majorInfo: [string, boolean];
 
+    //get resident's major
     do{
-        //get resident's college
-        collegeIndex = await choose(
-            "Which college are you in?",
-            schools,
-            dm
-        );
-        college = schools[collegeIndex].toUpperCase();
+        majorInfo = await selectMajor(dm, override);
+        major = majorInfo[0];
+        override = majorInfo[1];
+    }
+    while (major === "BACK");
 
-        //confirm undeclared major
-        if(college === "UNDECLARED"){
-            let confirmation = await askString(
-                "Confirm Undeclared? (Y/N)",
-                dm
-            );
-            while(valResponses.indexOf(confirmation.toUpperCase()) == -1){
-                dm.send("I can't quite understand what you said. Try again, please.");
-                confirmation = await askString(
-                    "Confirm Undeclared? (Y/N)",
-                    dm
-                )
-            }
-            major = confirmation === "Y" ? college : "BACK";
-        }
-        else {
-            //yes, this entire thing is disgusting
-            //yes, I spent literal weeks trying to figure out how to get it to work
-            //but for some god-forsaken reason, hard-coding is the only way to get this bullshit to actually work
-            
-            //get major based on college
-            dm.send("Which of these is your major?");
-            switch(college){
-                default:
-                    console.log(`borked`);
-                    break;
-                case "ENGINEERING":
-                    majorIndex = await choose(
-                        `Enter "BACK" to reselect your college if you don't see your major.`,
-                        engr as string[],
-                        dm
-                    );
-                    if(majorIndex == engr.length-1) major = "BACK";
-                    else major = "ENGINEERING";
-                    break;
-                case "SCIENCE":
-                    majorIndex = await choose(
-                        `Enter "BACK" to reselect your college if you don't see your major.`,
-                        sci as string[],
-                        dm
-                    );
-                    major = sci[majorIndex].toUpperCase();
-                    break;
-                case "COMPUTING":
-                    majorIndex = await choose(
-                        `Enter "BACK" to reselect your college if you don't see your major.`,
-                        cpsc as string[],
-                        dm
-                    );
-                    major = cpsc[majorIndex].toUpperCase();
-                    break;
-                case "PRE-PROFESSIONAL HEALTH":
-                    majorIndex = await choose(
-                        `Enter "BACK" to reselect your college if you don't see your major.`,
-                        pph as string[],
-                        dm
-                    );
-                    major = pph[majorIndex].toUpperCase();
-                    break;
-            }
-        }
-    } while (major.toUpperCase() === "BACK");
+    //make additional variables
+    let room: string, cuid: string, reason: string;
 
-    let override = false;
-    let index: number, room: string, cuid: string, reason: string;
-
-    //get user's cuid number and confirm it exists
+    //get user's cuid number
     cuid = await askString(
         "Got it. What's your CUID? _(Be sure to include the C!)_",
         dm
     );
-    while(!CUIDS.includes(cuid.toUpperCase())){
-        dm.send("I'm sorry, I can't seem to find that CUID. Try again, please.");
-        cuid = await askString(
-            "If you think this is in error, please type \`OVERRIDE\`",
-            dm
-        );
 
-        //record that resident requested an override
-        if(cuid.toUpperCase() === "OVERRIDE"){
-            override = true;
-            break;
-        }
-    }
-    
-    //find user's room number based on CUID
-    room = rooms[CUIDS.indexOf(cuid)];
-
-    //if the resident requested an override on CUID
-    if(override){
-
-        //manually get room number and resolve overrides
+    //get user's room number + validation
+    room = await askString(
+        "And what is your room number? (e.g. A7, D6, C3, etc.)",
+        dm
+    );
+    while(!roomNumbers.includes(room.toUpperCase())){
+        dm.send("I'm sorry, that room doesn't appear to exist. Be sure you say just the letter and number");
         room = await askString(
-            "What is your room number? (e.g. A6, D7, etc.)",
+            "What is your room number? (e.g. A7, D6, etc.)",
             dm
         );
-        while(!rooms.includes(room.toUpperCase())){
-            dm.send(
-                "I'm sorry, I can't seem to find that room number. Try again, please."
-            );
-            room = await askString(
-                "If you think this is in error, please type \`OVERRIDE\`.",
-                dm
-            );
-            if(room.toUpperCase() === "OVERRIDE"){
-                break;
-            }
-        }        
     }
-    else{
-        //let the resident validate their room placement
-        let validate = await askString(
-            `Alright, I have you in ${room}. Is this correct? (Y/N)`,
-            dm
-        );
-        while(!valResponses.includes(validate.toUpperCase())){
-            dm.send("I'm sorry, I couldn't quite understand what you said.");
-            validate = await askString(
-                `I have you in room ${room}. Is this correct? (Y/N)`,
-                dm
-            );
-        }
 
-        //if incorrect, ask the user for their room number
-        if(validate.toUpperCase() == "N" || validate.toUpperCase() === "NO"){
-            room = (await askString(
-                "My apologies. What is your room? (e.g. A6, D4, etc.)", 
-                dm)
-            ).toUpperCase();
-            override = true;
-        }
-    }
-   
     //if an override was requested, get the resident's reason why
     if(override){
         reason = await askString(
@@ -200,7 +85,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
     );
 
     //log the verification
-    console.log("VERIFY", name, room, college, major, cuid);
+    console.log("VERIFY", name, room, major, cuid);
 
     //auto-grant Resident role
     const roles = [await (await findOrMakeRole("Resident", member.guild)).id];

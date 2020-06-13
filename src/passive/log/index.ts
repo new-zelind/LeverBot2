@@ -59,7 +59,7 @@ addMessageHandler(async (message) => {
         }
     );
 
-    return true;
+    return false;
 });
 
 //a way to log when messages are updated or edited

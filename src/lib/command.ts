@@ -4,12 +4,11 @@ import {
   PartialMessage,
 } from "discord.js";
 import {authorization} from "./access";
+import {client} from "../client";
 
-//set bot owner and prefix
 const owner = authorization("discord.owner");
 export const PREFIX = ["$"];
 
-//declare a global Message type
 type Message = FullMessage | PartialMessage;
 
 /**
@@ -43,6 +42,8 @@ export interface CommandConfiguration {
     group: string;
     hidden?: boolean;
   };
+
+  // Lifecycle methods
 
   // See if it's valid to use the command (see the Permissions object below)
   check: (message: Message) => boolean | Promise<boolean>;
@@ -106,13 +107,13 @@ export const DISABLED = new Set<CommandConfiguration>();
  *    false if the message is empty
  *    false if matchCommand(#message) returns null
  *    false if the command is disabled
- *    true if the command is successfully executed
  *    true if the #message.author does not have permission to invoke the command
+ *    true if the command is successfully executed
  */
 export async function handle(message: Message): Promise<boolean> {
-  if (!isCommand(message)) return false;
-  if (message.author?.id == "680135764667138167") return false;
 
+  if (!isCommand(message)) return false;
+  if (message.author?.id == client.user.id) return false;
   if (!message.content) return false;
 
   // Get the appropriate command, if it exists
@@ -181,10 +182,7 @@ export async function handle(message: Message): Promise<boolean> {
   return true;
 }
 
-//a list of all possible permissions combinations
 export const Permissions = {
-
-  //server admins only
   admin(message: Message) {
     return (
       message.channel.type === "text" &&
@@ -192,43 +190,35 @@ export const Permissions = {
     );
   },
 
-  //bot owner only
   owner(message: Message) {
     return message.author?.id === owner;
   },
 
-  //only allowed in text channels within the server
   guild(message: Message) {
     return message.channel.type == "text";
   },
 
-  //only allowed in DMs
   dm(message: Message) {
     return message.channel.type === "dm";
   },
 
-  //only allowed during debugging processes
   env(parameter: string, value: any) {
     return (message: Message) => process.env[parameter] === value;
   },
 
-  //channel restrictions
   channel(name: string) {
     return (message: Message) => (message.channel as TextChannel).name === name;
   },
 
-  //no restrictions
   all() {
     return true;
   },
 
-  //composing specific permissions
   compose(...checks: ((message: Message) => boolean)[]) {
     return (message: Message) =>
       checks.map((check) => check(message)).every((resp) => resp);
   },
 
-  //combining any aforementioned permissions
   any(...checks: ((message: Message) => boolean)[]) {
     return (message: Message) =>
       checks.map((check) => check(message)).some((resp) => resp);

@@ -1,6 +1,7 @@
-import { Message } from "discord.js";
+import { Message, TextChannel } from "discord.js";
+import { AsyncLocalStorage } from "async_hooks";
 
-//MessageHandler type definition
+//type definition
 type MessageHandler = (message: Message) => Promise<boolean> | boolean;
 
 //use a simple array stack implementation for the message handlers.
@@ -12,7 +13,7 @@ const handlers: MessageHandler[] = [];
  * @param handler : the messageHandler to be added
  * @post : handlers.size++;
  */
-export function addMessageHandler(handler: MessageHandler): number {
+function addMessageHandler(handler: MessageHandler) {
   return handlers.push(handler) - 1;
 }
 
@@ -22,7 +23,8 @@ export function addMessageHandler(handler: MessageHandler): number {
  * @param index : the index of the handler to remove
  * @post : handlers[#index] = false
  */
-export function removeMessageHandler(index: number) {
+//Pops a message handler from the stack, replacing it with an empty function.
+function removeMessageHandler(index: number) {
   handlers[index] = () => false;
 }
 
@@ -33,7 +35,7 @@ export function removeMessageHandler(index: number) {
  * @returns index iff #handler resolves
  *          the resolution function of #handler if it does not resolve
  */
-export function addOneTimeMessageHandler(handler: MessageHandler) {
+function addOneTimeMessageHandler(handler: MessageHandler) {
   let index = addMessageHandler(async function (message: Message) {
     let res = await handler(message);
     if (res) removeMessageHandler(index);
@@ -48,11 +50,11 @@ export function addOneTimeMessageHandler(handler: MessageHandler) {
  * @param message : The message sent in the server
  * @return the command or function called to resolve #message
  */
-export async function handleMessage(message: Message) {
-
-  //find the correct message handler and resolve it
+async function handleMessage(message: Message) {
   let i = 0;
-  while (!(await handlers[i++](message)) && i < handlers.length) {}
+  while (!(await handlers[i++](message)) && i < handlers.length){
+    console.log
+  }
   return handlers[i];
 }
 
@@ -61,3 +63,10 @@ type CommandHandler = (
   args: string[],
   message: Message
 ) => Promise<boolean> | boolean;
+
+export {
+  addMessageHandler,
+  removeMessageHandler,
+  addOneTimeMessageHandler,
+  handleMessage,
+};

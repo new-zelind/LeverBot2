@@ -1,46 +1,122 @@
-export const schools: string[] = [
-    "ENGINEERING",
+export const colleges: string[] = [
+    "AGRICULTURE, FORESTRY, AND LIFE SCIENCES",
+    "ARCHITECTURE, ART, AND HUMANITIES",
+    "BEHAVIORAL, SOCIAL, AND HEALTH SCIENCES",
+    "BUSINESS",
+    "EDUCATION",
+    "ENGINEERING, COMPUTING, AND APPLIED SCIENCES",
     "SCIENCE",
-    "COMPUTING",
-    "PRE-PROFESSIONAL HEALTH",
     "UNDECLARED",
     "OVERRIDE"
 ];
 
-export const engr: string[] = [
-    "BIOENGINEERING",
-    "BIOSYSTEMS",
-    "CHEMICAL",
-    "COMPUTER",
-    "ELECTRICAL",
-    "ENVIRONMENTAL",
-    "INDUSTRIAL",
-    "MATERIALS",
-    "MECHANICAL",
+// CAFLS
+
+export const CAFLS: string[] = [
+    "AGRIBUSINESS",
+    "AGRICULTURAL EDU",
+    "ANIMAL AND VET SCIENCE",
+    "ENVIRONMENT AND NATURAL RESOURCES",
+    "FOOD SCIENCE AND HUMAN NUTRITION",
+    "FOREST RESOURCES MGMT",
+    "HORTICULTURE",
+    "PACKAGING SCIENCE",
+    "PLANT AND ENVIRONMENTAL SCI",
+    "PREVET MEDICINE",
+    "TURFGRASS",
+    "WILDLIFE AND FISHERIES BIOLOGY",
     "BACK"
 ];
 
-export const sci: string[] = [
-    "BIOLOGY",
+// CAAH
+
+export const CAAH: string[] = [
+    "ARCHITECTURE",
+    "FINE ARTS",
+    "CONSTRUCTION SCIENCE AND MGMT",
+    "ENGLISH",
+    "HISTORY",
+    "LANGUAGE AND INT'L BUSINESS",
+    "LANGAUGE AND INT'L HEALTH",
+    "MODERN LANGUAGE",
+    "PERFORMING ARTS",
+    "PHILOSOPHY",
+    "RELIGIOUS STUDIES",
+    "BACK"
+];
+
+// CBSHS
+
+export const CBSHS: string[] = [
+    "ANTHROPOLOGY",
+    "COMM",
+    "CRIMINAL JUSTICE",
+    "PARKS REC AND TOURISM MGMT",
+    "HEALTH SCIENCE",
+    "PSYCHOLOGY",
+    "POLITICAL SCIENCE",
+    "SOCIOLOGY",
+    "SPORTS COMM",
+    "BACK"
+];
+
+// CBUS
+
+export const CBUS: string[] = [
+    "ACCOUNTING",
+    "ECONOMICS",
+    "FINANCE",
+    "GRAPHIC COMM",
+    "MANAGEMENT",
+    "MARKETING",
+    "BACK"
+];
+
+// CEDU
+
+export const CEDU: string[] = [
+    "AGRICULTURAL EDU",
+    "EARLY CHILDHOOD EDU",
+    "ELEMENTARY EDU",
+    "MIDDLE LEVEL EDU",
+    "MATHEMATICS TEACHING",
+    "SECONDARY ENGLISH",
+    "SECONDARY MATHEMATICS",
+    "SECONDARY SOCIAL STUDIES",
+    "SCIENCE TEACHING",
+    "SPECIAL EDU",
+    "BACK"
+];
+
+// CECAS
+
+export const CECAS: string[] = [
+    "BIOENGINEERING ENGR",
+    "BIOSYSTEMS ENGR",
+    "CHEMICAL ENGR",
+    "COMPUTER ENGR",
+    "COMPUTER INF. SYSTEMS",
+    "COMPUTER SCIENCE",
+    "ELECTRICAL ENGR",
+    "ENVIRONMENTAL ENGR",
+    "INDUSTRIAL ENGR",
+    "MATERIALS ENGR",
     "MATERIALS SCIENCE",
+    "MECHANICAL ENGR",
+    "BACK"
+];
+
+// CSCI
+
+export const CSCI: string[] = [
+    "ASTRONOMY",
+    "BIOCHEMISTRY",
+    "BIOLOGY",
     "MICROBIOLOGY",
     "BIOCHEMISTRY",
     "CHEMISTRY",
     "GENETICS",
     "MATH",
     "PHYSICS",
-    "BACK"
-];
-
-export const cpsc = [
-    "COMPUTER SCIENCE",
-    "COMPUTER INFORMATION SYSTEMS",
-    "BACK"
-];
-
-export const pph = [
-    "PRE-PHARMACY",
-    "PRE-PROFESSIONAL HEALTH",
-    "PRE-REHABILITATION",
     "BACK"
 ];

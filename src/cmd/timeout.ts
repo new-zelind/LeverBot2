@@ -22,7 +22,7 @@ export default Command({
         if(!message.guild) return;
         if(!message.member) return;
         if(message.mentions.members?.has(owner)){
-            message.channel.send("403: Forbidden");
+            message.channel.send("I'm sorry. I'm afraid I can't do that.");
         }
 
         //hit them with that 'no u'

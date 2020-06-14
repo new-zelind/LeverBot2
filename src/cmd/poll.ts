@@ -21,6 +21,11 @@ export default Command({
   },
 
   check: Permissions.guild,
+
+  fail(message: Message) {
+    return message.reply("Sorry, I can't do a poll in a DM!");
+  },
+
   async exec(message, [duration, question, ...options]) {
     if (!message.member) return;
     if (options.length > 10) {
@@ -104,9 +109,5 @@ export default Command({
     });
 
     return poll;
-  },
-
-  fail(message: Message) {
-    return message.reply("Sorry, I can't do a poll in a DM!");
-  },
+  }
 });

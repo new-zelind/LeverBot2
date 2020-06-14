@@ -13,6 +13,10 @@ export default Command({
 
     check: Permissions.owner,
 
+    fail(message: Message){
+        return message.channel.send("I'm sorry. I'm afraid I can't do that.");
+    },
+
     exec(message: Message){
 
         //sole purpose of this is to eliminate double runtime instances

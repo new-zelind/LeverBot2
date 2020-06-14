@@ -11,6 +11,10 @@ export default Command({
 
     check: Permissions.admin,
 
+    fail(message: Message){
+        return message.channel.send("I'm sorry. I'm afraid I can't do that.");
+    },
+
     async exec(message: Message, [count]: string[]){
         if(!message.mentions.users) return;
 

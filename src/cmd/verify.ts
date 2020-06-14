@@ -11,6 +11,7 @@ export default Command({
   },
 
   check: Permissions.admin,
+  
   exec(message) {
     message.mentions.members.forEach(
       (member: GuildMember) => {

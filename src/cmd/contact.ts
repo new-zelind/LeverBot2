@@ -28,7 +28,8 @@ export default Command ({
                 {name: "CCIT", value: "864.656.3494"},
                 {name: "Maintenance", value: "864.656.5450"},
                 {name: "Taylor Hanley, Byrnes/Lever Director", value: "tahanle@clemson.edu"},
-                {name: "{BYRNES GRAD}", value: "{GRAD EMAIL}"}
+                {name: "{BYRNES GRAD}", value: "{GRAD EMAIL}"},
+                {name: "{LEVER GRAD}", value: "{GRAD EMAIL}"}
             );
 
         return message.channel.send(embed);

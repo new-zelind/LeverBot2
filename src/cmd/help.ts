@@ -15,6 +15,7 @@ export const HelpCommand = Command({
   },
 
   check: Permissions.all,
+  
   async exec(message: Message) {
     //organize the commands into their respective group
     const groups: {

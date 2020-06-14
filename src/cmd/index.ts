@@ -9,7 +9,6 @@
 
 import "./about";
 import "./calendar";
-import "./commit";
 import "./compliance";
 import "./contact";
 import "./gpa"; 

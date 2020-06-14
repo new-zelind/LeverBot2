@@ -142,7 +142,11 @@ export async function handle(message: Message): Promise<boolean> {
   }
 
   // Get the arguments
-  const argv = message.content.split(" ").slice(1);
+  const argstring = message.content.split(" ").slice(1).join(" ");
+  let argv = argstring.match(/“([^“”]+)”|"([^"]+)"|'([^']+)'|([^\s]+)/g);
+
+  // Get the arguments
+  //const argv = message.content.split(" ").slice(1);
 
   // Start the timer (for when we edit the message later to indicate how long the command takes)
   const start = Date.now();

@@ -17,6 +17,7 @@ import "./lock";
 import "./machine";
 import "./map";
 import "./ping";
+import "./poll";
 import "./rm";
 import "./source";
 import "./timeout";

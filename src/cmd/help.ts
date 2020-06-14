@@ -38,11 +38,11 @@ export const HelpCommand = Command({
     }
 
     //start building the help message
-    let body = "Here's a list of all my commands:";
+    let body = "Here's a list of all my commands:\n";
 
     //for each group, list the name of the group
     for (const [name, commands] of Object.entries(groups)) {
-      body += `\n\n__**${name}**__:\n`;
+      body += `\n__**${name}**__:\n`;
 
       //list the name, purpose, and syntax for each command in the group
       for (const command of commands) {

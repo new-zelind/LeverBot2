@@ -4,7 +4,7 @@ import {Message, TextChannel} from "discord.js";
 export default Command({
     names: ["rm"],
     documentation:{
-        description: "Remove messages from a certain user, channel, or role",
+        description: "Remove messages from a certain user, channel, or role.",
         group: "ADMIN",
         usage: "rm <integer> [<@User> <@Role> <#Channel>]",
     },

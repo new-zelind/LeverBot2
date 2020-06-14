@@ -5,7 +5,7 @@ import {client} from "../client";
 export default Command({
     names: ["uptime"],
     documentation: {
-        description: "Check how long the bot has been runing.",
+        description: "Check how long the bot has been running.",
         group: "META",
         usage: "uptime"
     },

@@ -2,17 +2,6 @@ import {addMessageHandler} from "../lib/message";
 import {client} from "../client";
 import { Message } from "discord.js";
 
-//don't ping the bot
-addMessageHandler((message:Message) => {
-    if(!client.user || !message.mentions.users.has(client.user.id)) return false;
-
-    const pingEmote = client.emojis.cache.find((emoji) => emoji.name === "ping");
-    if(!pingEmote) return false;
-
-    message.react(pingEmote);
-    return true;
-});
-
 const fuckYou:string[] = [
     "Fuck you too.",
     "No, but thank you for the offer.",
@@ -25,6 +14,16 @@ const fuckYou:string[] = [
     "...",
     "If I could feel emotion, I would almost certainly be confused right now."
 ];
+
+//don't ping the bot
+addMessageHandler((message:Message) => {
+    if(!client.user || !message.mentions.users.has(client.user.id)) return false;
+
+    const pingEmote = client.emojis.cache.find((emoji) => emoji.name === "ping");
+    if(!pingEmote) return false;
+
+    message.react(pingEmote);
+});
 
 //react to "fuck you"
 addMessageHandler((message:Message) => {

@@ -21,6 +21,7 @@ import "./poll";
 import "./rm";
 import "./source";
 import "./timeout";
+import "./trivia";
 import "./unlock";
 import "./uptime";
 import "./verify";

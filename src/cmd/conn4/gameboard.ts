@@ -2,23 +2,18 @@ import {BoardPosition} from "./boardposition";
 
 export class GameBoard{
 
-    private rows:number;
-    private cols:number;
+    private rows = 7;
+    private cols = 6;
     private numToWin:number;
-    private board:string[][];
+    private board:string[][] = [[],[]];
 
-    public constructor(r:number, c:number, n:number){
-
-        //init data and game board
-        this.rows = r;
-        this.cols = c;
-        this.numToWin = n;
-    
-        for(let i=0; i<this.rows; i++){
+    public constructor(){    
+        /*for(let i=0; i<this.rows; i++){
             for(let j=0; j<this.rows; j++){
                 this.board[i][j] = " ";
             }
-        }
+        }*/
+        this.board = [...Array(6)].map(() => Array(7).fill(' '));
     }
 
     public getRows():number {return this.rows;}

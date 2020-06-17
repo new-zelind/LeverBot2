@@ -1,49 +1,44 @@
 import {GameBoard} from "./gameboard";
-import {BoardPosition} from "./boardposition";
-import {Message, TextChannel, User, DMChannel} from "discord.js";
+import {User, DMChannel} from "discord.js";
 import {askString} from "../../lib/prompt";
-import { client } from "../../client";
+import {client} from "../../client";
 
 async function getChoice(
     dm:DMChannel,
     user:User,
     board:GameBoard
 ):Promise<number> {
-    dm.send(`${user.toString()} it's your turn!\n\n${board.toString()}`);
-    let response:string = await askString(
+    
+    dm.send(`It's your turn!\n\n${board.toString()}`);
+    let choice:string = await askString(
         "Which column do you want to place your marker in?",
         dm
     );
-    while(!parseInt(response)){
-        dm.send("I'm sorry, that's not a column number.")
-        response = await askString(
+
+    //this whole thing is so bad, I'm so sorry for what you're about to read
+    while(
+        !parseInt(choice) ||
+        parseInt(choice) >= board.getCols() ||
+        parseInt(choice) < 0
+    ){
+        if(!parseInt(choice)) dm.send("I'm sorry, that's not a column number");
+        if(parseInt(choice) >= board.getCols()) {
+            dm.send(
+                `Column choice cannot be greater than ${board.getCols() - 1}. Please try again.`
+            );
+        }
+        if(parseInt(choice) < 0){
+            dm.send(
+                "Column choice cannot be less than 0. Please try again."
+            );
+        }
+        
+        choice = await askString(
             "Which column do you want to place your marker in?",
             dm
         );
     }
-    return parseInt(response);
-}
-
-async function verifyChoice(
-    dm:DMChannel,
-    choice:number,
-    board:GameBoard,
-    user:User
-){
-    while(choice >= board.getCols() || choice < 0){
-        if(choice >= board.getCols()){
-            dm.send(
-                `Column choice cannot be greater than ${board.getCols()-1}. Please try again.`
-            );
-        }
-        else{
-            dm.send(
-                `Column choice cannot be less than 0. Please try again.`
-            );
-        }
-
-        choice = await getChoice(dm, user, board);
-    }
+    return parseInt(choice);
 }
 
 export default async function connect(
@@ -60,7 +55,7 @@ export default async function connect(
 
     //turn counter, game board
     let turn:number = 0;
-    let board:GameBoard = new GameBoard(7, 6, 4);
+    let board:GameBoard = new GameBoard();
 
     while(1 == 1){
 
@@ -70,13 +65,11 @@ export default async function connect(
 
         //get column choice
         let choice:number = await getChoice(currDM, currPlayer, board);
-        await verifyChoice(currDM, choice, board, currPlayer);
 
         //check to see if the column is full
         while(!board.checkIfFree(choice)){
             currDM.send(`Column ${choice} is full.`);
             choice = await getChoice(currDM, currPlayer, board);
-            await verifyChoice(currDM, choice, board, currPlayer);
         }
 
         //place the token

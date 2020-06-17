@@ -13,7 +13,8 @@ export default Command({
     },
 
     //in bot channel && not in dms
-    check: Permissions.compose(Permissions.channel("bots"), Permissions.guild),
+    //check: Permissions.compose(Permissions.channel("bots"), Permissions.guild),
+    check:Permissions.all,
 
     fail(message:Message){
         return message.channel.send("In _#bot-commands_, please!");
@@ -38,6 +39,8 @@ export default Command({
         }
 
         await message.react("🔥");
+
+        message.channel.send("Challenged: react with '🔥' to play!");
 
         listen(message, ["🔥"], async (reaction) => {
             const users = await reaction.users.fetch();

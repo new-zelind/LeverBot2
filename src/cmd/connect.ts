@@ -1,6 +1,8 @@
 import Command, {Permissions} from "../lib/command";
 import {Message, User} from "discord.js";
 import connect from "./conn4/connect";
+import listen from "../lib/reactions";
+import { client } from "../client";
 
 export default Command({
     names:["connect"],
@@ -10,7 +12,8 @@ export default Command({
         usage: "connect <@User>"
     },
 
-    check: Permissions.compose(Permissions.channel("bot-commands"), Permissions.guild),
+    //in bot channel && not in dms
+    check: Permissions.compose(Permissions.channel("bots"), Permissions.guild),
 
     fail(message:Message){
         return message.channel.send("In _#bot-commands_, please!");
@@ -22,8 +25,37 @@ export default Command({
         const challenger:User = message.author;
         const challenged:User = message.mentions.users.first();
 
-        await connect(challenger, challenged);
+        //nobody challenged
+        if(!challenged){
+            return message.channel.send("You need to challenge someone!");
+        }
 
-        return;
+        //can't challenge the bot.
+        if(challenged === client.user){
+            return message.channel.send(
+                "I can't play Connect 4. I'm just the means to the end here."
+            );
+        }
+
+        await message.react("🔥");
+
+        listen(message, ["🔥"], async (reaction) => {
+            const users = await reaction.users.fetch();
+
+            if(users.has(challenged.id)){
+
+                //start the game and record the winner
+                message.channel.send("Game on! Players, check your DMs.");
+                let winner:User = await connect(challenger, challenged);
+
+                //congratulate the winner, or shame the players for a tie.
+                if(winner == client.user){
+                    message.channel.send("The game resulted in a draw.");
+                }
+                else{
+                    message.channel.send(`${winner.toString()} won! 🏆`);
+                }
+            }
+        });
     }
-})
+});

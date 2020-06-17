@@ -64,6 +64,7 @@ export default Command({
         );
 
         //confirmation of completion
-        return message.channel.send(`Deleted ${count} messages.`);
+        message.channel.send(`Deleted ${count} messages.`);
+        return message.delete();
     }
 });

@@ -21,6 +21,12 @@ export class GameBoard{
         }
     }
 
+    public getRows():number {return this.rows;}
+
+    public getCols():number {return this.cols;}
+
+    public getNumToWin():number {return this.numToWin;}
+
     public checkIfFree(c:number):boolean {
 
         //if top space is blank, then the column is empty

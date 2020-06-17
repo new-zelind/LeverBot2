@@ -10,6 +10,7 @@
 import "./about";
 import "./calendar";
 import "./compliance";
+import "./connect";
 import "./contact";
 import "./gpa"; 
 import "./help";

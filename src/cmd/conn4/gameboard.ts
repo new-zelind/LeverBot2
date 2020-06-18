@@ -1,213 +1,198 @@
 import {BoardPosition} from "./boardposition";
 
-export class GameBoard{
+//7x7 playing board
+export const board:string[][] = [
+    [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' '],
+];
 
-    private rows = 7;
-    private cols = 6;
-    private numToWin:number;
-    private board:string[][] = [[],[]];
+export function checkIfFree(c:number):boolean {
 
-    public constructor(){    
-        /*for(let i=0; i<this.rows; i++){
-            for(let j=0; j<this.rows; j++){
-                this.board[i][j] = " ";
-            }
-        }*/
-        this.board = [...Array(6)].map(() => Array(7).fill(' '));
-    }
+    //if top space is blank, then the column is empty
+    return (board[5][c] === " ");
+}
 
-    public getRows():number {return this.rows;}
+function checkHorizWin(pos:BoardPosition, p:string):boolean {
+    let traverseRight:boolean = false;
+    let count:number = 1;
+    let currPos:BoardPosition = pos;
 
-    public getCols():number {return this.cols;}
+    while(!traverseRight){
+        if(currPos.getColumn()+1 < 6){
+            currPos = new BoardPosition(
+                currPos.getRow(), currPos.getColumn()+1
+            );
 
-    public getNumToWin():number {return this.numToWin;}
-
-    public checkIfFree(c:number):boolean {
-
-        //if top space is blank, then the column is empty
-        return (this.board[this.rows-1][c] === ' ');
-    }
-
-    public checkForWin(c:number):boolean {
-
-        //get row number of latest position
-        let rowNum = this.rows - 1;
-        while(this.board[rowNum][c] === ' ') rowNum--;
-
-        //get character and generate current position
-        let token:string = this.board[rowNum][c];
-        let currPos:BoardPosition = new BoardPosition(rowNum, c);
-
-        //check for wins
-        if(this.checkHorizWin(currPos, token)) return true;
-        if(this.checkVertWin(currPos, token)) return true;
-        if(this.checkDiagWin(currPos, token)) return true;
-        return false;
-    }
-
-    public placeToken(p:string, c:number):void {
-        if(this.checkIfFree(c)){
-            let i=0;
-            while(this.board[i][c] !== ' ') i++;
-            this.board[i][c] = p;
-        }
-    }
-
-    public checkHorizWin(pos:BoardPosition, p:string):boolean {
-        let traverseRight:boolean = false;
-        let count:number = 1;
-        let currPos:BoardPosition = pos;
-
-        while(!traverseRight){
-            if(currPos.getColumn()+1 < this.cols){
-                currPos = new BoardPosition(
-                    currPos.getRow(), currPos.getColumn()+1
-                );
-
-                if(this.whatsAtPos(currPos) === p){
-                    count++;
-                    if(count == this.numToWin) return true;
-                } else traverseRight = true;
+            if(whatsAtPos(currPos) === p){
+                count++;
+                if(count == 4) return true;
             } else traverseRight = true;
-        }
-
-        currPos = pos;
-        while(traverseRight){
-            if(currPos.getColumn() - 1 >= 0){
-                currPos = new BoardPosition(
-                    currPos.getRow(), currPos.getColumn()-1
-                );
-
-                if(this.whatsAtPos(currPos) === p){
-                    count++;
-                    if(count == this.numToWin) return true;
-                } else break;
-            } else break;
-        }
-
-        return false;
+        } else traverseRight = true;
     }
 
-    public checkDiagWin(pos:BoardPosition, p:string):boolean {
-        let count:number = 1;
-        let currPos:BoardPosition = pos;
+    currPos = pos;
+    while(traverseRight){
+        if(currPos.getColumn() - 1 >= 0){
+            currPos = new BoardPosition(
+                currPos.getRow(), currPos.getColumn()-1
+            );
 
-        //northwest
-        while(count < this.numToWin){
-            if(currPos.getRow()-1 >= 0 && currPos.getColumn()+1 < this.cols){
-                currPos = new BoardPosition(
-                    (currPos.getRow()-1), (currPos.getColumn()+1)
-                );
-
-                if(this.whatsAtPos(currPos) === p){
-                    count++;
-                    if(count == this.numToWin) return true;
-                } else break;
+            if(whatsAtPos(currPos) === p){
+                count++;
+                if(count == 4) return true;
             } else break;
-        }
+        } else break;
+    }
 
-        currPos = pos;
+    return false;
+}
 
-        //southeast
-        while(count < this.numToWin){
-            if(currPos.getRow()+1 < this.rows && currPos.getColumn()-1 >= 0){
-                currPos = new BoardPosition(
-                    (currPos.getRow()+1), (currPos.getColumn()-1)
-                );
+function checkDiagWin(pos:BoardPosition, p:string):boolean {
+    let count:number = 1;
+    let currPos:BoardPosition = pos;
 
-                if(this.whatsAtPos(currPos) === p){
-                    count++;
-                    if(count == this.numToWin) return true;
-                } else break;
+    //northwest
+    while(count < 4){
+        if(currPos.getRow()-1 >= 0 && currPos.getColumn()+1 < 7){
+            currPos = new BoardPosition(
+                (currPos.getRow()-1), (currPos.getColumn()+1)
+            );
+
+            if(whatsAtPos(currPos) === p){
+                count++;
+                if(count == 4) return true;
             } else break;
-        }
+        } else break;
+    }
 
-        currPos = pos;
-        count = 1;
+    currPos = pos;
 
-        //southwest
-        while(count < this.numToWin){
-            if(currPos.getRow()-1 >= 0 && currPos.getColumn()-1 >= 0){
-                currPos = new BoardPosition(
-                    (currPos.getRow()-1), (currPos.getColumn()-1)
-                );
+    //southeast
+    while(count < 4){
+        if(currPos.getRow()+1 < 6 && currPos.getColumn()-1 >= 0){
+            currPos = new BoardPosition(
+                (currPos.getRow()+1), (currPos.getColumn()-1)
+            );
 
-                if(this.whatsAtPos(currPos) === p){
-                    count++;
-                    if(count == this.numToWin) return true;
-                } else break;
+            if(whatsAtPos(currPos) === p){
+                count++;
+                if(count == 4) return true;
             } else break;
-        }
+        } else break;
+    }
 
-        currPos = pos;
+    currPos = pos;
+    count = 1;
 
-        //northeast
-        while(count < this.numToWin){
-            if(
-                currPos.getRow()+1 < this.rows &&
-                currPos.getColumn()+1 < this.cols
-            ){
-                currPos = new BoardPosition(
-                    (currPos.getRow()+1), (currPos.getColumn()+1)
-                );
+    //southwest
+    while(count < 4){
+        if(currPos.getRow()-1 >= 0 && currPos.getColumn()-1 >= 0){
+            currPos = new BoardPosition(
+                (currPos.getRow()-1), (currPos.getColumn()-1)
+            );
 
-                if(this.whatsAtPos(currPos) === p){
-                    count++;
-                    if(count == this.numToWin) return true;
-                } else return false;
+            if(whatsAtPos(currPos) === p){
+                count++;
+                if(count == 4) return true;
+            } else break;
+        } else break;
+    }
+
+    currPos = pos;
+
+    //northeast
+    while(count < 4){
+        if(currPos.getRow()+1 < 6 && currPos.getColumn()+1 < 7){
+            currPos = new BoardPosition(
+                (currPos.getRow()+1), (currPos.getColumn()+1)
+            );
+
+            if(whatsAtPos(currPos) === p){
+                count++;
+                if(count == 4) return true;
             } else return false;
-        }
-
-        return false;
+        } else return false;
     }
 
-    public checkVertWin(pos:BoardPosition, p:string):boolean {
-        let count:number = 1;
-        let currPos:BoardPosition = pos;
+    return false;
+}
 
-        while(count < this.numToWin){
-            if(currPos.getRow()-1 >= 0){
-                currPos = new BoardPosition(
-                    currPos.getRow()-1, currPos.getColumn()
-                );
+function checkVertWin(pos:BoardPosition, p:string):boolean {
 
-                if(this.whatsAtPos(currPos) === p){
-                    count++;
-                    if(count == this.numToWin) return true;
-                } else break;
+    let count:number = 1;
+    let currPos:BoardPosition = pos;
+
+    while(count < 4){
+        if(currPos.getRow()-1 >= 0){
+            currPos = new BoardPosition(
+                currPos.getRow()-1, currPos.getColumn()
+            );
+
+            if(whatsAtPos(currPos) === p){
+                count++;
+                if(count == 4) return true;
             } else break;
+        } else break;
+    }
+
+    return false;
+}
+
+export function checkForWin(c:number):boolean {
+
+    //get row number of latest position
+    let rowNum = 5;
+    while(board[rowNum][c] === " ") rowNum--;
+
+    //get character and generate current position
+    let token:string = board[rowNum][c];
+    let currPos:BoardPosition = new BoardPosition(rowNum, c);
+
+    //check for wins
+    if(checkHorizWin(currPos, token)) return true;
+    if(checkVertWin(currPos, token)) return true;
+    if(checkDiagWin(currPos, token)) return true;
+    return false;
+}
+
+export function placeToken(p:string, c:number):void {
+    if(checkIfFree(c)){
+        let i=0;
+        while(board[i][c] !== ' ') i++;
+        board[i][c] = p;
+    }
+}
+
+export function whatsAtPos(pos:BoardPosition):string {
+    return board[pos.getRow()][pos.getColumn()] as string;
+}
+
+export function checkTie():boolean {
+    let currPos:BoardPosition;
+
+    for(let i=0; i<6; i++){
+        currPos = new BoardPosition(7, i);
+        if(whatsAtPos(currPos) === ' ') return false;
+    }
+
+    return true;
+}
+
+export function makeString():string {
+    let gbString = "";
+    for(let i = 0; i < 6; i++) gbString = gbString.concat("|" + i);
+    gbString = gbString.concat("|\n");
+
+    for(let r = 7-1; r >= 0; r--){
+        for(let c = 0; c < 6; c++){
+            gbString = gbString.concat("|" + board[r][c]);
         }
-
-        return false;
+        gbString.concat("|\n");
     }
 
-    public whatsAtPos(pos:BoardPosition):string {
-        return this.board[pos.getRow()][pos.getColumn()] as string;
-    }
-
-    public checkTie():boolean {
-        let currPos:BoardPosition;
-
-        for(let i=0; i<this.cols; i++){
-            currPos = new BoardPosition(this.rows, i);
-            if(this.whatsAtPos(currPos) === ' ') return false;
-        }
-
-        return true;
-    }
-
-    public toString():string {
-        let gbString = "";
-        for(let i = 0; i < this.cols; i++) gbString = gbString.concat("|" + i);
-        gbString = gbString.concat("|\n");
-
-        for(let r = this.rows-1; r >= 0; r--){
-            for(let c = 0; c < this.cols; c++){
-                gbString = gbString.concat("|" + this.board[r][c]);
-            }
-            gbString.concat("|\n");
-        }
-
-        return gbString;
-    }
+    return gbString;
 }

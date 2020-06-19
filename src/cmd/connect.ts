@@ -5,11 +5,11 @@ import listen from "../lib/reactions";
 import { client } from "../client";
 
 export default Command({
-    names:["connect"],
+    names:["connect4"],
     documentation:{
-        description: "Challenge a user to a glorous game of Connect 4!",
+        description: "Challenge someone to a glorous game of Connect 4.",
         group: "GENERAL",
-        usage: "connect <@User>"
+        usage: "connect4 <@User>"
     },
 
     //in bot channel && not in dms

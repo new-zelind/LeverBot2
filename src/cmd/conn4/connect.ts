@@ -5,26 +5,31 @@ import {
     placeToken,
     makeString,
     getCols,
+    resetBoard,
 } from "./gameboard";
 import {User, DMChannel} from "discord.js";
 import {askString} from "../../lib/prompt";
 import {client} from "../../client";
 
+let board:string[][];
+
 async function getChoice(dm:DMChannel):Promise<number> {
     
-    dm.send(`It's your turn!\n${makeString()}`);
+    dm.send(`It's your turn!\n${makeString(board)}`);
     let choice:string = await askString(
         "Which column do you want to place your marker in?",
         dm
     );
 
-    //this whole thing is so bad, I'm so sorry for what you're about to read
+    //this whole thing is so bad
     while(
-        parseInt(choice) === NaN ||
+        parseInt(choice) == NaN ||
         parseInt(choice) >= getCols() ||
         parseInt(choice) < 0
     ){
-        if(!parseInt(choice)) dm.send("I'm sorry, that's not a column number");
+        if(parseInt(choice) == NaN){
+            dm.send("I'm sorry, that's not a column number");
+        }
         if(parseInt(choice) >= getCols()) {
             dm.send(
                 `Column choice cannot be greater than 6. Please try again.`
@@ -55,6 +60,7 @@ export default async function connect(
 
     //turn counter, game board
     let turn:number = 0;
+    resetBoard(board);
 
     while(1 == 1){
 
@@ -67,19 +73,21 @@ export default async function connect(
         let choice:number = await getChoice(currDM);
 
         //check to see if the column is full
-        while(!checkIfFree(choice)){
+        while(!checkIfFree(choice, board)){
             currDM.send(`Column ${choice} is full.`);
             choice = await getChoice(currDM);
         }
         console.log("free");
 
         //place the token
-        if(turn % 2 == 0) placeToken('X', choice);
-        else placeToken('O', choice);
+        if(turn % 2 == 0) placeToken('X', choice, board);
+        else placeToken('O', choice, board);
         console.log("token placed");
 
+        console.log(`${makeString(board)}`);
+
         //check for a win
-        if(checkForWin(choice)){
+        if(checkForWin(choice, board)){
             currDM.send("Congrats, you won!");
             dms[(turn++) % 2].send("You lost. Better luck next time!");
             return currPlayer;
@@ -88,12 +96,14 @@ export default async function connect(
 
         //check for a tie
         //if so, return the bot as the winner.
-        if(checkTie()){
+        if(checkTie(board)){
             currDM.send("This game is a tie.");
             dms[(turn++) % 2].send("This game is a tie.");
             return client.user;
         }
         console.log("no draw");
+
+        currDM.send("Opponent's turn.");
 
         turn++;
     }

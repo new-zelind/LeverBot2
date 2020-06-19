@@ -12,7 +12,7 @@ export function getCols():number{return cols;}
 export function checkIfFree(c:number):boolean {
 
     let top:BoardPosition = new BoardPosition(rows-1, c);
-    if(whatsAtPos(top) === " ") return true;
+    if(whatsAtPos(top) === "") return true;
     return false;
 }
 
@@ -147,31 +147,45 @@ export function checkForWin(c:number):boolean {
     //get row number of latest position
     let rowNum = rows-1;
     let lastPos:BoardPosition = new BoardPosition(rowNum, c);
-    while(whatsAtPos(lastPos) === " "){
+    while(whatsAtPos(lastPos) === ""){
+        if(rowNum == 0) break;
+        console.log(`${lastPos.toString()} \"${whatsAtPos(lastPos)}\"`);
         rowNum--;
         lastPos = new BoardPosition(rowNum, c);
     }
+
+    console.log(`l`)
 
     //get character and generate current position
     let token:string = whatsAtPos(lastPos);
 
     //check for wins
     if(checkHorizWin(lastPos, token)) return true;
+    console.log("h");
     if(checkVertWin(lastPos, token)) return true;
+    console.log("v");
     if(checkDiagWin(lastPos, token)) return true;
+    console.log("d");
     return false;
 }
 
 //complete
 export function placeToken(p:string, c:number):void {
+
+    //if the board doesn't have the token yet, create a new array
     if(!board.has(p)) board.set(p, new Array<BoardPosition>());
+
     else{
+        //get the position to insert and iterate until we find the first open
+        //position
         let insertPos:BoardPosition = new BoardPosition(0, c);
         let i:number = 0;
-        while(whatsAtPos(insertPos) !== ' '){
+        while(whatsAtPos(insertPos) !== ''){
             insertPos = new BoardPosition(i, c);
             i++;
         }
+
+        //insert the token
         board.get(p).push(insertPos);
     }
 }
@@ -183,7 +197,7 @@ export function whatsAtPos(pos:BoardPosition):string {
         }
     }
 
-    return ' ';
+    return '';
 }
 
 export function checkTie():boolean {
@@ -192,7 +206,7 @@ export function checkTie():boolean {
     for(let i=0; i<rows; i++){
         for(let j=0; j<rows; j++){
             currPos = new BoardPosition(i, j);
-            if(whatsAtPos(currPos) === ' ') return false;
+            if(whatsAtPos(currPos) === '') return false;
         }
     }
 

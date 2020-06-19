@@ -12,7 +12,7 @@ import {client} from "../../client";
 
 async function getChoice(dm:DMChannel):Promise<number> {
     
-    dm.send(`It's your turn!\n\n${makeString()}`);
+    dm.send(`It's your turn!\n${makeString()}`);
     let choice:string = await askString(
         "Which column do you want to place your marker in?",
         dm

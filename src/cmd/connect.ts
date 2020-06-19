@@ -48,7 +48,7 @@ export default Command({
             if(users.has(challenged.id)){
 
                 //start the game and record the winner
-                message.channel.send("Game on! Players, check your DMs.");
+                message.channel.send(`Game on! Players, check your DMs. ${challenged.username} goes first.`);
                 let winner:User = await connect(challenger, challenged);
 
                 //congratulate the winner, or shame the players for a tie.

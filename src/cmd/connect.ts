@@ -31,6 +31,11 @@ export default Command({
             return message.channel.send("You need to challenge someone!");
         }
 
+        //can't challenge yourself
+        if(challenged === message.author){
+            return message.channel.send("Don't challenge yourself, dingus.");
+        }
+
         //can't challenge the bot.
         if(challenged === client.user){
             return message.channel.send(

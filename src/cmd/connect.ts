@@ -8,7 +8,7 @@ export default Command({
     names:["connect4"],
     documentation:{
         description: "Challenge someone to a glorous game of Connect 4.",
-        group: "GENERAL",
+        group: "GAMES",
         usage: "connect4 <@User>"
     },
 

@@ -122,7 +122,7 @@ export async function handle(message: Message): Promise<boolean> {
     message.channel.send(
       `No such command \`${message.content?.slice(1).split(" ")[0]}\`. Use \`${
         PREFIX[0]
-      }help\` for a list of commands`
+      }help\` for a list of commands.`
     );
     return false;
   }

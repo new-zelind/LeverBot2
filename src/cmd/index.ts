@@ -20,6 +20,7 @@ import "./map";
 import "./ping";
 import "./poll";
 import "./rm";
+import "./rps";
 import "./source";
 import "./timeout";
 import "./trivia";

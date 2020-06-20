@@ -11,11 +11,9 @@ import {User, DMChannel} from "discord.js";
 import {askString} from "../../lib/prompt";
 import {client} from "../../client";
 
-let board:string[][];
-
 async function getChoice(dm:DMChannel):Promise<number> {
     
-    dm.send(`It's your turn!\n${makeString(board)}`);
+    dm.send(`It's your turn!\n${makeString()}`);
     let choice:string = await askString(
         "Which column do you want to place your marker in?",
         dm
@@ -60,7 +58,7 @@ export default async function connect(
 
     //turn counter, game board
     let turn:number = 0;
-    resetBoard(board);
+    resetBoard();
 
     while(1 == 1){
 
@@ -73,21 +71,21 @@ export default async function connect(
         let choice:number = await getChoice(currDM);
 
         //check to see if the column is full
-        while(!checkIfFree(choice, board)){
+        while(!checkIfFree(choice)){
             currDM.send(`Column ${choice} is full.`);
             choice = await getChoice(currDM);
         }
         console.log("free");
 
         //place the token
-        if(turn % 2 == 0) placeToken('X', choice, board);
-        else placeToken('O', choice, board);
+        if(turn % 2 == 0) placeToken('X', choice);
+        else placeToken('O', choice);
         console.log("token placed");
 
-        console.log(`${makeString(board)}`);
+        console.log(`${makeString()}`);
 
         //check for a win
-        if(checkForWin(choice, board)){
+        if(checkForWin(choice)){
             currDM.send("Congrats, you won!");
             dms[(turn++) % 2].send("You lost. Better luck next time!");
             return currPlayer;
@@ -96,7 +94,7 @@ export default async function connect(
 
         //check for a tie
         //if so, return the bot as the winner.
-        if(checkTie(board)){
+        if(checkTie()){
             currDM.send("This game is a tie.");
             dms[(turn++) % 2].send("This game is a tie.");
             return client.user;

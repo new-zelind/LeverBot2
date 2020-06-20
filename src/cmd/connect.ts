@@ -1,6 +1,6 @@
 import Command, {Permissions} from "../lib/command";
 import {Message, User} from "discord.js";
-import connect from "./conn4/connect";
+import connect from "./connect4/connect";
 import listen from "../lib/reactions";
 import { client } from "../client";
 
@@ -53,7 +53,9 @@ export default Command({
             if(users.has(challenged.id)){
 
                 //start the game and record the winner
-                message.channel.send(`Game on! Players, check your DMs. ${challenger.username} goes first.`);
+                message.channel.send(
+                    `Game on! Players, check your DMs. ${challenger.username} goes first.`
+                );
                 let winner:User = await connect(challenger, challenged);
 
                 //congratulate the winner, or shame the players for a tie.

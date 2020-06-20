@@ -5,22 +5,26 @@ const rows:number = 6;
 const cols:number = 7;
 const numToWin:number = 4;
 
+var board:string[][];
+
 export function getCols():number {return cols;}
 
-export function resetBoard(board:string[][]):void {
-    for(let i = 0; i<rows; i++){
+export function resetBoard():void {
+    /*for(let i = 0; i<rows; i++){
+        board[i] = new Array<string>();
         for(let j=0; j<cols; j++){
-            board[i][j] = " ";
+            board[i].push(" ");
         }
-    }
+    }*/
+    board = [...Array(rows)].map(a => Array(cols).fill(" "));
 }
 
-export function checkIfFree(c:number,board:string[][]):boolean {
+export function checkIfFree(c:number):boolean {
     if(board[rows-1][c] === " ") return true;
     return false;
 }
 
-function checkHorizWin(pos:BoardPosition, p:string, board:string[][]):boolean {
+function checkHorizWin(pos:BoardPosition, p:string):boolean {
     let traverseRight:boolean = false;
     let count:number = 1;
     let currPos:BoardPosition = pos;
@@ -31,7 +35,7 @@ function checkHorizWin(pos:BoardPosition, p:string, board:string[][]):boolean {
                 currPos.getRow(), currPos.getColumn()+1
             );
 
-            if(whatsAtPos(currPos, board) === p){
+            if(whatsAtPos(currPos) === p){
                 count++;
                 if(count == numToWin) return true;
             } else traverseRight = true;
@@ -45,7 +49,7 @@ function checkHorizWin(pos:BoardPosition, p:string, board:string[][]):boolean {
                 currPos.getRow(), currPos.getColumn()-1
             );
 
-            if(whatsAtPos(currPos, board) === p){
+            if(whatsAtPos(currPos) === p){
                 count++;
                 if(count == numToWin) return true;
             } else break;
@@ -55,7 +59,7 @@ function checkHorizWin(pos:BoardPosition, p:string, board:string[][]):boolean {
     return false;
 }
 
-function checkDiagWin(pos:BoardPosition, p:string, board:string[][]):boolean {
+function checkDiagWin(pos:BoardPosition, p:string):boolean {
     let count:number = 1;
     let currPos:BoardPosition = pos;
 
@@ -66,7 +70,7 @@ function checkDiagWin(pos:BoardPosition, p:string, board:string[][]):boolean {
                 (currPos.getRow()-1), (currPos.getColumn()+1)
             );
 
-            if(whatsAtPos(currPos, board) === p){
+            if(whatsAtPos(currPos) === p){
                 count++;
                 if(count == numToWin) return true;
             } else break;
@@ -82,7 +86,7 @@ function checkDiagWin(pos:BoardPosition, p:string, board:string[][]):boolean {
                 (currPos.getRow()+1), (currPos.getColumn()-1)
             );
 
-            if(whatsAtPos(currPos, board) === p){
+            if(whatsAtPos(currPos) === p){
                 count++;
                 if(count == numToWin) return true;
             } else break;
@@ -99,7 +103,7 @@ function checkDiagWin(pos:BoardPosition, p:string, board:string[][]):boolean {
                 (currPos.getRow()-1), (currPos.getColumn()-1)
             );
 
-            if(whatsAtPos(currPos, board) === p){
+            if(whatsAtPos(currPos) === p){
                 count++;
                 if(count == numToWin) return true;
             } else break;
@@ -115,7 +119,7 @@ function checkDiagWin(pos:BoardPosition, p:string, board:string[][]):boolean {
                 (currPos.getRow()+1), (currPos.getColumn()+1)
             );
 
-            if(whatsAtPos(currPos, board) === p){
+            if(whatsAtPos(currPos) === p){
                 count++;
                 if(count == numToWin) return true;
             } else return false;
@@ -125,7 +129,7 @@ function checkDiagWin(pos:BoardPosition, p:string, board:string[][]):boolean {
     return false;
 }
 
-function checkVertWin(pos:BoardPosition, p:string, board:string[][]):boolean {
+function checkVertWin(pos:BoardPosition, p:string):boolean {
 
     let count:number = 1;
     let currPos:BoardPosition = pos;
@@ -136,7 +140,7 @@ function checkVertWin(pos:BoardPosition, p:string, board:string[][]):boolean {
                 currPos.getRow()-1, currPos.getColumn()
             );
 
-            if(whatsAtPos(currPos, board) === p){
+            if(whatsAtPos(currPos) === p){
                 count++;
                 if(count == numToWin) return true;
             } else break;
@@ -146,12 +150,12 @@ function checkVertWin(pos:BoardPosition, p:string, board:string[][]):boolean {
     return false;
 }
 
-export function checkForWin(c:number, board:string[][]):boolean {
+export function checkForWin(c:number):boolean {
 
     //get row number of latest position
     let rowNum = rows-1;
     let lastPos:BoardPosition = new BoardPosition(rowNum, c);
-    while(whatsAtPos(lastPos, board) === " "){
+    while(whatsAtPos(lastPos) === " "){
         //console.log(`${lastPos.toString()} \"${whatsAtPos(lastPos)}\"`);
         if(rowNum == 0) break;
         rowNum--;
@@ -159,55 +163,54 @@ export function checkForWin(c:number, board:string[][]):boolean {
     }
 
     //get character and generate current position
-    let token:string = whatsAtPos(lastPos, board);
+    let token:string = whatsAtPos(lastPos);
     console.log(token);
 
     //check for wins
-    if(checkHorizWin(lastPos, token, board)) return true;
+    if(checkHorizWin(lastPos, token)) return true;
     console.log("h");
-    if(checkVertWin(lastPos, token, board)) return true;
+    if(checkVertWin(lastPos, token)) return true;
     console.log("v");
-    if(checkDiagWin(lastPos, token, board)) return true;
+    if(checkDiagWin(lastPos, token)) return true;
     console.log("d");
     return false;
 }
 
-export function placeToken(p:string, c:number, board:string[][]):void {
-    if(checkIfFree(c, board)){
+export function placeToken(p:string, c:number):void {
+    if(checkIfFree(c)){
         let i = 0;
         while(board[i][c] !== " ") i++;
         board[i][c] = p;
     }
 }
 
-export function whatsAtPos(pos:BoardPosition, board:string[][]):string {
+export function whatsAtPos(pos:BoardPosition):string {
     return board[pos.getRow()][pos.getColumn()];
 }
 
-export function checkTie(board:string[][]):boolean {
+export function checkTie():boolean {
     let currPos:BoardPosition;
 
     for(let i=0; i<rows; i++){
         for(let j=0; j<rows; j++){
             currPos = new BoardPosition(i, j);
-            if(whatsAtPos(currPos, board) === " ") return false;
+            if(whatsAtPos(currPos) === " ") return false;
         }
     }
 
     return true;
 }
 
-export function makeString(board:string[][]):string {
+export function makeString():string {
     let gbString = "";
     for(let i = 0; i < cols; i++) gbString = gbString.concat("|" + i);
     gbString = gbString.concat("|\n");
 
-    let pos:BoardPosition, toAdd:string;
+    let pos:BoardPosition;
     for(let r = rows; r >= 0; r--){
         for(let c = 0; c < cols; c++){
             pos = new BoardPosition(r, c);
-            toAdd = whatsAtPos(pos, board);
-            gbString = gbString.concat(`|${whatsAtPos(pos, board)}`);
+            gbString = gbString.concat(`|${whatsAtPos(pos)}`);
         }
         gbString = gbString.concat("|\n");
     }

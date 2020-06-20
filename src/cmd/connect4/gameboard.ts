@@ -5,24 +5,7 @@ const rows:number = 6;
 const cols:number = 7;
 const numToWin:number = 4;
 
-var board:string[][];
-
-export function getCols():number {return cols;}
-
-export function resetBoard():void {
-    /*for(let i = 0; i<rows; i++){
-        board[i] = new Array<string>();
-        for(let j=0; j<cols; j++){
-            board[i].push(" ");
-        }
-    }*/
-    board = [...Array(rows)].map(a => Array(cols).fill(" "));
-}
-
-export function checkIfFree(c:number):boolean {
-    if(board[rows-1][c] === " ") return true;
-    return false;
-}
+var board:string[][] = new Array<Array<string>>();
 
 function checkHorizWin(pos:BoardPosition, p:string):boolean {
     let traverseRight:boolean = false;
@@ -150,6 +133,27 @@ function checkVertWin(pos:BoardPosition, p:string):boolean {
     return false;
 }
 
+/*
+ * EXPORTS
+*/
+
+export function getCols():number {return cols;}
+
+export function resetBoard():void {
+    //board = [...Array(rows)].map(a => Array(cols).fill(" "));
+    for(let i=0; i<rows; i++){
+        board[i] = new Array<string>();
+        for(let j=0; j<cols; j++){
+            board[i].push(" ");
+        }
+    }
+}
+
+export function checkIfFree(c:number):boolean {
+    if(board[rows-1][c] === " ") return true;
+    return false;
+}
+
 export function checkForWin(c:number):boolean {
 
     //get row number of latest position
@@ -184,8 +188,11 @@ export function placeToken(p:string, c:number):void {
     }
 }
 
-export function whatsAtPos(pos:BoardPosition):string {
-    return board[pos.getRow()][pos.getColumn()];
+export function whatsAtPos(pos:BoardPosition):string{
+    //return board[pos.getRow()][pos.getColumn()];
+    console.log(`${pos.getRow()}, ${pos.getColumn()}`);
+    return (board[pos.getRow()][pos.getColumn()]);
+    //return "";
 }
 
 export function checkTie():boolean {

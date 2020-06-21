@@ -10,7 +10,6 @@ import {askString} from "../../lib/prompt";
 import {client} from "../../client";
 
 async function getChoice(dm:DMChannel):Promise<number> {
-    dm.send(`It's your turn!\n${makeString()}`);
     let choice:string = await askString(
         "Which space do you want to place your marker in?",
         dm
@@ -56,7 +55,7 @@ export default async function ttt(
         let currDM:DMChannel = dms[turn % 2];
         let currToken:string = tokens[turn % 2];
 
-        currDM.send(`**Turn ${turn+1}/9:**`);
+        currDM.send(`**Turn ${turn+1}/9:**\nIt's your turn!\n${makeString()}`);
 
         let choice:number = await getChoice(currDM);
 

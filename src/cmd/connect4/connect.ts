@@ -13,7 +13,6 @@ import {client} from "../../client";
 
 async function getChoice(dm:DMChannel):Promise<number> {
     
-    dm.send(`It's your turn!\n${makeString()}`);
     let choice:string = await askString(
         "Which column do you want to place your marker in?",
         dm
@@ -66,7 +65,7 @@ export default async function connect(
         let currPlayer = users[turn % 2];
         let currDM = dms[turn % 2];
 
-        currDM.send(`**Turn ${turn+1}:**`);
+        currDM.send(`**Turn ${turn+1}:**\nIt's your turn!\n${makeString()}`);
 
         //get column choice
         let choice:number = await getChoice(currDM);
@@ -90,8 +89,7 @@ export default async function connect(
             return client.user;
         }
 
-        currDM.send(`Your move:\n${makeString()}`);
-        currDM.send("Opponent's turn.");
+        currDM.send(`Your move:\n${makeString()}\nOpponent's turn.`);
 
         turn++;
     }

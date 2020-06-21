@@ -66,7 +66,7 @@ export default async function connect(
         let currPlayer = users[turn % 2];
         let currDM = dms[turn % 2];
 
-        currDM.send(`Turn ${turn+1}:`);
+        currDM.send(`**Turn ${turn+1}:**`);
 
         //get column choice
         let choice:number = await getChoice(currDM);

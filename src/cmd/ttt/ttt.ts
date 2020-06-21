@@ -46,7 +46,7 @@ export default async function ttt(
 ):Promise<User>{
     let users:[User, User] = [user1, user2];
     let dms = await Promise.all(users.map(user => user.createDM()));
-    let tokens = ["X", "O"];
+    let tokens = ["X", "O️"];
 
     let turn:number = 0;
     resetBoard();
@@ -56,12 +56,12 @@ export default async function ttt(
         let currDM:DMChannel = dms[turn % 2];
         let currToken:string = tokens[turn % 2];
 
-        currDM.send(`Turn ${turn+1}/9:`);
+        currDM.send(`**Turn ${turn+1}/9:**`);
 
         let choice:number = await getChoice(currDM);
 
         while(!checkIfFree(choice)){
-            currDM.send(`Column ${choice} is full.`);
+            currDM.send(`${choice} has already been taken.`);
             choice = await getChoice(currDM);
         }
 
@@ -73,7 +73,7 @@ export default async function ttt(
         turn++;
         currDM.send(`Your move:\n${makeString()}`);
         
-        if(turn+1 == 9) return client.user;
+        if(turn == 9) return client.user;
         else currDM.send("Opponent's turn.");
     }
 }

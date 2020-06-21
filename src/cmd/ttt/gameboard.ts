@@ -84,12 +84,12 @@ export function resetBoard():void {
 }
 
 export function checkIfFree(i:number):boolean {
-    if(!parseInt(board[i])) return false;
+    if(board[i] === "X" || board[i] === "O") return false;
     return true;
 }
 
 export function checkForWin(index:number, p:string):boolean {
-    if(index % 2 == 1){
+    if(index % 2 == 0){
         if(checkDiagWin(p)) return true;
     }
     if(checkHorizWin(index, p)) return true;
@@ -106,7 +106,7 @@ export function whatsAtPos(i:number):string {
 }
 
 export function makeString():string {
-    let gbString = "+---+---+---+\n|";
+    let gbString = "\n+---+---+---+\n|";
     for(let i=0; i<3; i++){
         gbString = gbString.concat(` ${board[i]} |`);
     }

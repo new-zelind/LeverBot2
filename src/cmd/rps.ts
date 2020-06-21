@@ -63,11 +63,10 @@ export default Command({
         usage: "rps <@User>"
     },
 
-    /*check:Permissions.compose(
+    check:Permissions.compose(
         Permissions.channel("bot-commands"),
         Permissions.guild
-    ),*/
-    check:Permissions.all,
+    ),
 
     fail(message:Message){
         message.channel.send("In _#bot-commands_, please!");

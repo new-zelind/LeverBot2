@@ -1,22 +1,23 @@
 import Command, {Permissions} from "../lib/command";
 import {Message, User} from "discord.js";
-import connect from "./connect4/connect";
+import ttt from "./ttt/ttt";
 import listen from "../lib/reactions";
-import { client } from "../client";
+import {client} from "../client";
 
 export default Command({
-    names:["connect4"],
+    names:["ttt"],
     documentation:{
-        description: "Challenge someone to a glorous game of Connect 4.",
+        description: "Play a game of Tic-Tac-Toe with a friend. Bragging rights not included.",
         group: "GAMES",
-        usage: "connect4 <@User>"
+        usage: "ttt <@User>"
     },
 
     /*
-    check: Permissions.compose(
+    check:Permissions.compose(
         Permissions.channel("bot-commands"),
         Permissions.guild
-    ),*/
+    ),
+    */
     check:Permissions.all,
 
     fail(message:Message){
@@ -31,7 +32,7 @@ export default Command({
 
         //nobody challenged
         if(!challenged){
-            return message.channel.send("You need to challenge someone!");
+            return message.channel.send("You need to challenge someone.");
         }
 
         //can't challenge yourself
@@ -39,17 +40,15 @@ export default Command({
             return message.channel.send("Don't challenge yourself, dingus.");
         }
 
-        //can't challenge the bot.
+        //can't challenge the bot
         if(challenged === client.user){
-            return message.channel.send(
-                "I can't play Connect 4. I'm just the means to the end here."
-            );
+            return message.channel.send("Don't flatter yourself like that.");
         }
 
         await message.react("🔥");
 
         message.channel.send("Challenged: react with '🔥' to play!");
-
+        
         listen(message, ["🔥"], async (reaction) => {
             const users = await reaction.users.fetch();
 
@@ -59,7 +58,7 @@ export default Command({
                 message.channel.send(
                     `Game on! Players, check your DMs. ${challenger.username} goes first.`
                 );
-                let winner:User = await connect(challenger, challenged);
+                let winner:User = await ttt(challenger, challenged);
 
                 //send ending DMs
                 if(winner === challenger){
@@ -89,4 +88,4 @@ export default Command({
             }
         });
     }
-});
+})

@@ -24,6 +24,7 @@ import "./rps";
 import "./source";
 import "./timeout";
 import "./trivia";
+import "./ttt";
 import "./unlock";
 import "./uptime";
 import "./verify";

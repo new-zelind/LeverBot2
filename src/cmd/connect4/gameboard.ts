@@ -140,7 +140,7 @@ function checkVertWin(pos:BoardPosition, p:string):boolean {
 export function getCols():number {return cols;}
 
 export function resetBoard():void {
-    //board = [...Array(rows)].map(a => Array(cols).fill(" "));
+    //board = [...Array(cols+1)].map(a => Array(rows).fill(" "));
     for(let i=0; i<rows; i++){
         board[i] = new Array<string>();
         for(let j=0; j<cols; j++){
@@ -168,15 +168,11 @@ export function checkForWin(c:number):boolean {
 
     //get character and generate current position
     let token:string = whatsAtPos(lastPos);
-    console.log(token);
 
     //check for wins
     if(checkHorizWin(lastPos, token)) return true;
-    console.log("h");
     if(checkVertWin(lastPos, token)) return true;
-    console.log("v");
     if(checkDiagWin(lastPos, token)) return true;
-    console.log("d");
     return false;
 }
 
@@ -189,10 +185,8 @@ export function placeToken(p:string, c:number):void {
 }
 
 export function whatsAtPos(pos:BoardPosition):string{
-    //return board[pos.getRow()][pos.getColumn()];
-    console.log(`${pos.getRow()}, ${pos.getColumn()}`);
-    return (board[pos.getRow()][pos.getColumn()]);
-    //return "";
+    //console.log(`${pos.getRow()}, ${pos.getColumn()}`);
+    return board[pos.getRow()][pos.getColumn()];
 }
 
 export function checkTie():boolean {
@@ -214,7 +208,7 @@ export function makeString():string {
     gbString = gbString.concat("|\n");
 
     let pos:BoardPosition;
-    for(let r = rows; r >= 0; r--){
+    for(let r = rows-1; r >= 0; r--){
         for(let c = 0; c < cols; c++){
             pos = new BoardPosition(r, c);
             gbString = gbString.concat(`|${whatsAtPos(pos)}`);

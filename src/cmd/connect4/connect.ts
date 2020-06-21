@@ -26,7 +26,7 @@ async function getChoice(dm:DMChannel):Promise<number> {
         parseInt(choice) < 0
     ){
         if(parseInt(choice) == NaN){
-            dm.send("I'm sorry, that's not a column number");
+            dm.send("I'm sorry, that's not a column number.");
         }
         if(parseInt(choice) >= getCols()) {
             dm.send(
@@ -65,7 +65,8 @@ export default async function connect(
         //get current references
         let currPlayer = users[turn % 2];
         let currDM = dms[turn % 2];
-        console.log("update dms");
+
+        currDM.send(`Turn ${turn+1}:`);
 
         //get column choice
         let choice:number = await getChoice(currDM);
@@ -75,32 +76,21 @@ export default async function connect(
             currDM.send(`Column ${choice} is full.`);
             choice = await getChoice(currDM);
         }
-        console.log("free");
 
         //place the token
         if(turn % 2 == 0) placeToken('X', choice);
         else placeToken('O', choice);
-        console.log("token placed");
-
-        console.log(`${makeString()}`);
 
         //check for a win
-        if(checkForWin(choice)){
-            currDM.send("Congrats, you won!");
-            dms[(turn++) % 2].send("You lost. Better luck next time!");
-            return currPlayer;
-        }
-        console.log("no winner");
+        if(checkForWin(choice)){return currPlayer;}
 
         //check for a tie
         //if so, return the bot as the winner.
         if(checkTie()){
-            currDM.send("This game is a tie.");
-            dms[(turn++) % 2].send("This game is a tie.");
             return client.user;
         }
-        console.log("no draw");
 
+        currDM.send(`Your move:\n${makeString()}`);
         currDM.send("Opponent's turn.");
 
         turn++;

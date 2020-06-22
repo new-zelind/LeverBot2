@@ -5,9 +5,9 @@ import listen from "../lib/reactions";
 import {client} from "../client";
 import * as keya from "keya";
 
-const store = keya.store("ttt");
-
 async function logWin(id:string):Promise<number>{
+
+    const store = await keya.store("ttt");
 
     let record = await (await store).get(id);
 
@@ -22,6 +22,8 @@ async function logWin(id:string):Promise<number>{
 
 async function logLoss(id:string):Promise<number>{
 
+    const store = await keya.store("ttt");
+
     let record = await (await store).get(id);
 
     if(!record){
@@ -34,6 +36,8 @@ async function logLoss(id:string):Promise<number>{
 }
 
 async function logDraw(id:string):Promise<number>{
+
+    const store = await keya.store("ttt");
 
     let record = await (await store).get(id);
 
@@ -54,12 +58,10 @@ export default Command({
         usage: "ttt <@User>"
     },
 
-    /*
-    check:Permissions.compose(
+    /*check:Permissions.compose(
         Permissions.channel("bot-commands"),
         Permissions.guild
-    ),
-    */
+    ),*/
     check:Permissions.all,
 
     fail(message:Message){

@@ -5,9 +5,9 @@ import listen from "../lib/reactions";
 import { client } from "../client";
 import * as keya from "keya";
 
-const store = keya.store("connect4");
-
 async function logWin(id:string):Promise<number>{
+
+    const store = await keya.store("connect4");
 
     let record = await (await store).get(id);
 
@@ -22,6 +22,8 @@ async function logWin(id:string):Promise<number>{
 
 async function logLoss(id:string):Promise<number>{
 
+    const store = await keya.store("connect4");
+
     let record = await (await store).get(id);
 
     if(!record){
@@ -34,6 +36,8 @@ async function logLoss(id:string):Promise<number>{
 }
 
 async function logDraw(id:string):Promise<number>{
+
+    const store = await keya.store("connect4");
 
     let record = await (await store).get(id);
 
@@ -54,8 +58,7 @@ export default Command({
         usage: "connect4 <@User>"
     },
 
-    /*
-    check: Permissions.compose(
+    /*check:Permissions.compose(
         Permissions.channel("bot-commands"),
         Permissions.guild
     ),*/
@@ -117,7 +120,6 @@ export default Command({
                         `You lost. Better luck next time!\n_Loss #${loss}_`
                     );                    
                 }
-                
                 else if(winner == client.user){
 
                     let draw1:number = await logDraw(challenger.id);
@@ -130,7 +132,6 @@ export default Command({
                         `It's a tie!\n_Draw #${draw2}_`
                     );
                 }
-
                 else{
 
                     let win:number = await logWin(challenged.id);
@@ -142,8 +143,6 @@ export default Command({
                     (await challenger.createDM()).send(
                         `You lost. Better luck next time!\n_Loss #${loss}_`
                     );
-
-
                 }
 
                 //congratulate the winner, or shame the players for a tie.

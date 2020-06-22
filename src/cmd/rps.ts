@@ -4,9 +4,9 @@ import listen from "../lib/reactions";
 import {client} from "../client";
 import * as keya from "keya";
 
-const store = keya.store("rps");
-
 async function logWin(id:string):Promise<number>{
+
+    const store = keya.store("rps");;
 
     let record = await (await store).get(id);
 
@@ -21,6 +21,8 @@ async function logWin(id:string):Promise<number>{
 
 async function logLoss(id:string):Promise<number>{
 
+    const store = keya.store("rps");
+
     let record = await (await store).get(id);
 
     if(!record){
@@ -33,6 +35,8 @@ async function logLoss(id:string):Promise<number>{
 }
 
 async function logDraw(id:string):Promise<number>{
+
+    const store = keya.store("rps");
 
     let record = await (await store).get(id);
 
@@ -89,7 +93,7 @@ async function rps(
         case -1:
             winner = challenged;
             break;
-        
+
         case 1:
         case -2:
             winner = challenger;
@@ -111,10 +115,11 @@ export default Command({
         usage: "rps <@User>"
     },
 
-    check:Permissions.compose(
+    /*check:Permissions.compose(
         Permissions.channel("bot-commands"),
         Permissions.guild
-    ),
+    ),*/
+    check:Permissions.all,
 
     fail(message:Message){
         message.channel.send("In _#bot-commands_, please!");
@@ -144,20 +149,24 @@ export default Command({
             if(users.has(challenged.id)){
                 message.channel.send("Game on! Competitors, check your DMs!");
                 
-                const winner = await rps(message.channel as TextChannel, challenger, challenged);
+                const winner = await rps(
+                    message.channel as TextChannel,
+                    challenger,
+                    challenged
+                );
             
                 //send ending DMs
                 if(winner === challenger){
-                    let win:number = await logWin(challenger.id);
-                    let loss:number = await logLoss(challenged.id);
+                    await logWin(challenger.id);
+                    await logLoss(challenged.id);
                 }
                 else if(winner == null){
-                    let draw1:number = await logDraw(challenger.id);
-                    let draw2:number = await logDraw(challenged.id);
+                    await logDraw(challenger.id);
+                    await logDraw(challenged.id);
                 }
                 else{
-                    let win:number = await logWin(challenged.id);
-                    let loss:number = await logLoss(challenger.id);
+                    await logWin(challenged.id);
+                    await logLoss(challenger.id);
                 }
             }
         });

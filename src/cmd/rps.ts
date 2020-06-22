@@ -2,6 +2,48 @@ import Command, {Permissions} from "../lib/command";
 import {Message, User, TextChannel} from "discord.js";
 import listen from "../lib/reactions";
 import {client} from "../client";
+import * as keya from "keya";
+
+const store = keya.store("rps");
+
+async function logWin(id:string):Promise<number>{
+
+    let record = await (await store).get(id);
+
+    if(!record){
+        await (await store).set(id, {w: 1, l: 0, d: 0});
+        return 1;
+    }
+
+    record.w += 1;
+    await (await store).set(id, record);
+}
+
+async function logLoss(id:string):Promise<number>{
+
+    let record = await (await store).get(id);
+
+    if(!record){
+        await (await store).set(id, {w: 0, l: 1, d: 0});
+        return 1;
+    }
+
+    record.w += 1;
+    await (await store).set(id, record);
+}
+
+async function logDraw(id:string):Promise<number>{
+
+    let record = await (await store).get(id);
+
+    if(!record){
+        await (await store).set(id, {w: 0, l: 0, d: 1});
+        return 1;
+    }
+
+    record.d += 1;
+    await (await store).set(id, record);
+}
 
 async function getInput(user: User):Promise<string>{
     const dm = await user.createDM();
@@ -23,7 +65,11 @@ async function getInput(user: User):Promise<string>{
     );
 }
 
-async function rps(output: TextChannel, challenger: User, challenged:User){
+async function rps(
+    output: TextChannel,
+    challenger: User,
+    challenged:User
+):Promise<User>{
     const [challengerMove, challengedMove] = await Promise.all([
         getInput(challenger),
         getInput(challenged)
@@ -53,6 +99,8 @@ async function rps(output: TextChannel, challenger: User, challenged:User){
     output.send(
         `${challenger.username}: ${challengerMove}.\n${challenged.username}: ${challengedMove}.\n${winner ? `${winner} wins!` : `It's a draw!`}`
     );
+
+    return winner;
 }
 
 export default Command({
@@ -96,7 +144,21 @@ export default Command({
             if(users.has(challenged.id)){
                 message.channel.send("Game on! Competitors, check your DMs!");
                 
-                rps(message.channel as TextChannel, challenger, challenged);
+                const winner = await rps(message.channel as TextChannel, challenger, challenged);
+            
+                //send ending DMs
+                if(winner === challenger){
+                    let win:number = await logWin(challenger.id);
+                    let loss:number = await logLoss(challenged.id);
+                }
+                else if(winner == null){
+                    let draw1:number = await logDraw(challenger.id);
+                    let draw2:number = await logDraw(challenged.id);
+                }
+                else{
+                    let win:number = await logWin(challenged.id);
+                    let loss:number = await logLoss(challenger.id);
+                }
             }
         });
     }

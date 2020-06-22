@@ -19,6 +19,7 @@ import "./machine";
 import "./map";
 import "./ping";
 import "./poll";
+import "./record";
 import "./rm";
 import "./rps";
 import "./source";

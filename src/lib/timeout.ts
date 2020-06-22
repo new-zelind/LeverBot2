@@ -1,13 +1,12 @@
-import {GuildMember} from "discord.js";
+import {GuildMember, Guild, Role} from "discord.js";
 import parse from "parse-duration";
 import * as fs from "fs";
-
-//timeout role
-export const timeoutRole = "576734464562954243";
+import * as keya from "keya";
 
 //lift timeout
 export const lift = (member: GuildMember) => async () => {
     
+    const timeoutRole:Role = member.guild.roles.cache.find(role => role.name === "timeout");
     //time out complete
     console.log(`Time out for ${member.nickname} complete.`);
     await member.roles.remove(timeoutRole);
@@ -26,6 +25,8 @@ export async function timeout(
     reason: string
 ) {
     console.log(`${invoker.user.username} timed out ${member.nickname} for ${parse(time)} ms. Reason: ${reason}.`);
+
+    const timeoutRole:Role = member.guild.roles.cache.find(role => role.name === "timeout");
 
     //add "timeout" role
     await member.roles.add(timeoutRole);

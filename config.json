@@ -65,5 +65,24 @@
       "D5",
       "D6",
       "D7"
-    ]
+    ],
+    "leaderboard":{
+      "titles":{
+        "Leaderboard": "messages",
+        "People With No Lives": "posts on /r/Clemson",
+        "Best RAs": "IRs written",
+        "Problem Residents": "3 AM phone calls",
+        "IQ Scores": "points",
+        "Best Trevor Lawrence Impressions": "inches of hair",
+        "Worst Schedulers": "8 AM classes",
+        "Best Students": "hours studying for exams",
+        "Those Who Live Dangerously": "Catbus rides",
+        "Robbie Robinson Wannabes": "career hat-tricks",
+        "Midnight Snackers": "4-for-4's bought after 10 pm",
+        "Fire Drill Gods": "stairs climbed",
+        "'55 Exchange Regulars": "pints consumed",
+        "Distance Champions": "miles walked between class",
+        "For Whom the Bell Tolls": "11:59 PM submissions"
+      }
+    }
 }

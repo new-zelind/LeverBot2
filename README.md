@@ -1,5 +1,5 @@
 # ByrnesBot
-### Version 2.4.5
+### Version 3.0.03
 > A Discord.js moderation bot powered by Node.js, ByrnesBot offers a moderation solution for Discord Servers created for the Byrnes/Lever Communities at Clemson University.
 
 > Originally created by /new-zelind and /MayorMonty in Summer 2019, ByrnesBot is a reproduction and overhaul of `https://github.com/new-zelind/LeverBot`. It offers more streamlined code, more efficient processing, as well as a few new features.

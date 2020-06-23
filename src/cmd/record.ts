@@ -39,12 +39,25 @@ async function getLosses(
     return record.l;
 }
 
+async function reset(
+    store:SQLiteStore<any>,
+    id:string
+):Promise<void>{
+    let record = await store.get(id);
+
+    if(!record) return;
+
+    record.w = 0;
+    record.l = 0;
+    record.d = 0;
+}
+
 export default Command({
     names:["record"],
     documentation:{
-        description: "Check your W/L/D ratio for the bot's games.",
+        description: "Check your W/L/D ratio for the bot's games. Use '-r' flag to reset your totals.",
         group: "GAMES",
-        usage: "record"
+        usage: "record [-r]"
     },
 
     check: Permissions.all,
@@ -56,6 +69,14 @@ export default Command({
         const conStore = await keya.store("connect4");
         const rpsStore = await keya.store("rps");
         const id = message.author.id;
+
+        //reset flag
+        if(message.content.includes("-r")){
+            await reset(tttStore, id);
+            await reset(conStore, id);
+            await reset(rpsStore, id);
+            return;
+        }
 
         //a whole lotta bullshit
         let tttW:number = await getWins(tttStore, id);

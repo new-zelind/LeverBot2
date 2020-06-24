@@ -1,10 +1,8 @@
 import Command, {Permissions} from "../lib/command";
 import * as keya from "keya";
 import {makeEmbed} from "../lib/util";
-import {Message, User} from "discord.js";
+import {Message} from "discord.js";
 import SQLiteStore from "keya/out/node/sqlite";
-import rps from "./rps";
-import ttt from "./ttt/ttt";
 
 async function getWins(
     store:SQLiteStore<any>,
@@ -43,13 +41,7 @@ async function reset(
     store:SQLiteStore<any>,
     id:string
 ):Promise<void>{
-    let record = await store.get(id);
-
-    if(!record) return;
-
-    record.w = 0;
-    record.l = 0;
-    record.d = 0;
+    await store.set(id, {w: 0, l: 0, d: 0});
 }
 
 export default Command({
@@ -70,11 +62,12 @@ export default Command({
         const rpsStore = await keya.store("rps");
         const id = message.author.id;
 
-        //reset flag
+        //reset flag handle
         if(message.content.includes("-r")){
             await reset(tttStore, id);
             await reset(conStore, id);
             await reset(rpsStore, id);
+            message.channel.send(`Reset W/L/D for ${message.author.username}.`)
             return;
         }
 
@@ -122,4 +115,4 @@ export default Command({
 
         return message.channel.send(embed);
     }
-})
+});

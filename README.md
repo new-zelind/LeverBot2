@@ -9,6 +9,7 @@
 - Message and Event logging.
 - Timeout and soft-ban capabilites.
 - Many functional commands for things residents might need.
+- Games for residents and RAs to play, as well as win/loss recording (for bragging rights).
 - Ease of use for all, no matter how long you've been on Discord!
 - Try sending `$help` to see what the bot can do!
 

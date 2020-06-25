@@ -30,9 +30,8 @@ export default Command({
             message.member,
             message.member.guild.me as GuildMember,
             "5m",
-            "Unauthorized use of timeout command."
+            "Unauthorized use of `timeout` command"
         );
-        setTimeout(lift(message.member), parse("5m"));
     },
     
     async exec(message: Message, args: string[]){

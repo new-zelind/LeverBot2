@@ -1,12 +1,11 @@
-import {GuildMember, Guild, Role} from "discord.js";
+import {GuildMember, Role} from "discord.js";
 import parse from "parse-duration";
 import * as fs from "fs";
-import * as keya from "keya";
 
 //lift timeout
 export const lift = (member: GuildMember) => async () => {
     
-    const timeoutRole:Role = member.guild.roles.cache.find(role => role.name === "timeout");
+    const timeoutRole:Role = member.guild.roles.cache.find(role => role.name === "Timeout");
     //time out complete
     console.log(`Time out for ${member.nickname} complete.`);
     await member.roles.remove(timeoutRole);
@@ -15,26 +14,6 @@ export const lift = (member: GuildMember) => async () => {
     const dm = await member.createDM();
     dm.send(
         "Your timeout has been lifted, and are permitted to speak again. Remember, multiple violations may lead to longer timeout or a permaban."
-    );
-};
-
-export async function timeout(
-    member: GuildMember,
-    invoker: GuildMember,
-    time: string,
-    reason: string
-) {
-    console.log(`${invoker.user.username} timed out ${member.nickname} for ${parse(time)} ms. Reason: ${reason}.`);
-
-    const timeoutRole:Role = member.guild.roles.cache.find(role => role.name === "timeout");
-
-    //add "timeout" role
-    await member.roles.add(timeoutRole);
-
-    //notify the infractor of their timeout.
-    const dm = await member.createDM();
-    dm.send(
-        `You've been timed out by ${invoker.user.username} for ${time} for the following reason: ${reason}. While timed out, you are not permitted to post in any text channel or join any voice channel. If you feel that this was in error, please speak to the admins in _#appeals_.`
     );
 };
 
@@ -47,6 +26,30 @@ export function logTimeout(member: GuildMember,) {
         if(err) console.log(err);
     });
 }
+
+export async function timeout(
+    member: GuildMember,
+    invoker: GuildMember,
+    time: string,
+    reason: string
+) {
+    console.log(`${invoker.user.username} timed out ${member.nickname} for ${parse(time)} ms. Reason: ${reason}.`);
+
+    const timeoutRole:Role = member.guild.roles.cache.find(role => role.name === "Timeout");
+
+    //add "timeout" role and log timeout
+    await member.roles.add(timeoutRole);
+    logTimeout(member);
+
+    //notify the infractor of their timeout.
+    const dm = await member.createDM();
+    dm.send(
+        `You've been timed out by ${invoker.user.username} for ${time} for the following reason: ${reason}. While timed out, you are not permitted to post in any text channel or join any voice channel. If you feel that this was in error, please speak to the admins in _#appeals_.`
+    );
+
+    //set timeout
+    setTimeout(lift(member), parse(time));
+};
 
 //Simple interface for the time out counts structure
 interface TOCounts{

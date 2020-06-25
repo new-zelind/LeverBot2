@@ -1,17 +1,24 @@
 import Command, {Permissions} from "../lib/command";
 import {Message, TextChannel} from "discord.js";
+import {timeout} from "../lib/timeout";
 
 export default Command({
     names: ["rm"],
     documentation:{
-        description: "Remove messages from a certain user, channel, or role.",
+        description: "Remove a specified number of messages.",
         group: "ADMIN",
-        usage: "rm <integer> [<@User> <@Role> <#Channel>]",
+        usage: "rm <integer>",
     },
 
     check: Permissions.admin,
 
     fail(message: Message){
+        timeout(
+            message.member,
+            message.member.guild.me,
+            "5m",
+            "Unauthorized use of `rm` command"
+        );
         return message.channel.send("I'm sorry. I'm afraid I can't do that.");
     },
 
@@ -65,6 +72,5 @@ export default Command({
 
         //confirmation of completion
         message.channel.send(`Deleted ${count} messages.`);
-        return message.delete();
     }
 });

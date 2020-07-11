@@ -1,5 +1,5 @@
 import * as keya from "keya";
-import { Guild, Collection, TextChannel, Message } from "discord.js";
+import { Guild, Collection, TextChannel, Message, User } from "discord.js";
 import Command, { Permissions } from "../lib/command";
 import { makeEmbed } from "../lib/util";
 import SQLiteStore from "keya/out/node/sqlite";
@@ -12,8 +12,6 @@ async function fetchAll(channel: TextChannel) {
   let pointer = messages.lastKey();
   let batch;
 
-  process.stdout.write(" fetching");
-
   do {
     batch = (
       await channel.messages.fetch({
@@ -24,11 +22,7 @@ async function fetchAll(channel: TextChannel) {
 
     pointer = batch.lastKey();
     messages = messages.concat(batch);
-
-    process.stdout.write(".");
   } while (batch.size > 0);
-
-  console.log("");
 
   return messages;
 }
@@ -47,21 +41,17 @@ async function getTotals(store: SQLiteStore<MessageTotals>, message: Message) {
   const totals: { [key: string]: number } = {};
 
   for (const [, channel] of text) {
-
-    //ignore rules, verification, announcements, and the admin suite
-    if(channel.parent.name === "ADMIN SUITE") continue;
-    if(channel.parent.name === "META") continue;
-
-    console.log(`Tallying #${channel.name}...`);
     const messages = await fetchAll(channel);
     messages.forEach((message) => {
-      if (totals[message.author.id]) totals[message.author.id]++;
-      else totals[message.author.id] = 1;
+      if (totals[message.author.id]) {
+        totals[message.author.id]++;
+      } else {
+        totals[message.author.id] = 1;
+      }
     });
-    console.log(`Done! Got ${messages.size} messages`);
 
     message.edit(
-        (message.content += `\n${channel}: ${messages.size} messages`)
+      (message.content += `\n${channel.name}: ${messages.size} messages`)
     );
   }
 
@@ -80,13 +70,13 @@ interface LeaderboardRecord {
 }
 
 (async function() {
-  const store = await keya.store<LeaderboardRecord>(`vexbotleaderboard`);
+  const store = await keya.store<LeaderboardRecord>(`leaderboard`);
 
   const leaderboard = Command({
     names: ["leaderboard"],
     documentation: {
       usage: "leaderboard",
-      description: "See the top posters in the server.",
+      description: "Lists people by their number of messages posted",
       group: "META",
     },
 
@@ -119,7 +109,7 @@ interface LeaderboardRecord {
         .slice(min, max)
         .map((v) => client.users.cache.get(v.key.split("-")[1]));
 
-      // Total message counts
+      // Total message and oof counts
       const total = all.reduce((a, b) => a + b.value.total, 0) as number;
 
       // Randomized titles from config file
@@ -131,10 +121,10 @@ interface LeaderboardRecord {
       // Format it into a string
       const description = [
         "**Stats**",
-        `Messages Sent: ${total.toLocaleString()}`,
+        `Total Messages Sent: ${total.toLocaleString()}`,
         ...leaderboard.map(
           (k, i) =>
-            `${min + i + 1}. ${k} — ${top[i + min].value.total} ${
+            `${min + i + 1}. ${k} — ${top[i + min].value.total.toLocaleString()} ${
               titles[title]
             }`
         ),
@@ -153,14 +143,10 @@ interface LeaderboardRecord {
     documentation: {
       description: "Tallies the leaderboard",
       usage: "tally",
-      group: "META",
+      group: "DEV",
     },
 
-    check: Permissions.admin,
-
-    fail(message:Message){
-        return message.channel.send("Not feeling it right now. That's a lot of work.");
-    },
+    check: Permissions.owner,
 
     async exec(message: Message) {
       const mess = (await message.channel.send(
@@ -183,7 +169,7 @@ interface LeaderboardRecord {
 
     const record = (await store.get(
       `${message.guild.id}-${message.author.id}`
-    )) || { total: 0};
+    )) || {total: 0};
 
     record.total++;
 

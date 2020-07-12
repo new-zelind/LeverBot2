@@ -34,7 +34,6 @@ export default Command({
 
             case "-m":
                 let measure:string = args[2].toLowerCase();
-                console.log(`${measure}`);
 
                 if(convert().measures().includes(measure)){
                     msg = convert().possibilities(measure);
@@ -42,14 +41,13 @@ export default Command({
                 else{
                     msg = `No such measure ${measure}. Try ${inline("$convert -l")} to see a full list of measures.`;
                 }
-                
+
                 break;
 
             case "-c":
                 let num:number = parseFloat(args[2]);
                 let unit1:string = args[3];
                 let unit2:string = args[4];
-                console.log(`${num}, ${unit1}, ${unit2}`);
                 try{
                     let conversion:number = convert(num).from(unit1).to(unit2);
                     msg = `**Conversion**: ${conversion.toFixed(4)} ${unit2}.`;

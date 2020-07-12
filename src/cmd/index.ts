@@ -13,6 +13,7 @@ import "./calendar";
 import "./compliance";
 import "./connect";
 import "./contact";
+import "./convert";
 import "./gpa"; 
 import "./help";
 import "./leaderboard";

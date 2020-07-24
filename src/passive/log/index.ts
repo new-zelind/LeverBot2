@@ -56,6 +56,7 @@ addMessageHandler(async (message) => {
         `[${message.author.username}#${message.author.discriminator}] in ${message.channel.toString()}: \`${await cleanUp(message)}\``,
         {
             files: message.attachments.map((attachment) => attachment.url),
+            split: true
         }
     );
 

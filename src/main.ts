@@ -45,7 +45,7 @@ client.on("ready", () => {
 //verify each member upon entry
 client.on("guildMemberAdd", (member: Discord.GuildMember) => {
     console.log(
-        `Started auto-verify for ${member.user.username}#${member.user.discriminator}`
+        `AUTO-VERIFY ${member.user.username}#${member.user.discriminator}.`
     );
     verify(member);
 });

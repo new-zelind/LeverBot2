@@ -85,7 +85,10 @@ export default async function verify(member: GuildMember | PartialGuildMember){
     );
 
     //log the verification
-    console.log("VERIFY", name, room, major, cuid);
+    let timestamp = new Date();
+    console.log(
+        `VERIFIED ${member.user.username}#${member.user.discriminator}: ${name}, ${room}, ${cuid} at ${timestamp.toLocaleTimeString()}`
+    );
 
     //auto-grant Resident role
     const roles = [await (await findOrMakeRole("Resident", member.guild)).id];

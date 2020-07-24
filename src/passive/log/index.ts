@@ -13,7 +13,7 @@ function matchAll(str: string, re: RegExp){
         .filter((j) => j !== null)
 }
 
-//Cleans up unicode+256 special characters in each message, as well as mentions
+//Cleans up role and user mentions
 async function cleanUp(message: Message) {
     let content = message.content;
 
@@ -34,6 +34,16 @@ async function cleanUp(message: Message) {
             ),
         }))
     );
+
+    //replace all role and user mentions
+    roles.forEach(
+        ({key, role}) =>
+            (content = content.replace(key, `@MEMBER: [${role?.name}]`))
+    );
+    members.forEach(
+        ({key, member}) =>
+            (content = content.replace(key, `@MEMBER: [${member.nickname}]`))
+    );
     
     return content;
 }
@@ -53,7 +63,7 @@ addMessageHandler(async (message) => {
 
     //log each message sent
     serverLog.send(
-        `[${message.author.username}#${message.author.discriminator}] in ${message.channel.toString()}: \`${await cleanUp(message)}\``,
+        `[${message.author.username}#${message.author.discriminator}] in ${message.channel.toString()}: ${await cleanUp(message)}`,
         {
             files: message.attachments.map((attachment) => attachment.url),
             split: true
@@ -80,6 +90,6 @@ client.on("messageUpdate", async (old, current) => {
 
     //send the updated message
     serverLog.send(
-        `[${old.author.username}#${old.author.discriminator}] in ${old.channel.toString()}: \`${old.content.toString()}\` => \`${current.content.toString()}\``
+        `[${old.author.username}#${old.author.discriminator}] in ${old.channel.toString()}: ${old.content.toString()} => ${current.content.toString()}`
     );
 });

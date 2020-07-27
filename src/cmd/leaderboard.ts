@@ -7,6 +7,11 @@ import { client } from "../client";
 import { addMessageHandler } from "../lib/message";
 import { config } from "../lib/access";
 
+interface LeaderboardRecord {
+  id: string,
+  total: number;
+}
+
 async function fetchAll(channel: TextChannel) {
   let messages = await channel.messages.fetch({ limit: 100 });
   let pointer = messages.lastKey();
@@ -65,10 +70,6 @@ async function getTotals(store: SQLiteStore<MessageTotals>, message: Message) {
   );
 }
 
-interface LeaderboardRecord {
-  total: number;
-}
-
 (async function() {
   const store = await keya.store<LeaderboardRecord>(`leaderboard`);
 
@@ -83,6 +84,7 @@ interface LeaderboardRecord {
     check: Permissions.guild,
 
     async exec(message: Message & { guild: Guild }) {
+      
       // Gets all records for the relevant guild
       const all = (await store.all()).filter((record) =>
         record.key.startsWith(message.guild.id)
@@ -91,7 +93,8 @@ interface LeaderboardRecord {
       // Sorts by the top
       const top = all.sort((a, b) => b.value.total - a.value.total);
 
-      // Determines which user to center about, this is usually the message author but we will also allow them to pass another user
+      // Determines which user to center about, this is usually the message 
+      // author but we will also allow them to pass another user
       const center =
         message.mentions.users.size > 0
           ? message.mentions.users.first()?.id ?? message.author.id
@@ -105,11 +108,9 @@ interface LeaderboardRecord {
       const max = Math.min(all.length - 1, min + 10);
 
       // Constructs the leaderboard in the relevant section
-      const leaderboard = top
-        .slice(min, max)
-        .map((v) => client.users.cache.get(v.key.split("-")[1]));
+      const leaderboard = top.slice(min, max).map(record => record.value);
 
-      // Total message and oof counts
+      // Total message counts
       const total = all.reduce((a, b) => a + b.value.total, 0) as number;
 
       // Randomized titles from config file
@@ -123,10 +124,10 @@ interface LeaderboardRecord {
         "**Stats**",
         `Total Messages Sent: ${total.toLocaleString()}`,
         ...leaderboard.map(
-          (k, i) =>
-            `${min + i + 1}. ${k} — ${top[i + min].value.total.toLocaleString()} ${
-              titles[title]
-            }`
+          ({total, id}, i: number) => {
+            let currUser: string = message.guild.members.cache.get(id).nickname;
+            `${min + i + 1}. ${currUser} — ${top[i + min].value.total.toLocaleString()} ${titles[title]}`;
+          }
         ),
       ].join("\n");
 
@@ -169,7 +170,7 @@ interface LeaderboardRecord {
 
     const record = (await store.get(
       `${message.guild.id}-${message.author.id}`
-    )) || {total: 0};
+    )) || {total: 0, id: message.author.id};
 
     record.total++;
 

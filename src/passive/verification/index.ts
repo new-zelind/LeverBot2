@@ -64,7 +64,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
         "And what is your room number? (e.g. A7, D6, C3, etc.)",
         dm
     );
-    while(!roomNumbers.includes(room.toUpperCase())){
+    while(!roomNumbers.includes(room.toUpperCase()) || room !== "OVERRIDE"){
         dm.send("I'm sorry, that room doesn't appear to exist. Be sure you say just the letter and number.");
         room = await askString(
             "What is your room number? (e.g. A7, D6, etc.)",

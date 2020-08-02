@@ -1,5 +1,4 @@
-import { Message, TextChannel } from "discord.js";
-import { AsyncLocalStorage } from "async_hooks";
+import { Message } from "discord.js";
 
 //type definition
 type MessageHandler = (message: Message) => Promise<boolean> | boolean;

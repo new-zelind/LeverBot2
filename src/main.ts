@@ -1,5 +1,17 @@
-import * as Discord from "discord.js";
-import {handleBanAdd, handleBanRemove, handleLeave} from "./passive/events";
+import {
+    GuildMember,
+    Guild,
+    User,
+    Message,
+    PartialMessage
+} from "discord.js";
+import {
+    handleBanAdd,
+    handleBanRemove,
+    handleLeave,
+    handleMessageDelete,
+    handleMessageUpdate
+} from "./passive/events";
 import {handleMessage, addMessageHandler} from "./lib/message";
 import verify from "./passive/verification";
 import {client} from "./client";
@@ -44,7 +56,7 @@ client.on("ready", () => {
 });
 
 //verify each member upon entry
-client.on("guildMemberAdd", (member: Discord.GuildMember) => {
+client.on("guildMemberAdd", (member:GuildMember) => {
     console.log(
         `AUTO-VERIFY ${member.user.username}#${member.user.discriminator}.`
     );
@@ -52,30 +64,37 @@ client.on("guildMemberAdd", (member: Discord.GuildMember) => {
 });
 
 //handle banhammers
-client.on("guildBanAdd", (guild:Discord.Guild, user:Discord.User) => {
+client.on("guildBanAdd", (guild:Guild, user:User) => {
     handleBanAdd(guild, user);
 });
 
 //handle unbans
-client.on("guildBanRemove", (guild:Discord.Guild, user:Discord.User) => {
+client.on("guildBanRemove", (guild:Guild, user:User) => {
     handleBanRemove(guild, user);
 });
 
 //handle users leaving/getting kicked
-client.on("guildMemberRemove", (member: Discord.GuildMember) => {
+client.on("guildMemberRemove", (member:GuildMember) => {
     handleLeave(member);
 });
 
 //handle messages appropriately
 client.on("message", handleMessage);
 
-client.on("messageUpdate", (old, current) => {
+client.on("messageDelete", (message:Message) => {
+    handleMessageDelete(message);
+});
+
+client.on("messageUpdate", async (old:PartialMessage, current:PartialMessage)=>{
     
     //ignore bot messages
     if(old.author?.bot) return false;
 
     //delete old command and update
     if(isCommand(old) && RESPONSES.has(old)) RESPONSES.get(old)?.delete();
+
+    await handleMessageUpdate(old, current);
+
     return handle(current);
 });
 

@@ -3,9 +3,11 @@ import {
     User,
     TextChannel,
     GuildMember,
-    Message
+    Message,
+    PartialMessage
 } from "discord.js";
 import {makeEmbed} from "../lib/util";
+import {client} from "../client";
 
 /**
  * A function to handle a new ban
@@ -136,8 +138,78 @@ async function handleLeave(
     return;
 }
 
+//a way to log when messages are updated or edited
+async function handleMessageUpdate(
+    old:PartialMessage | Message,
+    current:PartialMessage | Message
+){
+    //get old and new attributes and content
+    if(old.partial) old = await old.fetch();
+    if(current.partial) current = await current.fetch();
+    if(old.author.bot) return true;
+    if(old.channel.type === "dm") return false;
+
+    //find and validate the server log channel
+    const serverLog = old.guild?.channels.cache.find(
+        (channel) => channel.name === "server-log"
+    ) as TextChannel;
+    if(!serverLog) return false;
+
+    //send the updated message
+    serverLog.send(
+        `[${old.author.username}#${
+            old.author.discriminator}] in ${
+            old.channel.toString()}: ${
+            old.content.toString()} => ${
+            current.content.toString()}`
+    );
+}
+
+function handleMessageDelete(message:Message){
+
+    const eventLog = message.guild.channels.cache.find(
+        channel => channel.name === "event-log"
+    ) as TextChannel;
+    if(!eventLog) return false;
+
+    const author:User = message.author;
+    const timestamp = new Date();
+
+    if(author.id === client.user.id) return;
+
+    const embed = makeEmbed(message)
+        .setColor("#034694")
+        .setTitle("MESSAGE DELETED")
+        .addFields(
+            {name: "Username", value: author.username, inline: true},
+            {
+                name: "Discriminator",
+                value: author.discriminator,
+                inline: true
+            },
+            {name: "Timestamp", value: timestamp.toLocaleTimeString()},
+            {name: "In Channel", value: message.channel},
+            {name: "Message Text:", value: "Text: " + message.content},
+            {name: "Link", value: message.url}
+        );
+
+    eventLog.send(embed);
+
+    if(message.attachments.array().length > 0){
+
+        eventLog.send("ATTACHMENTS:");
+
+        message.attachments.forEach(attachment => {
+            let url:string = attachment.url;
+            eventLog.send(url);
+        });
+    }
+}
+
 export{
     handleBanAdd,
     handleBanRemove,
-    handleLeave
+    handleLeave,
+    handleMessageDelete,
+    handleMessageUpdate
 };

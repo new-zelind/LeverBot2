@@ -163,6 +163,36 @@ async function handleMessageUpdate(
             old.content.toString()} => ${
             current.content.toString()}`
     );
+
+    const author:User = old.author;
+    const timestamp:Date = new Date();
+    const eventLog = old.guild?.channels.cache.find(
+        channel => channel.name === "event-log"
+    ) as TextChannel;
+    if(!eventLog) return false;
+
+    const embed = makeEmbed(old)
+        .setColor("#3c1361")
+        .setTitle("MESSAGE EDITED")
+        .addFields(
+            {name: "Username", value: author.username, inline: true},
+            {
+                name: "Discriminator",
+                value: author.discriminator,
+                inline: true
+            },
+            {
+                name: "Timestamp",
+                value: timestamp.toLocaleTimeString(),
+                inline: true
+            },
+            {name: "In Channel", value: old.channel, inline: true},
+            {name: "Old Text:", value: "Text: " + old.content},
+            {name: "New Text:", value: "Text: " + current.content},
+            {name: "Link", value: current.url}
+    );
+
+    eventLog.send(embed);
 }
 
 function handleMessageDelete(message:Message){
@@ -187,11 +217,15 @@ function handleMessageDelete(message:Message){
                 value: author.discriminator,
                 inline: true
             },
-            {name: "Timestamp", value: timestamp.toLocaleTimeString()},
+            {
+                name: "Timestamp",
+                value: timestamp.toLocaleTimeString(),
+                inline: true
+            },
             {name: "In Channel", value: message.channel},
             {name: "Message Text:", value: "Text: " + message.content},
-            {name: "Link", value: message.url}
-        );
+            {name: "Link (in case of TOS violation)", value: message.url}
+    );
 
     eventLog.send(embed);
 

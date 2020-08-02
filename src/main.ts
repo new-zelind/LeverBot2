@@ -13,6 +13,7 @@ import {
     handleMessageUpdate
 } from "./passive/events";
 import {handleMessage, addMessageHandler} from "./lib/message";
+import report, {information} from "./lib/report";
 import verify from "./passive/verification";
 import {client} from "./client";
 import {setTimeoutCounts} from "./lib/timeout";
@@ -100,7 +101,7 @@ client.on("messageUpdate", async (old:PartialMessage, current:PartialMessage)=>{
     return handle(current);
 });
 
-//error handling
-//bot will be running on local machine, so just send it to the console
-process.on("uncaughtException", console.log);
-process.on("unhandledRejection", console.log);
+//error reporting
+const reporter = report(client);
+process.on("uncaughtException", (error:Error) => reporter(error));
+process.on("unhandledRejection", (error:Error) => reporter(error));

@@ -81,10 +81,12 @@ client.on("guildMemberRemove", (member:GuildMember) => {
 //handle messages appropriately
 client.on("message", handleMessage);
 
+//handle a message deletion
 client.on("messageDelete", (message:Message) => {
     handleMessageDelete(message);
 });
 
+//handle a message update
 client.on("messageUpdate", async (old:PartialMessage, current:PartialMessage)=>{
     
     //ignore bot messages
@@ -93,8 +95,8 @@ client.on("messageUpdate", async (old:PartialMessage, current:PartialMessage)=>{
     //delete old command and update
     if(isCommand(old) && RESPONSES.has(old)) RESPONSES.get(old)?.delete();
 
+    //handle serverlog update + new command response
     await handleMessageUpdate(old, current);
-
     return handle(current);
 });
 

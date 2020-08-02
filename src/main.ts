@@ -1,4 +1,5 @@
 import * as Discord from "discord.js";
+import {handleBanAdd, handleBanRemove, handleLeave} from "./passive/events";
 import {handleMessage, addMessageHandler} from "./lib/message";
 import verify from "./passive/verification";
 import {client} from "./client";
@@ -48,6 +49,21 @@ client.on("guildMemberAdd", (member: Discord.GuildMember) => {
         `AUTO-VERIFY ${member.user.username}#${member.user.discriminator}.`
     );
     verify(member);
+});
+
+//handle banhammers
+client.on("guildBanAdd", (guild:Discord.Guild, user:Discord.User) => {
+    handleBanAdd(guild, user);
+});
+
+//handle unbans
+client.on("guildBanRemove", (guild:Discord.Guild, user:Discord.User) => {
+    handleBanRemove(guild, user);
+});
+
+//handle users leaving/getting kicked
+client.on("guildMemberRemove", (member: Discord.GuildMember) => {
+    handleLeave(member);
 });
 
 //handle messages appropriately

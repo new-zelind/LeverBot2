@@ -1,5 +1,5 @@
 import * as keya from "keya";
-import { Guild, Collection, TextChannel, Message, User } from "discord.js";
+import { Guild, Collection, TextChannel, Message, User, GuildMember } from "discord.js";
 import Command, { Permissions } from "../lib/command";
 import { makeEmbed } from "../lib/util";
 import SQLiteStore from "keya/out/node/sqlite";
@@ -7,11 +7,15 @@ import { client } from "../client";
 import { addMessageHandler } from "../lib/message";
 import { config } from "../lib/access";
 
-interface LeaderboardRecord {
-  id: string,
-  total: number;
+interface LBRecord{
+  userID: string,
+  total: number
 }
 
+/**
+ * DON'T TOUCH
+ * @param channel 
+ */
 async function fetchAll(channel: TextChannel) {
   let messages = await channel.messages.fetch({ limit: 100 });
   let pointer = messages.lastKey();
@@ -32,11 +36,10 @@ async function fetchAll(channel: TextChannel) {
   return messages;
 }
 
-interface MessageTotals {
-  total: number;
-}
+async function getTotals(store: SQLiteStore<LBRecord>, message: Message) {
 
-async function getTotals(store: SQLiteStore<MessageTotals>, message: Message) {
+  store.clear();
+
   const guild = message.guild as Guild;
 
   const text = guild.channels.cache.filter(
@@ -63,15 +66,15 @@ async function getTotals(store: SQLiteStore<MessageTotals>, message: Message) {
   // Set totals for everyone
   await Promise.all(
     Object.keys(totals).map(async (id) =>
-      store.set(`${(message.guild as Guild).id}-${id}`, {
-        total: totals[id],
-      })
+      store.set(`${(message.guild as Guild).id}-${id}`,
+        {userID: id, total: totals[id]}
+      )
     )
   );
 }
 
 (async function() {
-  const store = await keya.store<LeaderboardRecord>(`leaderboard`);
+  const store = await keya.store<LBRecord>(`leaderboard`);
 
   const leaderboard = Command({
     names: ["leaderboard"],
@@ -100,7 +103,7 @@ async function getTotals(store: SQLiteStore<MessageTotals>, message: Message) {
           ? message.mentions.users.first()?.id ?? message.author.id
           : message.author.id;
 
-      // Make the bounds from that index
+      //construct min/max bounds
       const index = all.findIndex(
         (record) => `${message.guild.id}-${center}` === record.key
       );
@@ -108,7 +111,7 @@ async function getTotals(store: SQLiteStore<MessageTotals>, message: Message) {
       const max = Math.min(all.length - 1, min + 10);
 
       // Constructs the leaderboard in the relevant section
-      const leaderboard = top.slice(min, max).map(record => record.value);
+      const ldb = top.slice(min, max).map(record => record.value);
 
       // Total message counts
       const total = all.reduce((a, b) => a + b.value.total, 0) as number;
@@ -120,16 +123,30 @@ async function getTotals(store: SQLiteStore<MessageTotals>, message: Message) {
       ];
 
       // Format it into a string
-      const description = [
+      const description:string[] = [
         "**Stats**",
-        `Total Messages Sent: ${total.toLocaleString()}`,
-        ...leaderboard.map(
-          ({total, id}, i: number) => {
-            let currUser: string = message.guild.members.cache.get(id).nickname;
+        `Total Messages Sent: ${total.toLocaleString()}`,]/*
+        ...ldb.map(
+          (record, i) => {
+            let currUser: string = message.guild.members.cache.get(record.userID).nickname;
             `${min + i + 1}. ${currUser} — ${top[i + min].value.total.toLocaleString()} ${titles[title]}`;
           }
         ),
-      ].join("\n");
+      ].join("\n");*/
+
+      ldb.forEach(async (value:LBRecord, i:number) => {
+        console.log(value);
+        let currUser:string = (await client.users.fetch(value.userID)).toString();
+        if(!currUser) currUser = "unknown";
+        description.push(
+          `${
+            min + i + 1}. ${
+            currUser} - ${
+            top[i + min].value.toLocaleString()} ${
+            titles[title]
+          }\n`
+        );
+      });
 
       const embed = makeEmbed(message)
         .setTitle(title)
@@ -150,6 +167,7 @@ async function getTotals(store: SQLiteStore<MessageTotals>, message: Message) {
     check: Permissions.owner,
 
     async exec(message: Message) {
+
       const mess = (await message.channel.send(
         "Recalculating totals..."
       )) as Message;
@@ -164,14 +182,11 @@ async function getTotals(store: SQLiteStore<MessageTotals>, message: Message) {
 
   // Increment messages
   addMessageHandler(async (message) => {
-    if (!message.guild) {
-      return false;
-    }
+    if (!message.guild) return false;
 
-    const record = (await store.get(
-      `${message.guild.id}-${message.author.id}`
-    )) || {total: 0, id: message.author.id};
-
+    //find record for the current user
+    let record = await store.get(`${message.guild.id}-${message.author.id}`);
+    if(!record) record = {userID: message.author.id, total: 0};
     record.total++;
 
     await store.set(`${message.guild.id}-${message.author.id}`, record);

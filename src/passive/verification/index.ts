@@ -64,7 +64,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
         "And what is your room number? (e.g. A7, D6, C3, etc.)",
         dm
     );
-    while(!roomNumbers.includes(room.toUpperCase()) || room !== "OVERRIDE"){
+    while(!roomNumbers.includes(room.toUpperCase()) && room !== "OVERRIDE"){
         dm.send("I'm sorry, that room doesn't appear to exist. Be sure you say just the letter and number.");
         room = await askString(
             "What is your room number? (e.g. A7, D6, etc.)",
@@ -116,7 +116,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
     //if approved, set the user's nickname and add the roles
     if(approved){
         dm.send(`Welcome to the server, ${name}!`);
-        member.setNickname(`${name} | ${room}`);
+        member.setNickname(`${name} | ${room.toUpperCase()}`);
         member.roles.add(roles);
     }
 

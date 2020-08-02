@@ -41,3 +41,10 @@ addMessageHandler((message:Message) => {
 
     message.channel.send("Aww man");
 });
+
+//Heja BVB!
+addMessageHandler((message:Message) => {
+    if(!message.content.includes("BVB")) return false;
+
+    message.channel.send("Heja BVB!");
+});

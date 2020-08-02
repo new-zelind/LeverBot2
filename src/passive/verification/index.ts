@@ -133,5 +133,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
         dm.send(
             `Your verification was denied. If you believe this was in error, you can try again by joining below and requesting an override. ${invite.url}`
         );
+
+        member.kick("Verification denied.");
     }
 }

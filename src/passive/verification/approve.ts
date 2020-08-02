@@ -79,7 +79,6 @@ export default async function approve(
                         "Outcome", `Denied and kicked by ${approver.toString()}`
                     )
                 );
-                member.kick("Verification denied. Please try again.");
             }
 
             collector.emit("end");

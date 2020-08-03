@@ -13,15 +13,14 @@ import {
     handleMessageUpdate
 } from "./passive/events";
 import {handleMessage, addMessageHandler} from "./lib/message";
-import report, {information} from "./lib/report";
-import verify from "./passive/verification";
-import {client} from "./client";
-import {setTimeoutCounts} from "./lib/timeout";
 import {handle, isCommand, RESPONSES} from "./lib/command";
-import "./cmd";
+import {setTimeoutCounts} from "./lib/timeout";
+import verify from "./passive/verification";
+import report from "./lib/report";
+import {client} from "./client";
 import "./passive/easterEggs";
 import "./passive/log/index";
-//import "./lib/handle";
+import "./cmd";
 
 const statuses = [
     "over the server",

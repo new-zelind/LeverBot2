@@ -9,6 +9,7 @@
 */
 
 import "./about";
+import "./bubblewrap";
 import "./calendar";
 import "./compliance";
 import "./connect";

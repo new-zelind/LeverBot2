@@ -11,15 +11,13 @@ export default function report(client: Client){
     return async(error: Error): Promise<Message> => {
         const me = await client.users.fetch(owner);
 
+        client.user.setPresence({
+            activity: {name: "with errors"},
+            status: "dnd"
+        });
+
         return me.send(
             `${error.stack}`
         );
     };
-}
-
-export function information(client: Client){
-    return async (content: string | MessageOptions): Promise<Message> => {
-        const me = await client.users.fetch(owner);
-        return me.send(content);
-    }
 }

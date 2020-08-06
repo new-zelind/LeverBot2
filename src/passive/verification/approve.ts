@@ -8,6 +8,16 @@ import {
     PartialGuildMember
 } from "discord.js";
 
+/**
+ * A function to handle the approval or denial of a new member
+ * @param member an instance of the new member awaiting approval
+ * @param name the member's name
+ * @param room the member's room assignment
+ * @param cuid the member's cuid
+ * @param roles the requested roles, as determined by the verification process
+ * @param override if the user requested an override
+ * @param reason the reason for an override, if needed
+ */
 export default async function approve(
     member: GuildMember | PartialGuildMember,
     name: string,

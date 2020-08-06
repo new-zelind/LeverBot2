@@ -79,10 +79,8 @@ export function matchCommand(message: Message) {
 
 /**
  * A function to initialize the list of commands
- * @pre : the registry has been created
  * @param config : An instance of a command
  * @return : #config
- * @post : REGISTRY = REGISTRY.set(#config.name)
  */
 export default function makeCommand(config: CommandConfiguration) {
   for (const name of config.names) {
@@ -186,7 +184,14 @@ export async function handle(message: Message): Promise<boolean> {
   return true;
 }
 
+
+/**
+ * A constant to check for certain permissions. This will tell the bot when,
+ * where, and by whom a command may be executed.
+ */
 export const Permissions = {
+
+  //Server administrators only
   admin(message: Message) {
     return (
       message.channel.type === "text" &&
@@ -194,35 +199,39 @@ export const Permissions = {
     );
   },
 
+  //For the bot's owner only, typically for dev commands
   owner(message: Message) {
     return message.author?.id === owner;
   },
 
+  //Only allowed within a text channel within a server
   guild(message: Message) {
     return message.channel.type == "text";
   },
 
+  //Only allowed within a DM
   dm(message: Message) {
     return message.channel.type === "dm";
   },
 
-  env(parameter: string, value: any) {
-    return (message: Message) => process.env[parameter] === value;
-  },
-
+  //Only allowed within a certain channel
   channel(name: string) {
     return (message: Message) => (message.channel as TextChannel).name === name;
   },
 
+  //No restrictions
   all() {
     return true;
   },
 
+  //Create a set of permissions. Returns true if all permissions return true.
   compose(...checks: ((message: Message) => boolean)[]) {
     return (message: Message) =>
       checks.map((check) => check(message)).every((resp) => resp);
   },
 
+  //Create a set of permissions. Returns true if any permission passed in
+  //returns true.
   any(...checks: ((message: Message) => boolean)[]) {
     return (message: Message) =>
       checks.map((check) => check(message)).some((resp) => resp);

@@ -5,16 +5,21 @@ import {
     DMChannel,
     Role
 } from "discord.js";
-import {askString, choose} from "../../lib/prompt";
+import {askString} from "../../lib/prompt";
 import approve from "./approve";
-import {room} from "../../lib/access";
 import {selectMajor} from "./selection";
 import {roomNumbers} from "./majors";
 
 //array of confirmation responses
 const valResponses: string[] = ["Y", "YES", "N", "NO"];
 
-//a function to find an existing role or make a new one
+/**
+ * A function to find an existing role, or make a new one in a server
+ * @param name the name of the role
+ * @param guild the guild to find or make the role in
+ * @return the role matching #name iff the role exists
+ *         a new role iff a role matching #name does not exist
+ */
 export async function findOrMakeRole(name: string, guild: Guild): Promise<Role>{
 
     //find the role with the given name. If it doesn't exist, make a new one
@@ -26,6 +31,10 @@ export async function findOrMakeRole(name: string, guild: Guild): Promise<Role>{
         : guild.roles.create({data: {name}});
 }
 
+/**
+ * A function to complete the new user verification process
+ * @param member the new member to verify
+ */
 export default async function verify(member: GuildMember | PartialGuildMember){
     const dm: DMChannel = await member.createDM();
 

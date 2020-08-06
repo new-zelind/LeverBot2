@@ -2,7 +2,10 @@ import {GuildMember, Role} from "discord.js";
 import parse from "parse-duration";
 import * as fs from "fs";
 
-//lift timeout
+/**
+ * A function to lift a timeout
+ * @param member the member currently on timeout
+ */
 export const lift = (member: GuildMember) => async () => {
     
     const timeoutRole:Role = member.guild.roles.cache.find(role => role.name === "Timeout");
@@ -17,6 +20,10 @@ export const lift = (member: GuildMember) => async () => {
     );
 };
 
+/**
+ * The archaic file-writing version of logging a timeout
+ * @param member the targeted member
+ */
 export function logTimeout(member: GuildMember,) {
 
     //write the member's ID to The File of Shame
@@ -27,6 +34,13 @@ export function logTimeout(member: GuildMember,) {
     });
 }
 
+/**
+ * Places a user in timeout and logs their infraction in The File of Shame
+ * @param member the targeted member
+ * @param invoker the admin/mod who performed the timeout
+ * @param time the duration of the timeout
+ * @param reason the specified reason for the timeout
+ */
 export async function timeout(
     member: GuildMember,
     invoker: GuildMember,
@@ -59,6 +73,9 @@ interface TOCounts{
 //list of all user IDs in The File of Shame
 export let timeoutCounts = {};
 
+/**
+ * A function to count how many times each user has been placed on timeout.
+ */
 export function counts(): Promise<TOCounts> {
     return new Promise<TOCounts>((resolve, reject) => {
 
@@ -85,7 +102,7 @@ export function counts(): Promise<TOCounts> {
 }
 
 /**
- * @post: updated timeoutCounts data structure
+ * Populate the timeout counts after a bot startup, or update it
 */
 export async function setTimeoutCounts(){
     timeoutCounts = await counts();

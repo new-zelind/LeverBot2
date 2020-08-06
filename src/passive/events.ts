@@ -11,12 +11,8 @@ import {client} from "../client";
 
 /**
  * A function to handle a new ban
- * @pre guild.bans = #guild.bans + 1
- *      member.banned == (false -> true)
  * @param guild The guild in which the ban was created
  * @param member The newly-banned member.
- * @post Sends a message in #event-log containing the specifics
- *       of the ban
  */
 async function handleBanAdd(
     guild:Guild,
@@ -57,12 +53,8 @@ async function handleBanAdd(
 
 /**
  * A function to handle a ban is lifted
- * @pre guild.bans = #guild.bans - 1
- *      member.banned == (true -> false)
  * @param guild The guild in which the ban was lifted
  * @param member The member that had been previously banned
- * @post Sends a message in #event-log containing the specifics
- *       of the ban lift
  */
 async function handleBanRemove(
     guild:Guild,
@@ -102,10 +94,7 @@ async function handleBanRemove(
 
 /**
  * A function to handle when a member leaves a server
- * @pre guild.members = #guild.members - 1
  * @param member The member that just left the server
- * @post Sends a message in #event-log containing the specifics
- *       of the kick, or voluntary exit
  */
 async function handleLeave(
     member:GuildMember
@@ -139,6 +128,12 @@ async function handleLeave(
 }
 
 //a way to log when messages are updated or edited
+
+/**
+ * A function to log when messages are updated or edited
+ * @param old an instance of the old message
+ * @param current an instance of the new message
+ */
 async function handleMessageUpdate(
     old:PartialMessage | Message,
     current:PartialMessage | Message
@@ -195,6 +190,10 @@ async function handleMessageUpdate(
     eventLog.send(embed);
 }
 
+/**
+ * A function to log a deleted message
+ * @param message an instance of the deleted message
+ */
 function handleMessageDelete(message:Message){
 
     const eventLog = message.guild.channels.cache.find(

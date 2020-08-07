@@ -25,6 +25,7 @@ import "./ping";
 import "./poll";
 import "./record";
 import "./rm";
+import "./roll";
 import "./rps";
 import "./source";
 import "./timeout";

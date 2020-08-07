@@ -52,7 +52,11 @@ export default Command({
         usage: "record [-r]"
     },
 
-    check: Permissions.all,
+    check: Permissions.channel("bot-commands"),
+
+    async fail(message:Message){
+        return message.channel.send("In #bot-commands, please!");
+    },
 
     async exec(message: Message){
 

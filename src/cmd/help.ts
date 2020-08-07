@@ -14,7 +14,11 @@ export const HelpCommand = Command({
     group: "META",
   },
 
-  check: Permissions.all,
+  check: Permissions.channel("bot-commands"),
+
+  async fail(message:Message){
+    return message.channel.send("In #bot-commands, please!");
+  },
   
   async exec(message: Message) {
     //organize the commands into their respective group

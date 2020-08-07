@@ -1,5 +1,6 @@
 import Command, {Permissions} from "../lib/command";
 import {makeEmbed} from "../lib/util";
+import {Message} from "discord.js";
 
 export default Command ({
     names: ["contact"],
@@ -9,7 +10,11 @@ export default Command ({
         usage:"contact",
     },
 
-    check: Permissions.all,
+    check: Permissions.channel("bot-commands"),
+
+    async fail(message:Message){
+        return message.channel.send("In #bot-commands, please!");
+    },
 
     exec(message){
 

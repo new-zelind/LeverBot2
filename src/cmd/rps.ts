@@ -115,14 +115,10 @@ export default Command({
         usage: "rps <@User>"
     },
 
-    /*check:Permissions.compose(
-        Permissions.channel("bot-commands"),
-        Permissions.guild
-    ),*/
-    check:Permissions.all,
+    check: Permissions.channel("bot-commands"),
 
-    fail(message:Message){
-        message.channel.send("In _#bot-commands_, please!");
+    async fail(message:Message){
+        return message.channel.send("In #bot-commands, please!");
     },
 
     async exec(message:Message){

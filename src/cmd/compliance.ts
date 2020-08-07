@@ -2,6 +2,7 @@ import Command, {Permissions} from "../lib/command";
 import {timeoutCounts} from "../lib/timeout";
 import {makeEmbed} from "../lib/util";
 import {client} from "../client";
+import {Message} from "discord.js";
 
 export default Command({
     names: ["compliance"],
@@ -11,7 +12,11 @@ export default Command({
         usage: "compliance"
     },
 
-    check: Permissions.all,
+    check: Permissions.channel("bot-commands"),
+
+    async fail(message:Message){
+        return message.channel.send("In #bot-commands, please!");
+    },
 
     async exec(message){
 

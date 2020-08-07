@@ -13,7 +13,11 @@ export default Command({
         usage: "{convert -l}: List of available measures\n{convert -m <measure>}: available units for a Measure\n{convert -c <number> <unit1> <unit2>}: perform Conversion"
     },
 
-    check: Permissions.all,
+    check: Permissions.channel("bot-commands"),
+
+    async fail(message:Message){
+        return message.channel.send("In #bot-commands, please!");
+    },
 
     async exec(message: Message){
 

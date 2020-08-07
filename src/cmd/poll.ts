@@ -20,10 +20,10 @@ export default Command({
     usage: `poll <time> <"Question"> <Option 1, Option 2, ... "Option n">`,
   },
 
-  check: Permissions.guild,
+  check: Permissions.channel("bot-commands"),
 
-  fail(message: Message) {
-    return message.reply("Sorry, I can't do a poll in a DM!");
+  async fail(message:Message){
+    return message.channel.send("In #bot-commands, please!");
   },
 
   async exec(message, [duration, question, ...options]) {

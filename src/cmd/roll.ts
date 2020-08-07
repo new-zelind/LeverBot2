@@ -10,7 +10,11 @@ export default Command({
         usage: "roll `<number of dice>`d`<sides per die>` (ex. `roll 1d20+2`)"
     },
 
-    check: Permissions.all,
+    check: Permissions.channel("bot-commands"),
+
+    async fail(message:Message){
+        return message.channel.send("In #bot-commands, please!");
+    },
 
     async exec(message:Message, args:string[]){
         

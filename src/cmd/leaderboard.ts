@@ -84,7 +84,11 @@ async function getTotals(store: SQLiteStore<LBRecord>, message: Message) {
       group: "META",
     },
 
-    check: Permissions.guild,
+    check: Permissions.channel("bot-commands"),
+
+    async fail(message:Message){
+        return message.channel.send("In #bot-commands, please!");
+    },
 
     async exec(message: Message & { guild: Guild }) {
       

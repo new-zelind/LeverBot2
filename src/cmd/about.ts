@@ -1,6 +1,7 @@
 import Command, {Permissions} from "../lib/command";
 import {makeEmbed} from "../lib/util";
 import {client} from "../client";
+import {Message} from "discord.js";
 
 export default Command({
     names: ["about"],
@@ -10,9 +11,13 @@ export default Command({
         usage: "about"
     },
 
-    check: Permissions.all,
+    check: Permissions.channel("bot-commands"),
 
-    async exec(message){
+    async fail(message:Message){
+        return message.channel.send("In #bot-commands, please!");
+    },
+
+    async exec(message:Message){
 
         //make a new embed with the following information:
         const embed = makeEmbed(message)

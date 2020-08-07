@@ -1,4 +1,5 @@
 import Command, {Permissions} from "../lib/command";
+import {Message} from "discord.js";
 
 export default Command({
     names: ["bubblewrap"],
@@ -7,9 +8,14 @@ export default Command({
         group: "GAMES",
         usage: "bubblewrap"
     },
-    check: Permissions.all,
+    
+    check: Permissions.channel("bot-commands"),
 
-    async exec(message){
+    async fail(message:Message){
+        return message.channel.send("In #bot-commands, please!");
+    },
+
+    async exec(message:Message){
         let msg:String = "";
         for(var i = 1; i <= 5; i++){
             for(var j = 1; j <= 10; j++){

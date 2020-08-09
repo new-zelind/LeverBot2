@@ -13,17 +13,17 @@ export default Command({
 
     check: Permissions.owner,
 
-    fail(message: Message){
+    fail(message: Message):Promise<Message>{
         return message.channel.send("I'm sorry. I'm afraid I can't do that.");
     },
 
-    exec(message: Message){
+    exec(message: Message):Promise<Message>{
 
         //sole purpose of this is to eliminate double runtime instances
-        const {username} = os.userInfo();
-        const machine = os.hostname();
-        const type = os.type();
-        const arch = os.arch();
+        const {username}:os.UserInfo<String> = os.userInfo();
+        const machine:string = os.hostname();
+        const type:string = os.type();
+        const arch:string = os.arch();
 
         return message.channel.send(
             code(`${username}@${machine}: ${type}${arch}`)

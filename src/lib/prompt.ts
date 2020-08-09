@@ -53,7 +53,7 @@ function questionValidate(
   failureMessage: string
 ): Promise<string> {
   return askString(question, channel).then(async response => {
-    let corrected = await validate(response);
+    let corrected:string | boolean = await validate(response);
     // If the validator explicity returns true, then return the original resposne
     if (corrected === true) {
       return response;
@@ -82,14 +82,14 @@ async function choose(
   options: string[],
   channel: DMChannel,
   failureMessage = "I can't quite understand what you said. Try again, please."
-):Promise<number> {
+):Promise<number>{
 
   //prepare all options
   options = options.map((i) => i.toUpperCase());
 
   //send the user the question and all available options, then get the response
-  const prompt = `${question}\n*${options.join("\n")}*`;
-  const response = await (await askString(prompt, channel)).toUpperCase();
+  const prompt:string = `${question}\n*${options.join("\n")}*`;
+  const response:string = await (await askString(prompt, channel)).toUpperCase();
 
   //response validation - recursive upon an invalid response
   if(options.includes(response)) return options.indexOf(response);

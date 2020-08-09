@@ -2,7 +2,8 @@ import{
     Message,
     User,
     MessageReaction,
-    Collector
+    Collector,
+    ReactionCollector
 } from "discord.js";
 
 //A type definition for the listen() callback function
@@ -24,7 +25,7 @@ export default async function listen(
 ){
 
     //create a reaction collector for the provided message
-    const collector = message.createReactionCollector(
+    const collector:ReactionCollector = message.createReactionCollector(
         (reaction: MessageReaction, user: User) =>
             emojis.includes(reaction.emoji.name) && !user.bot
     );
@@ -34,7 +35,9 @@ export default async function listen(
     collector.on(
         "collect",
         (handler = (element: MessageReaction) => {
-            const response = callback(element, collector);
+            const response:(
+                boolean | void | Promise<boolean> | Promise<void>
+            ) = callback(element, collector);
 
             if(response){
                 collector.emit("end");

@@ -11,12 +11,11 @@ export default Command({
 
     check: Permissions.channel("bot-commands"),
 
-    async fail(message:Message){
+    async fail(message:Message):Promise<Message>{
         return message.channel.send("In #bot-commands, please!");
     },
 
-    async exec(message){
-        //interactive campus map
-        message.channel.send("www.clemson.edu/campus-map");
+    async exec(message):Promise<Message>{
+        return message.channel.send("www.clemson.edu/campus-map");
     }
 })

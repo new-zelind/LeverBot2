@@ -1,6 +1,6 @@
 import Command, { Permissions } from "../lib/command";
 import { makeEmbed } from "../lib/util";
-import {Message} from "discord.js";
+import {Message, PartialMessage, MessageEmbed} from "discord.js";
 
 export default Command({
   names: ["calendar"],
@@ -12,14 +12,14 @@ export default Command({
 
   check: Permissions.channel("bot-commands"),
 
-  async fail(message:Message){
-    return message.channel.send("In #bot-commands, please!");
+  async fail(message:Message | PartialMessage):Promise<Message>{
+        return message.channel.send("In #bot-commands, please!");
   },
 
-  exec(message) {
+  exec(message:Message):Promise<Message>{
 
     //make a new embed with the following information:
-    const embed = makeEmbed(message)
+    const embed:MessageEmbed = makeEmbed(message)
       .setColor("#f66733")
       .setTitle("Fall 2020 Academic Calendar")
       .setURL(

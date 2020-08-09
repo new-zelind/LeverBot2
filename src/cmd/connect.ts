@@ -1,5 +1,5 @@
 import Command, {Permissions} from "../lib/command";
-import {Message, User} from "discord.js";
+import {Message, User, PartialMessage, Collection} from "discord.js";
 import connect from "./connect4/connect";
 import listen from "../lib/reactions";
 import { client } from "../client";
@@ -18,6 +18,7 @@ async function logWin(id:string):Promise<number>{
 
     record.w += 1;
     await (await store).set(id, record);
+    return 0;
 }
 
 async function logLoss(id:string):Promise<number>{
@@ -33,6 +34,7 @@ async function logLoss(id:string):Promise<number>{
 
     record.w += 1;
     await (await store).set(id, record);
+    return 0;
 }
 
 async function logDraw(id:string):Promise<number>{
@@ -48,6 +50,7 @@ async function logDraw(id:string):Promise<number>{
 
     record.d += 1;
     await (await store).set(id, record);
+    return 0;
 }
 
 export default Command({
@@ -60,11 +63,11 @@ export default Command({
 
     check: Permissions.channel("bot-commands"),
 
-    async fail(message:Message){
+    async fail(message:Message):Promise<Message>{
         return message.channel.send("In #bot-commands, please!");
     },
 
-    async exec(message:Message){
+    async exec(message:Message):Promise<Message>{
 
         //users to do battle
         const challenger:User = message.author;
@@ -92,7 +95,7 @@ export default Command({
         message.channel.send("Challenged: react with '🔥' to play!");
 
         listen(message, ["🔥"], async (reaction) => {
-            const users = await reaction.users.fetch();
+            const users:Collection<string, User> = await reaction.users.fetch();
 
             if(users.has(challenged.id)){
 
@@ -102,7 +105,6 @@ export default Command({
                 );
                 let winner:User = await connect(challenger, challenged);
 
-                //send ending DMs
                 //send ending DMs
                 if(winner === challenger){
 

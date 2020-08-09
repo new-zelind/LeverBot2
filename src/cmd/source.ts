@@ -11,14 +11,18 @@ export default Command({
 
     check: Permissions.channel("bot-commands"),
 
-    async fail(message:Message){
+    async fail(message:Message):Promise<Message>{
         return message.channel.send("In #bot-commands, please!");
     },
 
-    async exec(message: Message){
-        return message.channel.send(
+    async exec(message: Message):Promise<Message>{
+        /*return message.channel.send(
             //shameless github plug
             "**Here's my source code:**\nhttps://github.com/new-zelind/LeverBot2"
-        );
+        );*/
+        let msg:string = "**Here's my source code:**\nhttps://github.com/new-zelind/LeverBot2";
+        if(Math.random() >= 0.95) msg += "\n_Be sure to give it a star!_";
+
+        return message.channel.send(msg);
     }
 });

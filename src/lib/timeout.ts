@@ -1,4 +1,4 @@
-import {GuildMember, Role} from "discord.js";
+import {GuildMember, Role, DMChannel} from "discord.js";
 import parse from "parse-duration";
 import * as fs from "fs";
 
@@ -14,7 +14,7 @@ export const lift = (member: GuildMember) => async () => {
     await member.roles.remove(timeoutRole);
 
     //notify the infractor that their timeout has been lifted
-    const dm = await member.createDM();
+    const dm:DMChannel = await member.createDM();
     dm.send(
         "Your timeout has been lifted, and are permitted to speak again. Remember, multiple violations may lead to longer timeout or a permaban."
     );
@@ -27,8 +27,8 @@ export const lift = (member: GuildMember) => async () => {
 export function logTimeout(member: GuildMember,) {
 
     //write the member's ID to The File of Shame
-    let memberID: string = member.user.id;
-    let toLog = memberID.concat("\n");
+    let memberID:string = member.user.id;
+    let toLog:string = memberID.concat("\n");
     fs.appendFile('timeouts.txt', toLog, (err) => {
         if(err) console.log(err);
     });
@@ -56,7 +56,7 @@ export async function timeout(
     logTimeout(member);
 
     //notify the infractor of their timeout.
-    const dm = await member.createDM();
+    const dm:DMChannel = await member.createDM();
     dm.send(
         `You've been timed out by ${invoker.user.username} for ${time} for the following reason: ${reason}. While timed out, you are not permitted to post in any text channel or join any voice channel. If you feel that this was in error, please speak to the admins in _#appeals_.`
     );
@@ -87,8 +87,8 @@ export function counts(): Promise<TOCounts> {
             }
 
             //split the data by newline characters and init counts
-            const raw = data.toString().split("\n");
-            const counts: TOCounts = {};
+            const raw:string[] = data.toString().split("\n");
+            const counts:TOCounts = {};
 
             //count the number of instances
             for(const line of raw){

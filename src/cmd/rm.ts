@@ -1,5 +1,5 @@
 import Command, {Permissions} from "../lib/command";
-import {Message, TextChannel} from "discord.js";
+import {Message, TextChannel, Collection} from "discord.js";
 import {timeout} from "../lib/timeout";
 
 export default Command({
@@ -12,7 +12,7 @@ export default Command({
 
     check: Permissions.admin,
 
-    fail(message: Message){
+    fail(message: Message):Promise<Message>{
         timeout(
             message.member,
             message.member.guild.me,
@@ -22,10 +22,13 @@ export default Command({
         return message.channel.send("I'm sorry. I'm afraid I can't do that.");
     },
 
-    async exec(message: Message, [count]: string[]){
+    async exec(
+        message: Message,
+        [count]: string[]
+    ):Promise<Message>{
         if(!message.mentions.users) return;
 
-        let channel: TextChannel;
+        let channel:TextChannel;
 
         //create filters (if applicable)
         const filters = {
@@ -39,7 +42,8 @@ export default Command({
         else channel = message.channel as TextChannel;
 
         //parse number of messages to delete
-        let messages = await channel.messages.fetch({
+        let messages:Collection<string, Message> = await channel.messages.fetch(
+        {
             before: message.id,
             limit: 100,
         });

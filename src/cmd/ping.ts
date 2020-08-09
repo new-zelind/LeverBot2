@@ -11,8 +11,7 @@ export default Command({
 
     check: Permissions.all,
 
-    async exec(message: Message){
-        //ping!
+    async exec(message: Message):Promise<Message>{
         return message.reply("Pong!");
     }
 })

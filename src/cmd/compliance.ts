@@ -14,11 +14,11 @@ export default Command({
 
     check: Permissions.channel("bot-commands"),
 
-    async fail(message:Message){
+    async fail(message:Message):Promise<Message>{
         return message.channel.send("In #bot-commands, please!");
     },
 
-    async exec(message){
+    async exec(message):Promise<Message>{
 
         //count the number of times the user's id occurs in the timeout file
         let numCitations = timeoutCounts[message.author.id];

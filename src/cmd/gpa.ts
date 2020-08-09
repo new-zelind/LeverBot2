@@ -1,6 +1,6 @@
 import Command, {Permissions} from "../lib/command";
 import {askString, choose} from "../lib/prompt";
-import {Message} from "discord.js";
+import {Message, DMChannel} from "discord.js";
 
 export default Command({
     names: ["gpa"],
@@ -12,15 +12,15 @@ export default Command({
 
     check: Permissions.channel("bot-commands"),
 
-    async fail(message:Message){
+    async fail(message:Message):Promise<Message>{
         return message.channel.send("In #bot-commands, please!");
     },
 
-    async exec(message: Message){
+    async exec(message: Message):Promise<Message>{
 
         //complete in DMs to maintain FERPA compliance
-        message.reply("check your DMs to calculate your semester GPA.");
-        const dm = await message.author.createDM();
+        message.reply("check your DMs to calculate a semester GPA.");
+        const dm:DMChannel = await message.author.createDM();
 
         //get the number of classes
         let numClasses = await askString("How many classes are you taking?", dm);
@@ -30,16 +30,15 @@ export default Command({
                 dm
             );
         }
-        let classes = parseInt(numClasses);
+        let classes:number = parseInt(numClasses);
 
-        //for each class,
-        var i;
-        let totalHours: number = 0,
-            totalPoints: number = 0;
-        for (i = 1; i <= classes; i++) {
+        //for each class,;
+        let totalHours:number = 0,
+            totalPoints:number = 0;
+        for (var i:number = 1; i <= classes; i++) {
 
             //get credit hours for class i
-            let hours = await askString(
+            let hours:string = await askString(
                 `How many credit hours for class ${i}?`,
                 dm
             );
@@ -51,14 +50,14 @@ export default Command({
             }
 
             //get letter grade for class i
-            let grade = await choose(
+            let grade:number= await choose(
                 `What was your letter grade in class ${i}? _(e.g. A, B, C, D, F)_`,
                 ["A", "B", "C", "D", "F"],
                 dm
             );
 
             //assign number of points per hour
-            let points;
+            let points:number;
             switch (grade) {
                 default:
                 case 0:
@@ -80,13 +79,13 @@ export default Command({
 
             //get quality points and add QP to total points, and number of hours
             //to total hours
-            let qualityPoints = parseInt(hours, 10) * points;
+            let qualityPoints:number = parseInt(hours, 10) * points;
             totalPoints += qualityPoints;
             totalHours += parseInt(hours, 10);
         }
 
         //gpa = total points / total hours
-        let gpa: number = totalPoints / totalHours;
+        let gpa:number = totalPoints / totalHours;
 
         return dm.send(
             `**Total Points:** ${totalPoints}\n**Total Hours:** ${totalHours}\nYour semester GPA is **${gpa.toFixed(2)}**`

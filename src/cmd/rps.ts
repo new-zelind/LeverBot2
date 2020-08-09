@@ -1,5 +1,5 @@
 import Command, {Permissions} from "../lib/command";
-import {Message, User, TextChannel} from "discord.js";
+import {Message, User, TextChannel, DMChannel, Collection} from "discord.js";
 import listen from "../lib/reactions";
 import {client} from "../client";
 import * as keya from "keya";
@@ -50,7 +50,7 @@ async function logDraw(id:string):Promise<number>{
 }
 
 async function getInput(user: User):Promise<string>{
-    const dm = await user.createDM();
+    const dm:DMChannel = await user.createDM();
 
     const message = (await dm.send(
         "Choose your move:"
@@ -117,11 +117,11 @@ export default Command({
 
     check: Permissions.channel("bot-commands"),
 
-    async fail(message:Message){
+    async fail(message:Message):Promise<Message>{
         return message.channel.send("In #bot-commands, please!");
     },
 
-    async exec(message:Message){
+    async exec(message:Message):Promise<Message>{
         let challenger:User = message.author;
         let challenged:User = message.mentions.users.first();
 
@@ -140,12 +140,12 @@ export default Command({
         await message.react("🔥");
 
         listen(message, ["🔥"], async reaction => {
-            const users = await reaction.users.fetch();
+            const users:Collection<string, User> = await reaction.users.fetch();
 
             if(users.has(challenged.id)){
                 message.channel.send("Game on! Competitors, check your DMs!");
                 
-                const winner = await rps(
+                const winner:User = await rps(
                     message.channel as TextChannel,
                     challenger,
                     challenged

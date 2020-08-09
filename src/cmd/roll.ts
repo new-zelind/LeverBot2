@@ -12,11 +12,14 @@ export default Command({
 
     check: Permissions.channel("bot-commands"),
 
-    async fail(message:Message){
+    async fail(message:Message):Promise<Message>{
         return message.channel.send("In #bot-commands, please!");
     },
 
-    async exec(message:Message, args:string[]){
+    async exec(
+        message:Message,
+        args:string[]
+    ):Promise<Message>{
         
         const parse:RegExpMatchArray = args[0].match(
             /([0-9]+)?d([0-9]+)([+-][0-9]+)?/

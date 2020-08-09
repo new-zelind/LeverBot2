@@ -1,7 +1,7 @@
 import {
     Client,
     Message,
-    MessageOptions
+    User
 } from "discord.js";
 import {authorization} from "../lib/access";
 
@@ -16,7 +16,7 @@ export default function report(client: Client){
     return async(error: Error): Promise<Message> => {
 
         //Me
-        const me = await client.users.fetch(owner);
+        const me:User = await client.users.fetch(owner);
 
         //red alert
         client.user.setPresence({

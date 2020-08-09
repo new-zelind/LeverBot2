@@ -2,6 +2,7 @@ import {
   Message as FullMessage,
   TextChannel,
   PartialMessage,
+  MessageEmbed,
 } from "discord.js";
 import {authorization} from "./access";
 import {client} from "../client";
@@ -68,7 +69,7 @@ export const REGISTRY = new Map<string, CommandConfiguration>();
  *          the name of the command if it exists in the registry
  */
 export function matchCommand(message: Message) {
-  const name = message.content?.slice(1).split(" ")[0] || "";
+  const name:string = message.content?.slice(1).split(" ")[0] || "";
 
   if (!REGISTRY.has(name)) {
     return null;
@@ -115,7 +116,7 @@ export async function handle(message: Message): Promise<boolean> {
   if (!message.content) return false;
 
   // Get the appropriate command, if it exists
-  const command = matchCommand(message);
+  const command:CommandConfiguration = matchCommand(message);
   if (!command) {
     message.channel.send(
       `No such command \`${message.content?.slice(1).split(" ")[0]}\`. Use \`${
@@ -126,13 +127,13 @@ export async function handle(message: Message): Promise<boolean> {
   }
 
   // Check if the command is disabled
-  const disabled = DISABLED.has(command);
+  const disabled:boolean = DISABLED.has(command);
   if (disabled && !Permissions.owner(message)) {
     return false;
   }
 
   // See if the command is allowed to be used by the permission system
-  const allowed = await command.check(message);
+  const allowed:boolean = await command.check(message);
   if (!allowed && command.fail) {
     command.fail(message);
 
@@ -140,19 +141,21 @@ export async function handle(message: Message): Promise<boolean> {
   }
 
   // Get the arguments
-  const argstring = message.content.split(" ").slice(1).join(" ");
+  const argstring:string = message.content.split(" ").slice(1).join(" ");
   let argv = argstring.match(/“([^“”]+)”|"([^"]+)"|'([^']+)'|([^\s]+)/g);
 
   // Get the arguments
   //const argv = message.content.split(" ").slice(1);
 
   // Start the timer (for when we edit the message later to indicate how long the command takes)
-  const start = Date.now();
-  const response = await command.exec(message, argv);
+  const start:number = Date.now();
+  const response:(
+    void | Message | PartialMessage | Message[]
+  ) = await command.exec(message, argv);
 
   // If the command gave us a response to track
   if (response) {
-    const main = response instanceof Array ? response[0] : response;
+    const main:Message = response instanceof Array ? response[0] : response;
 
     // Archive that resposne
     RESPONSES.set(message, main);
@@ -168,7 +171,7 @@ export async function handle(message: Message): Promise<boolean> {
 
       // Otherwise get the last embed and edit it;
     } else {
-      const embed = main.embeds[0];
+      const embed:MessageEmbed = main.embeds[0];
 
       embed.setFooter(
         embed.footer?.text +

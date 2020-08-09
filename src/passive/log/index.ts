@@ -1,12 +1,5 @@
 import {addMessageHandler} from "../../lib/message";
-import {
-    TextChannel,
-    Guild,
-    Message,
-    User
-} from "discord.js";
-import {client} from "../../client";
-import {makeEmbed} from "../../lib/util";
+import {TextChannel, Guild, Message, Role, GuildMember} from "discord.js";
 
 //RegExp bullshit
 function matchAll(str: string, re: RegExp){
@@ -16,11 +9,14 @@ function matchAll(str: string, re: RegExp){
 }
 
 //Cleans up role and user mentions
-async function cleanUp(message: Message) {
-    let content = message.content;
+async function cleanUp(message: Message):Promise<string>{
+    let content:string = message.content;
 
     //clean up the bullshit in role and member mentions
-    const roles = await Promise.all(
+    const roles:{
+        key:string,
+        role:Role
+    }[] = await Promise.all(
         matchAll(content, /<@&([0-9]+)>/g).map(async (match) => ({
             key: (match as RegExpExecArray)[0],
             role: (message.guild as Guild).roles.cache.get(
@@ -28,7 +24,10 @@ async function cleanUp(message: Message) {
             ),
         }))
     );
-    const members = await Promise.all(
+    const members:{
+        key: string,
+        member: GuildMember
+    }[] = await Promise.all(
         matchAll(content, /<@!([0-9]+)>/g).map(async (match) => ({
             key: (match as RegExpExecArray)[0],
             member: (message.guild as Guild).members.cache.get(

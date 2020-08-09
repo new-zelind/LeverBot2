@@ -13,7 +13,7 @@ export default Command({
 
   check: Permissions.admin,
 
-  fail(message: Message){
+  async fail(message:Message):Promise<Message>{
     timeout(
       message.member,
       message.member.guild.me,
@@ -23,7 +23,7 @@ export default Command({
     return message.channel.send("I'm sorry. I'm afraid I can't do that.");
   },
   
-  exec(message) {
+  async exec(message:Message):Promise<Message>{
     message.mentions.members.forEach(
       (member: GuildMember) => {
 
@@ -34,5 +34,7 @@ export default Command({
         );
       }
     );
+
+    return message.channel.send(`Verification messages sent!`);
   },
 });

@@ -1,5 +1,5 @@
 import Command, {Permissions} from "../lib/command";
-import {Message, TextChannel} from "discord.js";
+import {Message, TextChannel, PartialMessage} from "discord.js";
 import {timeout} from "../lib/timeout";
 
 export default Command ({
@@ -12,7 +12,7 @@ export default Command ({
 
     check: Permissions.admin,
 
-    fail(message: Message){
+    async fail(message: Message | PartialMessage){
         timeout(
             message.member,
             message.member.guild.me,

@@ -2,6 +2,10 @@ import {
   Message,
   MessageReaction,
   MessageEmbed,
+  PartialMessage,
+  ReactionCollector,
+  User,
+  Collection,
 } from "discord.js";
 import Command, {Permissions} from "../lib/command";
 import {makeEmbed} from "../lib/util";
@@ -22,27 +26,30 @@ export default Command({
 
   check: Permissions.channel("bot-commands"),
 
-  async fail(message:Message){
+  async fail(message:Message):Promise<Message>{
     return message.channel.send("In #bot-commands, please!");
   },
 
-  async exec(message, [duration, question, ...options]) {
+  async exec(
+    message:Message,
+    [duration, question, ...options]
+  ):Promise<void | Message | Message[] | PartialMessage>{
     if (!message.member) return;
     if (options.length > 10) {
       return message.channel.send("10 options maximum, please.");
     }
 
     // Poll duration
-    const time = parse(duration);
-    const ends = new Date(Date.now() + time);
+    const time:number = parse(duration);
+    const ends:Date = new Date(Date.now() + time);
 
-    const invoker = message.member.nickname || message.author.username;
+    const invoker:string = message.member.nickname || message.author.username;
 
-    const embed = makeEmbed(message)
+    const embed:MessageEmbed = makeEmbed(message)
       .setAuthor(invoker, message.author.avatarURL() ?? undefined)
       .setTitle(`Poll: ${question}`);
 
-    let description = `Voting ends at: ${ends.toLocaleString()}. \n`;
+    let description:string = `Voting ends at: ${ends.toLocaleString()}. \n`;
 
     for (const [i, option] of Object.entries(options)) {
       description += `${emoji[+i]} — ${option}\n\n`;
@@ -51,7 +58,7 @@ export default Command({
     embed.setDescription(description);
 
     // Post the embed
-    const poll = (await message.channel.send({ embed })) as Message;
+    const poll:Message = (await message.channel.send({ embed }));
 
     // React with all of the appropriate emoji
     for (let i = 0; i < options.length; i++) {
@@ -59,7 +66,7 @@ export default Command({
     }
 
     // Custom listener
-    const collector = poll.createReactionCollector(
+    const collector:ReactionCollector = poll.createReactionCollector(
       (reaction: MessageReaction) =>
         emoji.includes(reaction.emoji.toString()),
       { time }
@@ -67,14 +74,14 @@ export default Command({
 
     collector.on("collect", async (reaction) => {
 
-      const voter = reaction.users.cache.last();
-      const votes = collector.collected;
+      const voter:User = reaction.users.cache.last();
+      const votes:Collection<string, MessageReaction> = collector.collected;
 
       if(!voter) return;
       if(voter === client.user) return;
 
       // Get all their other votes and delete them
-      const otherVotes = votes.filter(
+      const otherVotes:Collection<string, MessageReaction> = votes.filter(
         (choice) =>
           choice.users.cache.has(voter.id) && choice.emoji !== reaction.emoji
       );
@@ -86,12 +93,12 @@ export default Command({
     });
 
     collector.on("end", (collected) => {
-      const embed = poll.embeds[0];
+      const embed:MessageEmbed = poll.embeds[0];
       poll.reactions.removeAll();
 
       description += "**The winner is...**\n";
 
-      let winner: MessageReaction = collected.first() as MessageReaction;
+      let winner:MessageReaction = collected.first() as MessageReaction;
       for (const reaction of collected.values()) {
         if (reaction.partial) continue;
         if ((reaction.count as number) > (winner.count as number)) {
@@ -99,10 +106,10 @@ export default Command({
         }
       }
 
-      const opt = options[emoji.indexOf(winner.emoji.toString())];
+      const opt:string = options[emoji.indexOf(winner.emoji.toString())];
       description += opt;
 
-      const replacement = new MessageEmbed(embed);
+      const replacement:MessageEmbed = new MessageEmbed(embed);
       replacement.setDescription(description);
 
       poll.edit({embed: replacement});

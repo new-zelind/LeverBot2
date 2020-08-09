@@ -4,10 +4,11 @@ import ttt from "./ttt/ttt";
 import listen from "../lib/reactions";
 import {client} from "../client";
 import * as keya from "keya";
+import SQLiteStore from "keya/out/node/sqlite";
 
 async function logWin(id:string):Promise<number>{
 
-    const store = await keya.store("ttt");
+    const store:SQLiteStore<any> = await keya.store("ttt");
 
     let record = await (await store).get(id);
 
@@ -22,7 +23,7 @@ async function logWin(id:string):Promise<number>{
 
 async function logLoss(id:string):Promise<number>{
 
-    const store = await keya.store("ttt");
+    const store:SQLiteStore<any> = await keya.store("ttt");
 
     let record = await (await store).get(id);
 
@@ -37,7 +38,7 @@ async function logLoss(id:string):Promise<number>{
 
 async function logDraw(id:string):Promise<number>{
 
-    const store = await keya.store("ttt");
+    const store:SQLiteStore<any> = await keya.store("ttt");
 
     let record = await (await store).get(id);
 
@@ -60,11 +61,11 @@ export default Command({
 
     check: Permissions.channel("bot-commands"),
 
-    async fail(message:Message){
+    async fail(message:Message):Promise<Message>{
         return message.channel.send("In #bot-commands, please!");
     },
 
-    async exec(message:Message){
+    async exec(message:Message):Promise<Message>{
 
         //users to do battle
         const challenger:User = message.author;
@@ -88,6 +89,8 @@ export default Command({
         await message.react("🔥");
 
         message.channel.send("Challenged: react with '🔥' to play!");
+
+        let msg:string = "";
         
         listen(message, ["🔥"], async (reaction) => {
             const users = await reaction.users.fetch();
@@ -144,12 +147,15 @@ export default Command({
 
                 //congratulate the winner, or shame the players for a tie.
                 if(winner == client.user){
-                    message.channel.send("The game resulted in a draw. Rematch?");
+                    msg = "The game resulted in a draw. Rematch?";
                 }
                 else{
-                    message.channel.send(`${winner.toString()} won! 🏆`);
+                    msg = `${winner.toString()} won! 🏆`;
                 }
             }
         });
+
+        return message.channel.send(msg);
+
     }
 })

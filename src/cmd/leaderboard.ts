@@ -1,6 +1,6 @@
 import * as keya from "keya";
-import { Guild, Collection, TextChannel, Message, User, GuildMember } from "discord.js";
-import Command, { Permissions } from "../lib/command";
+import { Guild, Collection, TextChannel, Message, User, GuildMember, Channel, MessageEmbed } from "discord.js";
+import Command, { Permissions, CommandConfiguration } from "../lib/command";
 import { makeEmbed } from "../lib/util";
 import SQLiteStore from "keya/out/node/sqlite";
 import { client } from "../client";
@@ -16,10 +16,14 @@ interface LBRecord{
  * DON'T TOUCH
  * @param channel 
  */
-async function fetchAll(channel: TextChannel) {
-  let messages = await channel.messages.fetch({ limit: 100 });
-  let pointer = messages.lastKey();
-  let batch;
+async function fetchAll(
+  channel: TextChannel
+):Promise<Collection<string, Message>>{
+  let messages:Collection<string, Message> = await channel.messages.fetch(
+    { limit: 100 }
+  );
+  let pointer:string = messages.lastKey();
+  let batch:Collection<string, Message>;
 
   do {
     batch = (
@@ -36,20 +40,23 @@ async function fetchAll(channel: TextChannel) {
   return messages;
 }
 
-async function getTotals(store: SQLiteStore<LBRecord>, message: Message) {
+async function getTotals(
+  store: SQLiteStore<LBRecord>,
+  message: Message
+):Promise<any>{
 
   store.clear();
 
-  const guild = message.guild as Guild;
+  const guild:Guild = message.guild;
 
-  const text = guild.channels.cache.filter(
+  const text:Collection<string, TextChannel> = guild.channels.cache.filter(
     (channel) => channel.type === "text"
   ) as Collection<string, TextChannel>;
 
   const totals: { [key: string]: number } = {};
 
   for (const [, channel] of text) {
-    const messages = await fetchAll(channel);
+    const messages:Collection<string, Message> = await fetchAll(channel);
     messages.forEach((message) => {
       if (totals[message.author.id]) {
         totals[message.author.id]++;
@@ -74,9 +81,9 @@ async function getTotals(store: SQLiteStore<LBRecord>, message: Message) {
 }
 
 (async function() {
-  const store = await keya.store<LBRecord>(`leaderboard`);
+  const store:SQLiteStore<LBRecord> = await keya.store<LBRecord>(`leaderboard`);
 
-  const leaderboard = Command({
+  const leaderboard:CommandConfiguration = Command({
     names: ["leaderboard"],
     documentation: {
       usage: "leaderboard",
@@ -86,11 +93,11 @@ async function getTotals(store: SQLiteStore<LBRecord>, message: Message) {
 
     check: Permissions.channel("bot-commands"),
 
-    async fail(message:Message){
-        return message.channel.send("In #bot-commands, please!");
+    async fail(message:Message):Promise<Message>{
+      return message.channel.send("In #bot-commands, please!");
     },
 
-    async exec(message: Message & { guild: Guild }) {
+    async exec(message: Message & { guild: Guild }):Promise<Message>{
       
       // Gets all records for the relevant guild
       const all = (await store.all()).filter((record) =>
@@ -102,27 +109,27 @@ async function getTotals(store: SQLiteStore<LBRecord>, message: Message) {
 
       // Determines which user to center about, this is usually the message 
       // author but we will also allow them to pass another user
-      const center =
+      const center:string =
         message.mentions.users.size > 0
           ? message.mentions.users.first()?.id ?? message.author.id
           : message.author.id;
 
       //construct min/max bounds
-      const index = all.findIndex(
+      const index:number = all.findIndex(
         (record) => `${message.guild.id}-${center}` === record.key
       );
-      const min = Math.max(0, index - 5);
-      const max = Math.min(all.length - 1, min + 10);
+      const min:number = Math.max(0, index - 5);
+      const max:number = Math.min(all.length - 1, min + 10);
 
       // Constructs the leaderboard in the relevant section
-      const ldb = top.slice(min, max).map(record => record.value);
+      const ldb:LBRecord[] = top.slice(min, max).map(record => record.value);
 
       // Total message counts
-      const total = all.reduce((a, b) => a + b.value.total, 0) as number;
+      const total:number = all.reduce((a, b) => a + b.value.total, 0) as number;
 
       // Randomized titles from config file
-      const titles = config("leaderboard.titles") as { [key: string]: string };
-      const title = Object.keys(titles)[
+      const titles:{[key: string]: string} = config("leaderboard.titles");
+      const title:string = Object.keys(titles)[
         Math.round(Object.keys(titles).length * Math.random())
       ];
 
@@ -152,7 +159,7 @@ async function getTotals(store: SQLiteStore<LBRecord>, message: Message) {
         );
       });
 
-      const embed = makeEmbed(message)
+      const embed:MessageEmbed = makeEmbed(message)
         .setTitle(title)
         .setDescription(description);
 
@@ -170,14 +177,14 @@ async function getTotals(store: SQLiteStore<LBRecord>, message: Message) {
 
     check: Permissions.owner,
 
-    async exec(message: Message) {
+    async exec(message: Message):Promise<Message>{
 
-      const mess = (await message.channel.send(
+      const mess:Message = (await message.channel.send(
         "Recalculating totals..."
       )) as Message;
       await getTotals(store, mess);
 
-      const reply = (await message.reply("Done!")) as Message;
+      const reply:Message = (await message.reply("Done!"));
       leaderboard.exec(reply, ["10"]);
 
       return reply;
@@ -189,7 +196,7 @@ async function getTotals(store: SQLiteStore<LBRecord>, message: Message) {
     if (!message.guild) return false;
 
     //find record for the current user
-    let record = await store.get(`${message.guild.id}-${message.author.id}`);
+    let record:LBRecord = await store.get(`${message.guild.id}-${message.author.id}`);
     if(!record) record = {userID: message.author.id, total: 0};
     record.total++;
 

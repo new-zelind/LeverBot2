@@ -4,7 +4,9 @@ import {
     TextChannel,
     GuildMember,
     Message,
-    PartialMessage
+    PartialMessage,
+    GuildAuditLogsEntry,
+    MessageEmbed
 } from "discord.js";
 import {makeEmbed} from "../lib/util";
 import {client} from "../client";
@@ -17,20 +19,20 @@ import {client} from "../client";
 async function handleBanAdd(
     guild:Guild,
     user:User
-):Promise<void>{
+):Promise<Message | boolean>{
     const eventLog = guild.channels.cache.find(
         channel => channel.name === "event-log"
     ) as TextChannel;
     if(!eventLog) return;
 
-    const entry = await guild
+    const entry:GuildAuditLogsEntry = await guild
         .fetchAuditLogs({type: "MEMBER_BAN_ADD"})
         .then((logs) => logs.entries.first());
     if(!entry || entry.executor.bot) return;
 
-    let timestamp = new Date();
+    let timestamp:Date = new Date();
 
-    const embed = makeEmbed()
+    const embed:MessageEmbed = makeEmbed()
         .setColor("#C8102E")
         .setTitle("NEW BAN ADDED")
         .setImage(user.avatarURL())
@@ -47,8 +49,7 @@ async function handleBanAdd(
             }
         );
 
-    await eventLog.send(embed);
-    return;
+    return eventLog.send(embed);
 }
 
 /**
@@ -59,20 +60,20 @@ async function handleBanAdd(
 async function handleBanRemove(
     guild:Guild,
     user:User
-):Promise<void>{
+):Promise<Message | boolean>{
     const eventLog = guild.channels.cache.find(
         channel => channel.name === "event-log"
     ) as TextChannel;
     if(!eventLog) return;
 
-    const entry = await guild
+    const entry:GuildAuditLogsEntry = await guild
         .fetchAuditLogs({type: "MEMBER_BAN_REMOVE"})
         .then((logs) => logs.entries.first());
     if(!entry || entry.executor.bot) return;
 
-    let timestamp = new Date();
+    let timestamp:Date = new Date();
 
-    const embed = makeEmbed()
+    const embed:MessageEmbed = makeEmbed()
         .setColor("#00B2A9")
         .setTitle("BAN REMOVED")
         .setImage(user.avatarURL())
@@ -88,8 +89,7 @@ async function handleBanRemove(
                     entry.executor.discriminator}`}
         );
 
-    await eventLog.send(embed);
-    return;
+    return eventLog.send(embed);
 }
 
 /**
@@ -98,16 +98,16 @@ async function handleBanRemove(
  */
 async function handleLeave(
     member:GuildMember
-):Promise<void>{
+):Promise<Message | boolean>{
 
     const eventLog = member.guild.channels.cache.find(
         channel => channel.name === "event-log"
     ) as TextChannel;
     if(!eventLog) return;
 
-    let timestamp = new Date();
+    let timestamp:Date = new Date();
 
-    const embed = makeEmbed()
+    const embed:MessageEmbed = makeEmbed()
         .setColor("#F6EB61")
         .setTitle("MEMBER REMOVAL")
         .setDescription("Member kicked or left server")
@@ -123,11 +123,8 @@ async function handleLeave(
             {name: "Timestamp", value: timestamp.toLocaleTimeString()},
         );
 
-    await eventLog.send(embed);
-    return;
+    return await eventLog.send(embed);
 }
-
-//a way to log when messages are updated or edited
 
 /**
  * A function to log when messages are updated or edited
@@ -137,7 +134,7 @@ async function handleLeave(
 async function handleMessageUpdate(
     old:PartialMessage | Message,
     current:PartialMessage | Message
-){
+):Promise<Message | boolean>{
     //get old and new attributes and content
     if(old.partial) old = await old.fetch();
     if(current.partial) current = await current.fetch();
@@ -166,7 +163,7 @@ async function handleMessageUpdate(
     ) as TextChannel;
     if(!eventLog) return false;
 
-    const embed = makeEmbed(old)
+    const embed:MessageEmbed = makeEmbed(old)
         .setColor("#3c1361")
         .setTitle("MESSAGE EDITED")
         .addFields(
@@ -194,7 +191,7 @@ async function handleMessageUpdate(
  * A function to log a deleted message
  * @param message an instance of the deleted message
  */
-function handleMessageDelete(message:Message){
+async function handleMessageDelete(message:Message):Promise<boolean>{
 
     const eventLog = message.guild.channels.cache.find(
         channel => channel.name === "event-log"
@@ -202,11 +199,11 @@ function handleMessageDelete(message:Message){
     if(!eventLog) return false;
 
     const author:User = message.author;
-    const timestamp = new Date();
+    const timestamp:Date = new Date();
 
-    if(author.id === client.user.id) return;
+    if(author.id === client.user.id) return false;
 
-    const embed = makeEmbed(message)
+    const embed:MessageEmbed = makeEmbed(message)
         .setColor("#034694")
         .setTitle("MESSAGE DELETED")
         .addFields(
@@ -237,6 +234,8 @@ function handleMessageDelete(message:Message){
             eventLog.send(url);
         });
     }
+
+    return true;
 }
 
 export{

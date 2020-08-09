@@ -16,7 +16,7 @@ export function code(text: string):string {
  * A function to create inline code
  * @param text The text to place in the inline code block
  */
-export function inline(text: string) {
+export function inline(text: string):string{
   return `\`${text}\``;
 }
 
@@ -24,7 +24,7 @@ export function inline(text: string) {
  * A function to escape out of role and user @ mentions
  * @param text The text to remove @ mentions from
  */
-export function escape(text: string) {
+export function escape(text: string):string{
   return (text + "").replace(/[\\"']/g, "\\$&").replace(/\u0000/g, "\\0");
 }
 
@@ -36,11 +36,13 @@ export function escape(text: string) {
  * @return a new RichEmbed object with timestamp and a footer containing the
  *         invoker
  */
-export function makeEmbed(message?: Message | PartialMessage) {
-  const embed = new MessageEmbed().setTimestamp();
+export function makeEmbed(
+  message?: Message | PartialMessage
+):MessageEmbed{
+  const embed:MessageEmbed = new MessageEmbed().setTimestamp();
 
   if (message) {
-    const invoker =
+    const invoker:string =
       message.channel.type === "text"
         ? message.member.displayName
         : message.author.username;

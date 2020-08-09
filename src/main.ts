@@ -22,7 +22,7 @@ import "./passive/easterEggs";
 import "./passive/log/index";
 import "./cmd";
 
-const statuses = [
+const statuses:string[] = [
     "over the server",
     "TigerFlix",
     "y'all",

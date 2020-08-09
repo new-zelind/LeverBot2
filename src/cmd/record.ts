@@ -1,7 +1,7 @@
 import Command, {Permissions} from "../lib/command";
 import * as keya from "keya";
 import {makeEmbed} from "../lib/util";
-import {Message} from "discord.js";
+import {Message, MessageEmbed} from "discord.js";
 import SQLiteStore from "keya/out/node/sqlite";
 
 async function getWins(
@@ -54,17 +54,17 @@ export default Command({
 
     check: Permissions.channel("bot-commands"),
 
-    async fail(message:Message){
+    async fail(message:Message):Promise<Message>{
         return message.channel.send("In #bot-commands, please!");
     },
 
-    async exec(message: Message){
+    async exec(message: Message):Promise<Message>{
 
         //access keya database
-        const tttStore = await keya.store("ttt");
-        const conStore = await keya.store("connect4");
-        const rpsStore = await keya.store("rps");
-        const id = message.author.id;
+        const tttStore:SQLiteStore<any> = await keya.store("ttt");
+        const conStore:SQLiteStore<any> = await keya.store("connect4");
+        const rpsStore:SQLiteStore<any> = await keya.store("rps");
+        const id:string = message.author.id;
 
         //reset flag handle
         if(message.content.includes("-r")){
@@ -98,7 +98,7 @@ export default Command({
         if(isNaN(rpsAvg)) rpsAvg = 0;
 
         //add TTT, Connect 4, and RPS statistics
-        const embed = makeEmbed(message)
+        const embed:MessageEmbed = makeEmbed(message)
             .setColor("#F9E498")
             .setTitle(`${message.author.username}'s Game Record:`)
             .setDescription("See how well you've done vs other members.")

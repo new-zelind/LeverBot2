@@ -12,20 +12,20 @@ export default Command({
 
     check: Permissions.channel("bot-commands"),
 
-    async fail(message:Message){
+    async fail(message:Message):Promise<Message>{
         return message.channel.send("In #bot-commands, please!");
     },
 
-    async exec(message: Message){
+    async exec(message: Message):Promise<Message>{
         if(!client.uptime || !client.user) return;
 
         //ms to days, hours, minutes, seconds
-        let uptime = client.uptime / 1000;
-        let d = Math.floor(uptime / 86400);
-        let h = Math.floor(uptime / 3600);
+        let uptime:number = client.uptime / 1000;
+        let d:number = Math.floor(uptime / 86400);
+        let h:number = Math.floor(uptime / 3600);
         uptime %= 3600;
-        let m = Math.floor(uptime / 60);
-        let s = uptime % 60;
+        let m:number = Math.floor(uptime / 60);
+        let s:number = uptime % 60;
 
         return message.channel.send(
             `**${client.user.tag} UPTIME**\n_${d}_ DAYS, _${h}_ HOURS, _${m}_ MINUTES, _${s.toFixed(3)}_ SECONDS`

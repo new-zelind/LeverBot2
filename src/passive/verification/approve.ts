@@ -5,7 +5,8 @@ import {
     Message,
     User,
     MessageReaction,
-    PartialGuildMember
+    PartialGuildMember,
+    ReactionCollector
 } from "discord.js";
 
 /**
@@ -30,7 +31,7 @@ export default async function approve(
 
     //create a new embed to hold the verification info
     //includes username, avatar, first name, requested roles, room number, cuid
-    const embed = new MessageEmbed()
+    const embed:MessageEmbed = new MessageEmbed()
         .setAuthor(member.user.username, member.user.avatarURL() ?? undefined)
         .setTitle(`Verification for ${name}`)
         .setDescription(
@@ -58,14 +59,14 @@ export default async function approve(
     return new Promise((resolve, reject) => {
 
         //create a collector to get the admin's decision
-        let collector = approval.createReactionCollector(
+        let collector:ReactionCollector = approval.createReactionCollector(
             (vote, usr: User) =>
              (vote.emoji.name === "👎" || vote.emoji.name === "👍") && !usr.bot
         );
 
         let handleReaction: (vote: MessageReaction) => void;
         collector.on("collect", (handleReaction = (vote) => {
-            const approver = vote.users.cache.last();
+            const approver:User = vote.users.cache.last();
             if(!approver) return;
 
             //if approved, add the requested roles to the user.

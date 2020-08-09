@@ -8,9 +8,7 @@ const handlers: MessageHandler[] = [];
 
 /**
  * A simple function to add a messageHandler object to the stack
- * @pre : #handlers != null
  * @param handler : the messageHandler to be added
- * @post : handlers.size++;
  */
 function addMessageHandler(handler: MessageHandler) {
   return handlers.push(handler) - 1;
@@ -18,9 +16,7 @@ function addMessageHandler(handler: MessageHandler) {
 
 /**
  * A function to remove a messageHandler object from the stack
- * @pre handlers[#index] != null
  * @param index : the index of the handler to remove
- * @post : handlers[#index] = false
  */
 //Pops a message handler from the stack, replacing it with an empty function.
 function removeMessageHandler(index: number) {
@@ -29,14 +25,13 @@ function removeMessageHandler(index: number) {
 
 /**
  * A function to add a single-use messageHandler object to the stack
- * @pre handlers.size != 0 && handlers != null
  * @param handler the one-time messageHandler to add
  * @returns index iff #handler resolves
  *          the resolution function of #handler if it does not resolve
  */
 function addOneTimeMessageHandler(handler: MessageHandler) {
-  let index = addMessageHandler(async function (message: Message) {
-    let res = await handler(message);
+  let index:number = addMessageHandler(async function (message: Message) {
+    let res:boolean = await handler(message);
     if (res) removeMessageHandler(index);
     return res;
   });
@@ -45,12 +40,11 @@ function addOneTimeMessageHandler(handler: MessageHandler) {
 
 /**
  * Handles the messages sent and interpreted by the bot
- * @pre handlers.indexOf(#message) != -1
  * @param message : The message sent in the server
  * @return the command or function called to resolve #message
  */
 async function handleMessage(message: Message) {
-  let i = 0;
+  let i:number = 0;
   while (!(await handlers[i++](message)) && i < handlers.length){
     console.log
   }

@@ -14,7 +14,7 @@
 - Try sending `$help` to see what the bot can do!
 
 # How to Add ByrnesBot
-- See [CONTRIBUTING.MD](https://github.com/new-zelind/LeverBot2/blob/master/CONTRIBUTING.md) for more info!
+- See [COPY.md](https://github.com/new-zelind/LeverBot2/blob/master/COPY.md) for more info!
 
 # Licensing
 - ByrnesBot is licensed under the MIT License, as seen in the 'LICENSE' file.

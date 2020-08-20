@@ -184,7 +184,7 @@ async function checkForUpdate(
     if((Date.now()-reaction.message.createdTimestamp) > 172800000) return false;
 
     //don't update if OP reacts - can't upvote your own posts
-    //if(user.id === reaction.message.author.id) return false;
+    if(user.id === reaction.message.author.id) return false;
 
     //don't update if it's a bot message - can't upvote message in WOF
     if(reaction.message.author.id === client.user.id) return false;

@@ -5,9 +5,9 @@ This guide will guide you through creating your own instance to run.
 ## Step 1: Secure Dependencies
 Ensure that you have successfully installed the following:
 * Node.js (v 14.0.0 or above):
-* Not sure if you have Node installed? Run `node -v` in your terminal. If nothing pops up, you can install Node.js from [here](https://nodejs.org/en/).
-* Note: make sure you install the current version and add Node to your PATH variable. For a guide on how to do the latter, visit [here](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/).
-* You should also be able to run the `npm -v` command.
+  * Not sure if you have Node installed? Run `node -v` in your terminal. If nothing pops up, you can install Node.js from [here](https://nodejs.org/en/).
+  * Note: make sure you install the current version and add Node to your PATH variable. For a guide on how to do the latter, visit [here](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/).
+  * You should also be able to run the `npm -v` command.
 
 ## Step 2: Create A Testing Server
 It's a good idea to make a Discord server with you and your bot so you can test it out. Create a new Discord server and call it whatever you want. Be sure to add the following channels:

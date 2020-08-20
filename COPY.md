@@ -2,7 +2,7 @@ Want A Bot to Call Your Own?
 ============================
 This guide will guide you through creating your own instance to run.
 
-##Step 1: Secure Dependencies
+## Step 1: Secure Dependencies
 Ensure that you have successfully installed the following:
 * Node.js (v 14.0.0 or above):
 * Not sure if you have Node installed? Run `node -v` in your terminal. If nothing pops up, you can install Node.js from [here](https://nodejs.org/en/).

@@ -1,8 +1,8 @@
 # ByrnesBot
-### Version 3.1.05
+### Version 3.1.19
 > A Discord.js moderation bot powered by Node.js, ByrnesBot offers a moderation solution for Discord Servers created for the Byrnes/Lever Communities at Clemson University.
 
-> Originally created by /new-zelind and /MayorMonty in Summer 2019, ByrnesBot is a reproduction and overhaul of `https://github.com/new-zelind/LeverBot`. It offers more streamlined code, more efficient processing, as well as a few new features.
+> Originally created by /new-zelind and /MayorMonty in Summer 2019, ByrnesBot is a reproduction and overhaul of [LeverBot](https://github.com/new-zelind/LeverBot). It offers more streamlined code, more efficient processing, as well as a few new features.
 
 # Capabilities
 - Auto-Verification of users upon server entry.
@@ -13,8 +13,8 @@
 - Ease of use for all, no matter how long you've been on Discord!
 - Try sending `$help` to see what the bot can do!
 
-# How to Install ByrnesBot
-- Coming soon...
+# How to Add ByrnesBot
+- See [COPY.md](https://github.com/new-zelind/LeverBot2/blob/master/COPY.md) for more info!
 
 # Licensing
 - ByrnesBot is licensed under the MIT License, as seen in the 'LICENSE' file.

@@ -3,7 +3,9 @@ import {
     Guild,
     User,
     Message,
-    PartialMessage
+    PartialMessage,
+    MessageReaction,
+    PartialUser
 } from "discord.js";
 import {
     handleBanAdd,
@@ -14,6 +16,7 @@ import {
 } from "./passive/events";
 import {handleMessage, addMessageHandler} from "./lib/message";
 import {handle, isCommand, RESPONSES} from "./lib/command";
+import {updateWallOfFame, checkForUpdate} from "./passive/wof";
 import {setTimeoutCounts} from "./lib/timeout";
 import verify from "./passive/verification";
 import report from "./lib/report";
@@ -98,6 +101,28 @@ client.on("messageUpdate", async (old:PartialMessage, current:PartialMessage)=>{
     //handle serverlog update + new command response
     await handleMessageUpdate(old, current);
     return handle(current);
+});
+
+//check to add something to or update wall of fame
+client.on("messageReactionAdd", async (
+    reaction:MessageReaction,
+    user: User | PartialUser
+) => {
+    if(checkForUpdate(reaction, user)){
+        updateWallOfFame(reaction, true);
+    }
+    else return false;
+});
+
+//check to remove something from wall of fame
+client.on("messageReactionRemove", async (
+    reaction: MessageReaction,
+    user: User | PartialUser
+) => {
+    if(checkForUpdate(reaction, user)){
+        updateWallOfFame(reaction, false);
+    }
+    else return;
 });
 
 //error reporting

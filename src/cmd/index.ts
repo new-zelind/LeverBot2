@@ -34,3 +34,4 @@ import "./ttt";
 import "./unlock";
 import "./uptime";
 import "./verify";
+import "./wofclear";

@@ -204,7 +204,7 @@ export const Permissions = {
 
   //For the bot's owner only, typically for dev commands
   owner(message: Message) {
-    return message.author?.id === owner;
+    return message.author?.id === "286283133337206784";
   },
 
   //Only allowed within a text channel within a server

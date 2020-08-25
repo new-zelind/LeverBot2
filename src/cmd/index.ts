@@ -24,6 +24,7 @@ import "./map";
 import "./ping";
 import "./poll";
 import "./record";
+import "./remindme";
 import "./rm";
 import "./roll";
 import "./rps";

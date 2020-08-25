@@ -1,5 +1,5 @@
 import Command, {Permissions} from "../lib/command";
-import {Message, PartialMessage} from "discord.js";
+import {Message} from "discord.js";
 
 export default Command({
     names: ["bubblewrap"],
@@ -9,7 +9,10 @@ export default Command({
         usage: "bubblewrap"
     },
     
-    check: Permissions.channel("bot-commands"),
+    check: Permissions.any(
+        Permissions.channel("bot-commands"),
+        Permissions.admin
+    ),
 
     async fail(message:Message):Promise<Message>{
         return message.channel.send("In #bot-commands, please!");
@@ -19,7 +22,7 @@ export default Command({
         let msg:string = "";
         for(var i = 1; i <= 5; i++){
             for(var j = 1; j <= 10; j++){
-                msg = msg.concat("||pop!|| ");
+                msg = msg.concat("||pop!||");
             }
             msg = msg.concat('\n');
         }

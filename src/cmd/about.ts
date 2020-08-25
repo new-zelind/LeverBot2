@@ -11,7 +11,10 @@ export default Command({
         usage: "about"
     },
 
-    check: Permissions.channel("bot-commands"),
+    check: Permissions.any(
+        Permissions.channel("bot-commands"),
+        Permissions.admin
+    ),
 
     async fail(message:Message | PartialMessage):Promise<Message>{
         return message.channel.send("In #bot-commands, please!");

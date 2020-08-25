@@ -52,7 +52,10 @@ export default Command({
         usage: "record [-r]"
     },
 
-    check: Permissions.channel("bot-commands"),
+    check: Permissions.any(
+        Permissions.channel("bot-commands"),
+        Permissions.admin
+    ),
 
     async fail(message:Message):Promise<Message>{
         return message.channel.send("In #bot-commands, please!");

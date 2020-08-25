@@ -10,10 +10,13 @@ export default Command({
     usage: "academic",
   },
 
-  check: Permissions.channel("bot-commands"),
+  check: Permissions.any(
+    Permissions.channel("bot-commands"),
+    Permissions.admin
+  ),
 
   async fail(message:Message | PartialMessage):Promise<Message>{
-        return message.channel.send("In #bot-commands, please!");
+    return message.channel.send("In #bot-commands, please!");
   },
 
   exec(message:Message):Promise<Message>{
@@ -43,7 +46,6 @@ export default Command({
         { name: "November 2 - 3", value: "Fall break" },
         { name: "November 4", value: "Spring/Summer 2021 Registration begins" },
         { name: "November 25 - 27", value: "Thanksgiving Break" },
-        { name: "November 28", value: "Clemson vs. USC Jr. Football Game" },
         { name: "December 7 - 11", value: "Campus Dead Days; Finals Week" },
         { name: "December 14", value: "Grades for graduates due" },
         { name: "December 16", value: "Final Grades due" },

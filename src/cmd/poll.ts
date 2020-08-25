@@ -24,7 +24,7 @@ export default Command({
     usage: `poll <time> <"Question"> <Option 1, Option 2, ... "Option n">`,
   },
 
-  check: Permissions.channel("bot-commands"),
+  check: Permissions.all,
 
   async fail(message:Message):Promise<Message>{
     return message.channel.send("In #bot-commands, please!");

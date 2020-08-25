@@ -61,7 +61,10 @@ export default Command({
         usage: "connect4 <@User>"
     },
 
-    check: Permissions.channel("bot-commands"),
+    check: Permissions.any(
+        Permissions.channel("bot-commands"),
+        Permissions.admin
+    ),
 
     async fail(message:Message):Promise<Message>{
         return message.channel.send("In #bot-commands, please!");

@@ -1,29 +1,16 @@
 import * as keya from "keya";
-import { Guild, Collection, TextChannel, Message, User, GuildMember, Channel, MessageEmbed } from "discord.js";
-import Command, { Permissions, CommandConfiguration } from "../lib/command";
+import { Guild, Collection, TextChannel, Message } from "discord.js";
+import Command, { Permissions } from "../lib/command";
 import { makeEmbed } from "../lib/util";
 import SQLiteStore from "keya/out/node/sqlite";
 import { client } from "../client";
 import { addMessageHandler } from "../lib/message";
 import { config } from "../lib/access";
 
-interface LBRecord{
-  userID: string,
-  total: number
-}
-
-/**
- * DON'T TOUCH
- * @param channel 
- */
-async function fetchAll(
-  channel: TextChannel
-):Promise<Collection<string, Message>>{
-  let messages:Collection<string, Message> = await channel.messages.fetch(
-    { limit: 100 }
-  );
-  let pointer:string = messages.lastKey();
-  let batch:Collection<string, Message>;
+async function fetchAll(channel: TextChannel) {
+  let messages = await channel.messages.fetch({ limit: 100 });
+  let pointer = messages.lastKey();
+  let batch;
 
   do {
     batch = (
@@ -40,23 +27,21 @@ async function fetchAll(
   return messages;
 }
 
-async function getTotals(
-  store: SQLiteStore<LBRecord>,
-  message: Message
-):Promise<any>{
+interface MessageTotals {
+  total: number;
+}
 
-  store.clear();
+async function getTotals(store: SQLiteStore<MessageTotals>, message: Message) {
+  const guild = message.guild as Guild;
 
-  const guild:Guild = message.guild;
-
-  const text:Collection<string, TextChannel> = guild.channels.cache.filter(
+  const text = guild.channels.cache.filter(
     (channel) => channel.type === "text"
   ) as Collection<string, TextChannel>;
 
   const totals: { [key: string]: number } = {};
 
   for (const [, channel] of text) {
-    const messages:Collection<string, Message> = await fetchAll(channel);
+    const messages = await fetchAll(channel);
     messages.forEach((message) => {
       if (totals[message.author.id]) {
         totals[message.author.id]++;
@@ -66,24 +51,28 @@ async function getTotals(
     });
 
     message.edit(
-      (message.content += `\n${channel.name}: ${messages.size} messages`)
+      (message.content += `\n${channel.toString()}: ${messages.size} messages`)
     );
   }
 
   // Set totals for everyone
   await Promise.all(
     Object.keys(totals).map(async (id) =>
-      store.set(`${(message.guild as Guild).id}-${id}`,
-        {userID: id, total: totals[id]}
-      )
+      store.set(`${(message.guild as Guild).id}-${id}`, {
+        total: totals[id],
+      })
     )
   );
 }
 
-(async function() {
-  const store:SQLiteStore<LBRecord> = await keya.store<LBRecord>(`leaderboard`);
+interface LeaderboardRecord {
+  total: number;
+}
 
-  const leaderboard:CommandConfiguration = Command({
+(async function() {
+  const store = await keya.store<LeaderboardRecord>(`leaderboard`);
+
+  const leaderboard = Command({
     names: ["leaderboard"],
     documentation: {
       usage: "leaderboard",
@@ -92,16 +81,15 @@ async function getTotals(
     },
 
     check: Permissions.any(
-        Permissions.channel("bot-commands"),
-        Permissions.admin
+      Permissions.channel("bot-commands"),
+      Permissions.admin
     ),
 
-    async fail(message:Message):Promise<Message>{
-      return message.channel.send("In #bot-commands, please!");
+    async fail(message: Message){
+      return message.channel.send("In _#bot-commands_, please!");
     },
 
-    async exec(message: Message & { guild: Guild }):Promise<Message>{
-      
+    async exec(message: Message & { guild: Guild }) {
       // Gets all records for the relevant guild
       const all = (await store.all()).filter((record) =>
         record.key.startsWith(message.guild.id)
@@ -110,59 +98,47 @@ async function getTotals(
       // Sorts by the top
       const top = all.sort((a, b) => b.value.total - a.value.total);
 
-      // Determines which user to center about, this is usually the message 
+      // Determines which user to center about, this is usually the message
       // author but we will also allow them to pass another user
-      const center:string =
+      const center =
         message.mentions.users.size > 0
           ? message.mentions.users.first()?.id ?? message.author.id
           : message.author.id;
 
-      //construct min/max bounds
-      const index:number = all.findIndex(
+      // Make the bounds from that index
+      const index = all.findIndex(
         (record) => `${message.guild.id}-${center}` === record.key
       );
-      const min:number = Math.max(0, index - 5);
-      const max:number = Math.min(all.length - 1, min + 10);
+      const min = Math.max(0, index - 5);
+      const max = Math.min(all.length - 1, min + 10);
 
       // Constructs the leaderboard in the relevant section
-      const ldb:LBRecord[] = top.slice(min, max).map(record => record.value);
+      const leaderboard = top
+        .slice(min, max)
+        .map((v) => client.users.cache.get(v.key.split("-")[1]));
 
       // Total message counts
-      const total:number = all.reduce((a, b) => a + b.value.total, 0) as number;
+      const total = all.reduce((a, b) => a + b.value.total, 0) as number;
 
       // Randomized titles from config file
-      const titles:{[key: string]: string} = config("leaderboard.titles");
-      const title:string = Object.keys(titles)[
+      const titles = config("leaderboard.titles") as { [key: string]: string };
+      const title = Object.keys(titles)[
         Math.round(Object.keys(titles).length * Math.random())
       ];
 
       // Format it into a string
-      const description:string[] = [
+      const description = [
         "**Stats**",
-        `Total Messages Sent: ${total.toLocaleString()}`,]/*
-        ...ldb.map(
-          (record, i) => {
-            let currUser: string = message.guild.members.cache.get(record.userID).nickname;
-            `${min + i + 1}. ${currUser} — ${top[i + min].value.total.toLocaleString()} ${titles[title]}`;
-          }
+        `Total Messages Sent: ${total.toLocaleString()}`,
+        ...leaderboard.map(
+          (k, i) =>
+            `${min + i + 1}. ${k.toString()} — ${top[i + min].value.total} ${
+              titles[title]
+            }`
         ),
-      ].join("\n");*/
+      ].join("\n");
 
-      ldb.forEach(async (value:LBRecord, i:number) => {
-        console.log(value);
-        let currUser:string = (await client.users.fetch(value.userID)).toString();
-        if(!currUser) currUser = "unknown";
-        description.push(
-          `${
-            min + i + 1}. ${
-            currUser} - ${
-            top[i + min].value.toLocaleString()} ${
-            titles[title]
-          }\n`
-        );
-      });
-
-      const embed:MessageEmbed = makeEmbed(message)
+      const embed = makeEmbed(message)
         .setTitle(title)
         .setDescription(description);
 
@@ -178,16 +154,19 @@ async function getTotals(
       group: "DEV",
     },
 
-    check: Permissions.owner,
+    check: Permissions.admin,
 
-    async exec(message: Message):Promise<Message>{
+    async fail(message:Message){
+      return message.channel.send("I'm sorry, I'm afraid I can't do that.");
+    },
 
-      const mess:Message = (await message.channel.send(
+    async exec(message: Message) {
+      const mess = (await message.channel.send(
         "Recalculating totals..."
       )) as Message;
       await getTotals(store, mess);
 
-      const reply:Message = (await message.reply("Done!"));
+      const reply = (await message.reply("Done!")) as Message;
       leaderboard.exec(reply, ["10"]);
 
       return reply;
@@ -196,11 +175,14 @@ async function getTotals(
 
   // Increment messages
   addMessageHandler(async (message) => {
-    if (!message.guild) return false;
+    if (!message.guild) {
+      return false;
+    }
 
-    //find record for the current user
-    let record:LBRecord = await store.get(`${message.guild.id}-${message.author.id}`);
-    if(!record) record = {userID: message.author.id, total: 0};
+    const record = (await store.get(
+      `${message.guild.id}-${message.author.id}`
+    )) || { total: 0};
+
     record.total++;
 
     await store.set(`${message.guild.id}-${message.author.id}`, record);

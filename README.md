@@ -1,12 +1,12 @@
 # ByrnesBot
-### Version 3.1.19
+### Version 3.1.20
 > A Discord.js moderation bot powered by Node.js, ByrnesBot offers a moderation solution for Discord Servers created for the Byrnes/Lever Communities at Clemson University.
 
 > Originally created by /new-zelind and /MayorMonty in Summer 2019, ByrnesBot is a reproduction and overhaul of [LeverBot](https://github.com/new-zelind/LeverBot). It offers more streamlined code, more efficient processing, as well as a few new features.
 
 # Capabilities
 - Auto-Verification of users upon server entry.
-- Message and Event logging.
+- Message logging with timestamps. Also logs message edits, deletions, server ban additions/removals, and more.
 - Timeout and soft-ban capabilites.
 - Many functional commands for things residents might need.
 - Games for residents and RAs to play, as well as win/loss recording (for bragging rights).

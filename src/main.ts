@@ -25,7 +25,7 @@ import "./passive/easterEggs";
 import "./passive/log/index";
 import "./cmd";
 
-const statuses:string[] = [
+/*const statuses:string[] = [
     "over the server",
     "TigerFlix",
     "y'all",
@@ -36,7 +36,7 @@ const statuses:string[] = [
     "my GPA tank",
     "Football",
     "the guys in McAdams"
-];
+];*/
 
 //on startup
 client.on("ready", () => {
@@ -52,10 +52,14 @@ client.on("ready", () => {
     addMessageHandler(handle);
 
     //automatically update status once every minute
-    setInterval(() => {    
+    /*setInterval(() => {    
         const index:number = Math.floor(Math.random() * (statuses.length - 1));
         client.user.setActivity(statuses[index], {type: "WATCHING"});
-    }, 60000);
+    }, 60000);*/
+
+    // It's not much, but it'll piss of the racists in the server.
+    // BLACK LIVES MATTER
+    client.user.setActivity("BLACK LIVES MATTER", {type: "PLAYING"});
 });
 
 //verify each member upon entry

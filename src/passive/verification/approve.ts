@@ -5,9 +5,20 @@ import {
     Message,
     User,
     MessageReaction,
-    PartialGuildMember
+    PartialGuildMember,
+    ReactionCollector
 } from "discord.js";
 
+/**
+ * A function to handle the approval or denial of a new member
+ * @param member an instance of the new member awaiting approval
+ * @param name the member's name
+ * @param room the member's room assignment
+ * @param cuid the member's cuid
+ * @param roles the requested roles, as determined by the verification process
+ * @param override if the user requested an override
+ * @param reason the reason for an override, if needed
+ */
 export default async function approve(
     member: GuildMember | PartialGuildMember,
     name: string,
@@ -20,7 +31,7 @@ export default async function approve(
 
     //create a new embed to hold the verification info
     //includes username, avatar, first name, requested roles, room number, cuid
-    const embed = new MessageEmbed()
+    const embed:MessageEmbed = new MessageEmbed()
         .setAuthor(member.user.username, member.user.avatarURL() ?? undefined)
         .setTitle(`Verification for ${name}`)
         .setDescription(
@@ -48,14 +59,14 @@ export default async function approve(
     return new Promise((resolve, reject) => {
 
         //create a collector to get the admin's decision
-        let collector = approval.createReactionCollector(
+        let collector:ReactionCollector = approval.createReactionCollector(
             (vote, usr: User) =>
              (vote.emoji.name === "👎" || vote.emoji.name === "👍") && !usr.bot
         );
 
         let handleReaction: (vote: MessageReaction) => void;
         collector.on("collect", (handleReaction = (vote) => {
-            const approver = vote.users.cache.last();
+            const approver:User = vote.users.cache.last();
             if(!approver) return;
 
             //if approved, add the requested roles to the user.
@@ -79,7 +90,6 @@ export default async function approve(
                         "Outcome", `Denied and kicked by ${approver.toString()}`
                     )
                 );
-                member.kick("Verification denied. Please try again.");
             }
 
             collector.emit("end");

@@ -1,5 +1,6 @@
 import Command, {Permissions} from "../lib/command";
 import {makeEmbed} from "../lib/util";
+import {Message, MessageEmbed} from "discord.js";
 
 export default Command ({
     names: ["contact"],
@@ -9,12 +10,19 @@ export default Command ({
         usage:"contact",
     },
 
-    check: Permissions.all,
+    check: Permissions.any(
+        Permissions.channel("bot-commands"),
+        Permissions.admin
+    ),
 
-    exec(message){
+    async fail(message:Message):Promise<Message>{
+        return message.channel.send("In #bot-commands, please!");
+    },
+
+    exec(message:Message):Promise<Message>{
 
         //make an embed with the following information:
-        const embed = makeEmbed(message)
+        const embed:MessageEmbed = makeEmbed(message)
             .setColor("522D80")
             .setTitle("Contact Information")
             .setDescription("Here's a list of all important contact information.")

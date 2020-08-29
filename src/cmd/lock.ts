@@ -1,5 +1,6 @@
 import Command, {Permissions} from "../lib/command";
-import {Message, TextChannel} from "discord.js";
+import {Message, TextChannel, PartialMessage} from "discord.js";
+import {timeout} from "../lib/timeout";
 
 export default Command ({
     names: ["lock"],
@@ -11,7 +12,13 @@ export default Command ({
 
     check: Permissions.admin,
 
-    fail(message: Message){
+    async fail(message: Message | PartialMessage){
+        timeout(
+            message.member,
+            message.member.guild.me,
+            "5m",
+            "Unauthorized use of `lock` command"
+        );
         return message.channel.send("I'm sorry. I'm afraid I can't do that.");
     },
 

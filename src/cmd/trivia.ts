@@ -72,9 +72,16 @@ export default Command({
         usage: "trivia"
     },
 
-    check: Permissions.all,
+    check: Permissions.any(
+        Permissions.channel("bot-commands"),
+        Permissions.admin
+    ),
 
-    async exec(message: Message){
+    async fail(message:Message):Promise<Message>{
+        return message.channel.send("In #bot-commands, please!");
+    },
+
+    async exec(message: Message):Promise<Message>{
         let fact = code(`${trivia[Math.floor(Math.random() * (trivia.length - 1))]}`);
         return message.channel.send(fact);
     }

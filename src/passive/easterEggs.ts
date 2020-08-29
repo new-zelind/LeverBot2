@@ -1,6 +1,6 @@
 import {addMessageHandler} from "../lib/message";
 import {client} from "../client";
-import { Message } from "discord.js";
+import { Message, GuildEmoji } from "discord.js";
 
 const fuckYou:string[] = [
     "Fuck you too.",
@@ -19,7 +19,7 @@ const fuckYou:string[] = [
 addMessageHandler((message:Message) => {
     if(!client.user || !message.mentions.users.has(client.user.id)) return false;
 
-    const pingEmote = client.emojis.cache.find((emoji) => emoji.name === "ping");
+    const pingEmote:GuildEmoji = client.emojis.cache.find((emoji) => emoji.name === "ping");
     if(!pingEmote) return false;
 
     message.react(pingEmote);
@@ -40,4 +40,11 @@ addMessageHandler((message:Message) => {
     if(!message.content.includes("creeper")) return false;
 
     message.channel.send("Aww man");
+});
+
+//Heja BVB!
+addMessageHandler((message:Message) => {
+    if(!message.content.includes("BVB")) return false;
+
+    message.channel.send("Heja BVB!");
 });

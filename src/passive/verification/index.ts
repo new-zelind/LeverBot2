@@ -3,29 +3,37 @@ import {
     GuildMember, 
     PartialGuildMember, 
     DMChannel,
-    Role
+    Role,
+    RoleManager,
+    Invite
 } from "discord.js";
-import {askString, choose} from "../../lib/prompt";
+import {askString} from "../../lib/prompt";
 import approve from "./approve";
-import {room} from "../../lib/access";
 import {selectMajor} from "./selection";
 import {roomNumbers} from "./majors";
 
-//array of confirmation responses
-const valResponses: string[] = ["Y", "YES", "N", "NO"];
-
-//a function to find an existing role or make a new one
+/**
+ * A function to find an existing role, or make a new one in a server
+ * @param name the name of the role
+ * @param guild the guild to find or make the role in
+ * @return the role matching #name iff the role exists
+ *         a new role iff a role matching #name does not exist
+ */
 export async function findOrMakeRole(name: string, guild: Guild): Promise<Role>{
 
     //find the role with the given name. If it doesn't exist, make a new one
-    const existingRoles = await guild.roles.fetch();
-    const role = existingRoles.cache.find(role => role.name === name);
+    const existingRoles:RoleManager = await guild.roles.fetch();
+    const role:Role = existingRoles.cache.find(role => role.name === name);
 
     return role
         ? Promise.resolve(role)
         : guild.roles.create({data: {name}});
 }
 
+/**
+ * A function to complete the new user verification process
+ * @param member the new member to verify
+ */
 export default async function verify(member: GuildMember | PartialGuildMember){
     const dm: DMChannel = await member.createDM();
 
@@ -35,7 +43,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
     );
     
     //get resident's name
-    const name = await askString("What is your name? (First name only, please!)", dm);
+    const name:string = await askString("What is your name? (First name only, please!)", dm);
     dm.send(`Greetings, ${name}.`);
     
     //indeces and strings for college and major
@@ -64,7 +72,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
         "And what is your room number? (e.g. A7, D6, C3, etc.)",
         dm
     );
-    while(!roomNumbers.includes(room.toUpperCase())){
+    while(!roomNumbers.includes(room.toUpperCase()) && room !== "OVERRIDE"){
         dm.send("I'm sorry, that room doesn't appear to exist. Be sure you say just the letter and number.");
         room = await askString(
             "What is your room number? (e.g. A7, D6, etc.)",
@@ -85,11 +93,14 @@ export default async function verify(member: GuildMember | PartialGuildMember){
     );
 
     //log the verification
-    console.log("VERIFY", name, room, major, cuid);
+    let timestamp:Date = new Date();
+    console.log(
+        `VERIFIED ${member.user.username}#${member.user.discriminator}: ${name}, ${room}, ${cuid} at ${timestamp.toLocaleTimeString()}`
+    );
 
     //auto-grant Resident role
-    const roles = [await (await findOrMakeRole("Resident", member.guild)).id];
-    let majorRole = await findOrMakeRole(major.toUpperCase(), member.guild);
+    const roles:string[] = [await (await findOrMakeRole("Resident", member.guild)).id];
+    let majorRole:Role = await findOrMakeRole(major.toUpperCase(), member.guild);
     roles.push(majorRole.id);
 
     if(!override){
@@ -108,18 +119,18 @@ export default async function verify(member: GuildMember | PartialGuildMember){
     }
 
     //send approval message
-    const approved = await approve(member, name, room, cuid, roles, override, reason);
+    const approved:boolean = await approve(member, name, room, cuid, roles, override, reason);
 
     //if approved, set the user's nickname and add the roles
     if(approved){
         dm.send(`Welcome to the server, ${name}!`);
-        member.setNickname(`${name} | ${room}`);
+        member.setNickname(`${name} | ${room.toUpperCase()}`);
         member.roles.add(roles);
     }
 
     //otherwise, generate a new invite link and send it to the user. Kick the user.
     else{
-        const invite = await member.guild.channels.cache
+        const invite:Invite = await member.guild.channels.cache
             .find((channel) => channel.name === "rules")
             .createInvite({
                 reason: `Invite for ${member.user.username}#${member.user.discriminator}`,
@@ -130,5 +141,7 @@ export default async function verify(member: GuildMember | PartialGuildMember){
         dm.send(
             `Your verification was denied. If you believe this was in error, you can try again by joining below and requesting an override. ${invite.url}`
         );
+
+        member.kick("Verification denied.");
     }
 }

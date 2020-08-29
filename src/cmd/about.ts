@@ -1,6 +1,7 @@
 import Command, {Permissions} from "../lib/command";
 import {makeEmbed} from "../lib/util";
 import {client} from "../client";
+import {Message, PartialMessage, MessageEmbed} from "discord.js";
 
 export default Command({
     names: ["about"],
@@ -10,12 +11,19 @@ export default Command({
         usage: "about"
     },
 
-    check: Permissions.all,
+    check: Permissions.any(
+        Permissions.channel("bot-commands"),
+        Permissions.admin
+    ),
 
-    async exec(message){
+    async fail(message:Message | PartialMessage):Promise<Message>{
+        return message.channel.send("In #bot-commands, please!");
+    },
+
+    async exec(message:Message):Promise<Message>{
 
         //make a new embed with the following information:
-        const embed = makeEmbed(message)
+        const embed:MessageEmbed = makeEmbed(message)
             .setColor("#3A4958")
             .setTitle(`All about ${client.user.tag}:`)
             .setDescription("Nice to meet you.")

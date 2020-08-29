@@ -13,10 +13,22 @@ import {choose, askString} from "../../lib/prompt";
 
 const valResponses: string[] = ["Y", "YES", "N", "NO"];
 
+/**
+ * 
+ * @param major 
+ * @param override 
+ */
 function assign(major: string, override: boolean): [string, boolean]{
     return [major, override];
 }
 
+/**
+ * A function to guide the user through the major selection process
+ * @param dm an instance of the new member's DM channel
+ * @param override an instance of a boolean to record whether or not an override
+ *                 is requested
+ * @return a structure containing the user's major selection, and #override
+ */
 export async function selectMajor(
     dm: DMChannel,
     override: boolean

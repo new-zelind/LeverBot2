@@ -1,69 +1,21 @@
 {
-  "majors":{
-    "ENGINEERING":[
-      "BIOENGINEERING",
-      "BIOSYSTEMS",
-      "CHEMICAL",
-      "COMPUTER",
-      "ELECTRICAL",
-      "ENVIRONMENTAL",
-      "INDUSTRIAL",
-      "MATERIALS",
-      "MECHANICAL",
-      "BACK"
-    ],
-    "SCIENCE":[
-      "BIOLOGY",
-      "MATERIALS SCIENCE",
-      "MICROBIOLOGY",
-      "BIOCHEMISTRY",
-      "CHEMISTRY",
-      "GENETICS",
-      "MATH",
-      "PHYSICS",
-      "BACK"
-    ],
-    "COMPUTING":[
-      "COMPUTER SCIENCE",
-      "COMPUTER INFORMATION SYSTEMS",
-      "BACK"
-    ],
-    "PRE-PROFESSIONAL HEALTH":[
-      "PRE-PHARMACY",
-      "PRE-PROFESSIONAL HEALTH",
-      "PRE-REHABILITATION",
-      "BACK"
-    ],
-    "UNDECLARED":[]
-  },
-    "rooms":[
-      "A1",
-      "A2",
-      "A3",
-      "A4",
-      "A5",
-      "A6",
-      "A7",
-      "B1",
-      "B2",
-      "B3",
-      "B4",
-      "B5",
-      "B6",
-      "B7",
-      "C1",
-      "C2",
-      "C3",
-      "C4",
-      "C5",
-      "C6",
-      "C7",
-      "D1",
-      "D2",
-      "D3",
-      "D4",
-      "D5",
-      "D6",
-      "D7"
-    ]
+  "leaderboard":{
+    "titles":{
+      "Leaderboard": "messages",
+      "People With No Lives": "posts on /r/Clemson",
+      "Best RAs": "IRs written",
+      "Problem Residents": "3 AM phone calls",
+      "IQ Scores": "points",
+      "Best Trevor Lawrence Impressions": "inches of hair",
+      "Worst Schedulers": "8 AM classes",
+      "Best Students": "hours studying for exams",
+      "Those Who Live Dangerously": "Catbus rides",
+      "Robbie Robinson Wannabes": "career hat-tricks",
+      "Midnight Snackers": "pizzas bought after 10 pm",
+      "Fire Drill Champions": "stairs climbed",
+      "'55 Exchange Regulars": "pints consumed",
+      "Power Walkers": "miles between class",
+      "For Whom the Bell Tolls": "11:59 PM submissions"
+    }
+  }
 }

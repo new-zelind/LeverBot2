@@ -1,5 +1,6 @@
 import Command, { Permissions } from "../lib/command";
 import { makeEmbed } from "../lib/util";
+import {Message, PartialMessage, MessageEmbed} from "discord.js";
 
 export default Command({
   names: ["calendar"],
@@ -9,12 +10,19 @@ export default Command({
     usage: "academic",
   },
 
-  check: Permissions.all,
+  check: Permissions.any(
+    Permissions.channel("bot-commands"),
+    Permissions.admin
+  ),
 
-  exec(message) {
+  async fail(message:Message | PartialMessage):Promise<Message>{
+    return message.channel.send("In #bot-commands, please!");
+  },
+
+  exec(message:Message):Promise<Message>{
 
     //make a new embed with the following information:
-    const embed = makeEmbed(message)
+    const embed:MessageEmbed = makeEmbed(message)
       .setColor("#f66733")
       .setTitle("Fall 2020 Academic Calendar")
       .setURL(
@@ -38,7 +46,6 @@ export default Command({
         { name: "November 2 - 3", value: "Fall break" },
         { name: "November 4", value: "Spring/Summer 2021 Registration begins" },
         { name: "November 25 - 27", value: "Thanksgiving Break" },
-        { name: "November 28", value: "Clemson vs. USC Jr. Football Game" },
         { name: "December 7 - 11", value: "Campus Dead Days; Finals Week" },
         { name: "December 14", value: "Grades for graduates due" },
         { name: "December 16", value: "Final Grades due" },

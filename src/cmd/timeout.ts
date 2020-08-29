@@ -1,4 +1,4 @@
-import {Message, GuildMember} from "discord.js";
+import {Message, GuildMember, Collection} from "discord.js";
 import {timeout, lift, logTimeout, setTimeoutCounts} from "../lib/timeout";
 import parse from "parse-duration";
 import Command, {Permissions} from "../lib/command";
@@ -16,29 +16,23 @@ export default Command({
     
     check: Permissions.admin,
     
-    fail(message: Message){
-
-        //checks awry messages, permissions, and timing out the owner/admins
-        if(!message.guild) return;
-        if(!message.member) return;
-        if(message.mentions.members?.has(owner)){
-            message.channel.send("I'm sorry. I'm afraid I can't do that.");
-        }
+    fail(message: Message):Promise<Message>{
 
         //hit them with that 'no u'
         timeout(
             message.member,
             message.member.guild.me as GuildMember,
             "5m",
-            "Unauthorized use of timeout command."
+            "Unauthorized use of `timeout` command"
         );
-        setTimeout(lift(message.member), parse("5m"));
+
+        return message.channel.send("I'm sorry. I'm afraid I can't do that.");
     },
     
-    async exec(message: Message, args: string[]){
+    async exec(message: Message, args: string[]):Promise<Message>{
 
         //get members to be sentenced
-        const targets = message.mentions.members;
+        const targets:Collection<string, GuildMember> = message.mentions.members;
 
         //checks to make sure targets are valid
         if(!targets){

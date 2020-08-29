@@ -14,13 +14,18 @@ export const HelpCommand = Command({
     group: "META",
   },
 
-  check: Permissions.all,
+  check: Permissions.any(
+        Permissions.channel("bot-commands"),
+        Permissions.admin
+  ),
+
+  async fail(message:Message):Promise<Message>{
+    return message.channel.send("In #bot-commands, please!");
+  },
   
-  async exec(message: Message) {
+  async exec(message: Message):Promise<Message>{
     //organize the commands into their respective group
-    const groups: {
-      [group: string]: CommandConfiguration[];
-    } = {};
+    const groups: {[group: string]: CommandConfiguration[]} = {};
 
     //for each command
     for (const [name, command] of REGISTRY) {
@@ -38,7 +43,7 @@ export const HelpCommand = Command({
     }
 
     //start building the help message
-    let body = "Here's a list of all my commands:\n";
+    let body:string = "Here's a list of all my commands:\n";
 
     //for each group, list the name of the group
     for (const [name, commands] of Object.entries(groups)) {
@@ -59,7 +64,7 @@ export const HelpCommand = Command({
     async function postMessage(chunk: string) {
       if (chunk.length > 1900) {
         for (let i = 0; i < chunk.length; i += 1900) {
-          const subchunk = chunk.slice(i, i + 1900);
+          const subchunk:string = chunk.slice(i, i + 1900);
           await postMessage(subchunk);
         }
       }

@@ -2,6 +2,7 @@ import {
   Message as FullMessage,
   TextChannel,
   PartialMessage,
+  MessageEmbed,
 } from "discord.js";
 import {authorization} from "./access";
 import {client} from "../client";
@@ -68,7 +69,7 @@ export const REGISTRY = new Map<string, CommandConfiguration>();
  *          the name of the command if it exists in the registry
  */
 export function matchCommand(message: Message) {
-  const name = message.content?.slice(1).split(" ")[0] || "";
+  const name:string = message.content?.slice(1).split(" ")[0] || "";
 
   if (!REGISTRY.has(name)) {
     return null;
@@ -79,10 +80,8 @@ export function matchCommand(message: Message) {
 
 /**
  * A function to initialize the list of commands
- * @pre : the registry has been created
  * @param config : An instance of a command
  * @return : #config
- * @post : REGISTRY = REGISTRY.set(#config.name)
  */
 export default function makeCommand(config: CommandConfiguration) {
   for (const name of config.names) {
@@ -117,7 +116,7 @@ export async function handle(message: Message): Promise<boolean> {
   if (!message.content) return false;
 
   // Get the appropriate command, if it exists
-  const command = matchCommand(message);
+  const command:CommandConfiguration = matchCommand(message);
   if (!command) {
     message.channel.send(
       `No such command \`${message.content?.slice(1).split(" ")[0]}\`. Use \`${
@@ -128,13 +127,13 @@ export async function handle(message: Message): Promise<boolean> {
   }
 
   // Check if the command is disabled
-  const disabled = DISABLED.has(command);
+  const disabled:boolean = DISABLED.has(command);
   if (disabled && !Permissions.owner(message)) {
     return false;
   }
 
   // See if the command is allowed to be used by the permission system
-  const allowed = await command.check(message);
+  const allowed:boolean = await command.check(message);
   if (!allowed && command.fail) {
     command.fail(message);
 
@@ -142,19 +141,21 @@ export async function handle(message: Message): Promise<boolean> {
   }
 
   // Get the arguments
-  const argstring = message.content.split(" ").slice(1).join(" ");
+  const argstring:string = message.content.split(" ").slice(1).join(" ");
   let argv = argstring.match(/“([^“”]+)”|"([^"]+)"|'([^']+)'|([^\s]+)/g);
 
   // Get the arguments
   //const argv = message.content.split(" ").slice(1);
 
   // Start the timer (for when we edit the message later to indicate how long the command takes)
-  const start = Date.now();
-  const response = await command.exec(message, argv);
+  const start:number = Date.now();
+  const response:(
+    void | Message | PartialMessage | Message[]
+  ) = await command.exec(message, argv);
 
   // If the command gave us a response to track
   if (response) {
-    const main = response instanceof Array ? response[0] : response;
+    const main:Message = response instanceof Array ? response[0] : response;
 
     // Archive that resposne
     RESPONSES.set(message, main);
@@ -170,7 +171,7 @@ export async function handle(message: Message): Promise<boolean> {
 
       // Otherwise get the last embed and edit it;
     } else {
-      const embed = main.embeds[0];
+      const embed:MessageEmbed = main.embeds[0];
 
       embed.setFooter(
         embed.footer?.text +
@@ -186,7 +187,14 @@ export async function handle(message: Message): Promise<boolean> {
   return true;
 }
 
+
+/**
+ * A constant to check for certain permissions. This will tell the bot when,
+ * where, and by whom a command may be executed.
+ */
 export const Permissions = {
+
+  //Server administrators only
   admin(message: Message) {
     return (
       message.channel.type === "text" &&
@@ -194,35 +202,39 @@ export const Permissions = {
     );
   },
 
+  //For the bot's owner only, typically for dev commands
   owner(message: Message) {
-    return message.author?.id === owner;
+    return message.author?.id === "286283133337206784";
   },
 
+  //Only allowed within a text channel within a server
   guild(message: Message) {
     return message.channel.type == "text";
   },
 
+  //Only allowed within a DM
   dm(message: Message) {
     return message.channel.type === "dm";
   },
 
-  env(parameter: string, value: any) {
-    return (message: Message) => process.env[parameter] === value;
-  },
-
+  //Only allowed within a certain channel
   channel(name: string) {
     return (message: Message) => (message.channel as TextChannel).name === name;
   },
 
+  //No restrictions
   all() {
     return true;
   },
 
+  //Create a set of permissions. Returns true if all permissions return true.
   compose(...checks: ((message: Message) => boolean)[]) {
     return (message: Message) =>
       checks.map((check) => check(message)).every((resp) => resp);
   },
 
+  //Create a set of permissions. Returns true if any permission passed in
+  //returns true.
   any(...checks: ((message: Message) => boolean)[]) {
     return (message: Message) =>
       checks.map((check) => check(message)).some((resp) => resp);

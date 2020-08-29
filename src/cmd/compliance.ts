@@ -2,6 +2,7 @@ import Command, {Permissions} from "../lib/command";
 import {timeoutCounts} from "../lib/timeout";
 import {makeEmbed} from "../lib/util";
 import {client} from "../client";
+import {Message} from "discord.js";
 
 export default Command({
     names: ["compliance"],
@@ -11,9 +12,16 @@ export default Command({
         usage: "compliance"
     },
 
-    check: Permissions.all,
+    check: Permissions.any(
+        Permissions.channel("bot-commands"),
+        Permissions.admin
+    ),
 
-    async exec(message){
+    async fail(message:Message):Promise<Message>{
+        return message.channel.send("In #bot-commands, please!");
+    },
+
+    async exec(message):Promise<Message>{
 
         //count the number of times the user's id occurs in the timeout file
         let numCitations = timeoutCounts[message.author.id];

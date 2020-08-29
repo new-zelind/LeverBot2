@@ -1,8 +1,57 @@
 import Command, {Permissions} from "../lib/command";
-import {Message, User} from "discord.js";
+import {Message, User, PartialMessage, Collection} from "discord.js";
 import connect from "./connect4/connect";
 import listen from "../lib/reactions";
 import { client } from "../client";
+import * as keya from "keya";
+
+async function logWin(id:string):Promise<number>{
+
+    const store = await keya.store("connect4");
+
+    let record = await (await store).get(id);
+
+    if(!record){
+        await (await store).set(id, {w: 1, l: 0, d: 0});
+        return 1;
+    }
+
+    record.w += 1;
+    await (await store).set(id, record);
+    return 0;
+}
+
+async function logLoss(id:string):Promise<number>{
+
+    const store = await keya.store("connect4");
+
+    let record = await (await store).get(id);
+
+    if(!record){
+        await (await store).set(id, {w: 0, l: 1, d: 0});
+        return 1;
+    }
+
+    record.w += 1;
+    await (await store).set(id, record);
+    return 0;
+}
+
+async function logDraw(id:string):Promise<number>{
+
+    const store = await keya.store("connect4");
+
+    let record = await (await store).get(id);
+
+    if(!record){
+        await (await store).set(id, {w: 0, l: 0, d: 1});
+        return 1;
+    }
+
+    record.d += 1;
+    await (await store).set(id, record);
+    return 0;
+}
 
 export default Command({
     names:["connect4"],
@@ -12,18 +61,16 @@ export default Command({
         usage: "connect4 <@User>"
     },
 
-    /*
-    check: Permissions.compose(
+    check: Permissions.any(
         Permissions.channel("bot-commands"),
-        Permissions.guild
-    ),*/
-    check:Permissions.all,
+        Permissions.admin
+    ),
 
-    fail(message:Message){
-        return message.channel.send("In _#bot-commands_, please!");
+    async fail(message:Message):Promise<Message>{
+        return message.channel.send("In #bot-commands, please!");
     },
 
-    async exec(message:Message){
+    async exec(message:Message):Promise<Message>{
 
         //users to do battle
         const challenger:User = message.author;
@@ -51,7 +98,7 @@ export default Command({
         message.channel.send("Challenged: react with '🔥' to play!");
 
         listen(message, ["🔥"], async (reaction) => {
-            const users = await reaction.users.fetch();
+            const users:Collection<string, User> = await reaction.users.fetch();
 
             if(users.has(challenged.id)){
 
@@ -63,19 +110,39 @@ export default Command({
 
                 //send ending DMs
                 if(winner === challenger){
-                    (await challenger.createDM()).send("You win!");
-                    (await challenged.createDM()).send(
-                        "You lost. Better luck next time!"
+
+                    let win:number = await logWin(challenger.id);
+                    let loss:number = await logLoss(challenged.id);
+
+                    (await challenger.createDM()).send(
+                        `You win!\n_Win #${win}_`
                     );
+                    (await challenged.createDM()).send(
+                        `You lost. Better luck next time!\n_Loss #${loss}_`
+                    );                    
                 }
                 else if(winner == client.user){
-                    (await challenger.createDM()).send("It's a tie!");
-                    (await challenged.createDM()).send("It's a tie!");
+
+                    let draw1:number = await logDraw(challenger.id);
+                    let draw2:number = await logDraw(challenged.id);
+
+                    (await challenger.createDM()).send(
+                        `It's a tie!\n_Draw #${draw1}_`
+                    );
+                    (await challenged.createDM()).send(
+                        `It's a tie!\n_Draw #${draw2}_`
+                    );
                 }
                 else{
-                    (await challenged.createDM()).send("You win!");
+
+                    let win:number = await logWin(challenged.id);
+                    let loss:number = await logLoss(challenger.id);
+
+                    (await challenged.createDM()).send(
+                        `You win!\n_Win #${win}_`
+                    );
                     (await challenger.createDM()).send(
-                        "You lost. Better luck next time!"
+                        `You lost. Better luck next time!\n_Loss #${loss}_`
                     );
                 }
 

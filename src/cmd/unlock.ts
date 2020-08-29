@@ -1,5 +1,6 @@
 import Command, {Permissions} from "../lib/command";
 import {Message, TextChannel} from "discord.js";
+import {timeout} from "../lib/timeout";
 
 export default Command ({
     names: ["unlock"],
@@ -11,11 +12,17 @@ export default Command ({
 
     check: Permissions.admin,
 
-    fail(message: Message){
+    fail(message: Message):Promise<Message>{
+        timeout(
+            message.member,
+            message.member.guild.me,
+            "5m",
+            "Unauthorized use of `unlock` command"
+        );
         return message.channel.send("I'm sorry. I'm afraid I can't do that.");
     },
 
-    async exec(message: Message){
+    async exec(message: Message):Promise<Message>{
         const channel = message.channel as TextChannel;
 
         //reset the perms for the channel

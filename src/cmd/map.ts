@@ -1,4 +1,5 @@
 import Command, {Permissions} from "../lib/command";
+import {Message} from "discord.js";
 
 export default Command({
     names: ["map"],
@@ -8,10 +9,16 @@ export default Command({
         usage: "map"
     },
 
-    check: Permissions.all,
+    check: Permissions.any(
+        Permissions.channel("bot-commands"),
+        Permissions.admin
+    ),
 
-    async exec(message){
-        //interactive campus map
-        message.channel.send("www.clemson.edu/campus-map");
+    async fail(message:Message):Promise<Message>{
+        return message.channel.send("In #bot-commands, please!");
+    },
+
+    async exec(message):Promise<Message>{
+        return message.channel.send("www.clemson.edu/campus-map");
     }
 })

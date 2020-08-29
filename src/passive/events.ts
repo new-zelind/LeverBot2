@@ -138,8 +138,9 @@ async function handleMessageUpdate(
     //get old and new attributes and content
     if(old.partial) old = await old.fetch();
     if(current.partial) current = await current.fetch();
-    if(old.author.bot) return true;
+    if(old.author.bot) return false;
     if(old.channel.type === "dm") return false;
+    if(old.member.hasPermission("ADMINISTRATOR")) return false;
 
     //find and validate the server log channel
     const serverLog = old.guild?.channels.cache.find(
@@ -198,19 +199,20 @@ async function handleMessageDelete(message:Message):Promise<boolean>{
     ) as TextChannel;
     if(!eventLog) return false;
 
-    const author:User = message.author;
+    const author:GuildMember = message.member;
     const timestamp:Date = new Date();
 
     if(author.id === client.user.id) return false;
+    if(!!author.hasPermission("ADMINISTRATOR")) return false;
 
     const embed:MessageEmbed = makeEmbed(message)
         .setColor("#034694")
         .setTitle("MESSAGE DELETED")
         .addFields(
-            {name: "Username", value: author.username, inline: true},
+            {name: "Username", value: author.user.username, inline: true},
             {
                 name: "Discriminator",
-                value: author.discriminator,
+                value: author.user.discriminator,
                 inline: true
             },
             {

@@ -8,7 +8,11 @@ Ensure that you have successfully installed the following:
   * Not sure if you have Node installed? Run `node -v` in your terminal. If nothing pops up, you can install Node.js from [here](https://nodejs.org/en/).
   * Note: make sure you install the current version and add Node to your PATH variable. For a guide on how to do the latter, visit [here](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/).
   * You should also be able to run the `npm -v` command.
-
+* SQLite 3 (v 3.33.0):
+  * This bot also utilizes SQL databases as a long-term data storage solution. However, you don't need to know any SQL - the `keya` package does all that for you.
+  * Note: SQLite is a bit finicky to install on Windows systems, so ensure that the package installation script runs correctly.
+  * You can install SQLite from [here](https://sqlite.org/index.html).
+ 
 ## Step 2: Create A Testing Server
 It's a good idea to make a Discord server with you and your bot so you can test it out. Create a new Discord server and call it whatever you want. Be sure to add the following channels:
 * #verification

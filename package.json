@@ -20,12 +20,7 @@
     "convert-units": "^2.3.4",
     "discord.js": "^12.2.0",
     "dlv": "^1.1.3",
-<<<<<<< HEAD
-    "parse-duration": "^0.4.4",
-    "typescript": "^3.9.5"
-=======
     "keya": "^2.0.0",
     "parse-duration": "^0.4.4"
->>>>>>> 63e3e1071b7784b4152d525a96a27b878012bc8e
   }
 }

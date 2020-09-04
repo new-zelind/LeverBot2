@@ -17,7 +17,6 @@ import {
 import {handleMessage, addMessageHandler} from "./lib/message";
 import {handle, isCommand, RESPONSES} from "./lib/command";
 import {updateWallOfFame, checkForUpdate} from "./passive/wof";
-import {setTimeoutCounts} from "./lib/timeout";
 import verify from "./passive/verification";
 import report from "./lib/report";
 import {client} from "./client";
@@ -41,9 +40,6 @@ import "./cmd";
 //on startup
 client.on("ready", () => {
     console.log(`${client.user.tag} is online!`);
-
-    //initialize timeoutCounts structure on startup
-    setTimeoutCounts();
 
     //ignore bot messages
     addMessageHandler((message) => message.author.bot);

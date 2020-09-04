@@ -1,8 +1,9 @@
 import Command, {Permissions} from "../lib/command";
-import {timeoutCounts} from "../lib/timeout";
 import {makeEmbed} from "../lib/util";
 import {client} from "../client";
 import {Message} from "discord.js";
+import * as keya from "keya";
+import {TimeoutCount} from "../lib/timeout";
 
 export default Command({
     names: ["compliance"],
@@ -21,13 +22,19 @@ export default Command({
         return message.channel.send("In #bot-commands, please!");
     },
 
-    async exec(message):Promise<Message>{
+    async exec(message:Message):Promise<Message>{
+
+        const store = await keya.store<TimeoutCount>('timeouts');
+        let numCitations:number;
 
         //count the number of times the user's id occurs in the timeout file
-        let numCitations = timeoutCounts[message.author.id];
+        let entry:TimeoutCount = await store.get(message.author.id);
 
         //if the user doesn't exist, then they haven't been timed out.
-        if(numCitations == null) numCitations = 0;
+        if(!entry) numCitations = 0;
+        else numCitations = entry.total;
+
+        //make the embed with data
         const embed = makeEmbed(message)
             .setColor("#B91A1A")
             .setTitle(`COMPLIANCE CHECK`)

@@ -1,22 +1,24 @@
 import {Message, GuildMember, Collection} from "discord.js";
-import {timeout, lift, logTimeout, setTimeoutCounts} from "../lib/timeout";
-import parse from "parse-duration";
+import {timeout, sendLogEmbed} from "../lib/timeout";
 import Command, {Permissions} from "../lib/command";
 import {authorization} from "../lib/access";
 
-const owner = authorization("discord.owner");
+const owner = authorization("discord.owner") as string;
 
 export default Command({
     names: ["timeout"],
     documentation:{
-        description:"Times out target members for a specified amount of time.",
+        description: "Times out target members for a specified amount of time.",
         group: "ADMIN",
         usage: "timeout [<@User> ... <@User>] <Duration> <Reason>",
     },
     
-    check: Permissions.admin,
+    check: Permissions.any(
+        Permissions.admin,
+        Permissions.role("Mods")
+    ),
     
-    fail(message: Message):Promise<Message>{
+    async fail(message: Message):Promise<Message>{
 
         //hit them with that 'no u'
         timeout(
@@ -36,23 +38,39 @@ export default Command({
 
         //checks to make sure targets are valid
         if(!targets){
-            message.channel.send("Please specify members to time out.");
-            return;
+            return message.channel.send("Please specify members to time out.");
         }
-        if(message.member === null) return;
+        if(message.member === null){
+            return message.channel.send("I can't target that member.");
+        };
+
+        //don't time me out
+        if(targets.has(owner)){
+            return message.channel.send("I can't do that to my owner.");
+        }
+
+        //check for admins in the targets
+        let isAdmin:boolean = false;
+        targets.forEach(target => {
+            if(target.hasPermission("ADMINISTRATOR")){
+                isAdmin = true;
+            }
+        });
+        if(isAdmin) return message.channel.send("I can't timeout an admin.");
+
 
         //get and verify timeout duration and reasoning
         const [duration, ...reason] = args.slice(targets.size);
         if(!duration){
-            message.channel.send("Please specify a timeout interval.");
-            return;
+            return message.channel.send("Please specify a timeout interval.");
         }
         if(!reason){
-            message.channel.send("I cannot time someone out for no reason.");
-            return;
+            return message.channel.send(
+                "I cannot time someone out for no reason."
+            );
         }
 
-        //perform and automatically lift timeout
+        //perform and log timeout
         targets.forEach((member) => {
             timeout(
                 member,
@@ -60,11 +78,12 @@ export default Command({
                 duration,
                 reason.join(" ")
             );
-            logTimeout(member);
-            setTimeout(lift(member), parse(duration));
+            sendLogEmbed(
+                member,
+                message.member as GuildMember,
+                duration,
+                reason.join(" ")
+            );
         });
-
-        //reset timeoutCounts structure
-        setTimeoutCounts();
     }
 });

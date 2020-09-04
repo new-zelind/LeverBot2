@@ -1,6 +1,11 @@
-import {GuildMember, Role, DMChannel} from "discord.js";
+import {GuildMember, Role, DMChannel, Guild, Message, TextChannel, MessageEmbed} from "discord.js";
 import parse from "parse-duration";
-import * as fs from "fs";
+import * as keya from "keya";
+import { makeEmbed } from "./util";
+
+export interface TimeoutCount{
+    total:number;
+}
 
 /**
  * A function to lift a timeout
@@ -9,6 +14,8 @@ import * as fs from "fs";
 export const lift = (member: GuildMember) => async () => {
     
     const timeoutRole:Role = member.guild.roles.cache.find(role => role.name === "Timeout");
+    if(!timeoutRole) return;
+
     //time out complete
     console.log(`Time out for ${member.nickname} complete.`);
     await member.roles.remove(timeoutRole);
@@ -21,21 +28,47 @@ export const lift = (member: GuildMember) => async () => {
 };
 
 /**
- * The archaic file-writing version of logging a timeout
- * @param member the targeted member
+ * A function to add the timeout to the keya database
+ * @param member the member placed in timeout
  */
-export function logTimeout(member: GuildMember,) {
+async function addTimeout(member:GuildMember):Promise<void>{
+    
+    //load keya database and get current record
+    const store = await keya.store<TimeoutCount>('timeouts');
+    let record:TimeoutCount = await store.get(member.user.id);
 
-    //write the member's ID to The File of Shame
-    let memberID:string = member.user.id;
-    let toLog:string = memberID.concat("\n");
-    fs.appendFile('timeouts.txt', toLog, (err) => {
-        if(err) console.log(err);
-    });
+    //if the record doesn't exist, make a new one
+    if(!record){
+        await store.set(member.user.id, {total: 0});
+    }
+
+    //incrememnt timeout count and set the new record.
+    record.total++;
+    await store.set(member.user.id, record);
+    return;
 }
 
 /**
- * Places a user in timeout and logs their infraction in The File of Shame
+ * A function to make the message that sent to each member placed in timeout.
+ * @param invoker the admin/mod who performed the timeout
+ * @param time the duration of the timeout
+ * @param reason the specified reason for the timeout 
+ */
+async function makeTimeoutMessage(
+    invoker:GuildMember,
+    time:string,
+    reason:string
+):Promise<string>{
+    let timeoutMsg:string = `You've been timed out by ${invoker.user.username}`;
+    timeoutMsg += ` for ${time} for the following reason: ${reason}.`;
+    timeoutMsg += `While timed out, you are not permitted to post in any text`;
+    timeoutMsg += `channel or join any voice channel. If you feel that this was`
+    timeoutMsg += `in error, please speak to the admins in _#appeals_.`
+    return timeoutMsg;
+}
+
+/**
+ * Places a user in timeout and logs their infraction
  * @param member the targeted member
  * @param invoker the admin/mod who performed the timeout
  * @param time the duration of the timeout
@@ -47,63 +80,54 @@ export async function timeout(
     time: string,
     reason: string
 ) {
-    console.log(`${invoker.user.username} timed out ${member.nickname} for ${parse(time)} ms. Reason: ${reason}.`);
+    //log timeout
+    addTimeout(member);
 
-    const timeoutRole:Role = member.guild.roles.cache.find(role => role.name === "Timeout");
+    //find timeout role
+    const timeoutRole:Role = member.guild.roles.cache.find(role =>
+        role.name === "Timeout"
+    );
+    if(!timeoutRole) return;
 
     //add "timeout" role and log timeout
     await member.roles.add(timeoutRole);
-    logTimeout(member);
 
     //notify the infractor of their timeout.
     const dm:DMChannel = await member.createDM();
-    dm.send(
-        `You've been timed out by ${invoker.user.username} for ${time} for the following reason: ${reason}. While timed out, you are not permitted to post in any text channel or join any voice channel. If you feel that this was in error, please speak to the admins in _#appeals_.`
-    );
+    dm.send(`${await makeTimeoutMessage(invoker, time, reason)}`);
 
     //set timeout
     setTimeout(lift(member), parse(time));
 };
 
-//Simple interface for the time out counts structure
-interface TOCounts{
-    [id: string]: number;
-}
-
-//list of all user IDs in The File of Shame
-export let timeoutCounts = {};
-
 /**
- * A function to count how many times each user has been placed on timeout.
+ * A function to send the #event-log message for the timeout
+ * @param member the targeted member
+ * @param invoker the admin/mod who performed the timeout
+ * @param time the duration of the timeout
+ * @param reason the specified reason for the timeoutn 
  */
-export function counts(): Promise<TOCounts> {
-    return new Promise<TOCounts>((resolve, reject) => {
+export async function sendLogEmbed(
+    member: GuildMember,
+    invoker: GuildMember,
+    time: string,
+    reason: string
+):Promise<Message>{
+    const eventLog = member.guild.channels.cache.find(
+        channel => channel.name === "event-log"
+    ) as TextChannel;
+    if(!eventLog) return;
 
-        //read data in from The File of Shame
-        fs.readFile('timeouts.txt', (err, data) => {
-            if(err){
-                console.log(err);
-                reject(err);
-            }
+    const embed:MessageEmbed = makeEmbed()
+        .setColor("EFDBB2")
+        .setTitle("TIMEOUT ASSIGNED")
+        .setImage(member.user.avatarURL())
+        .addFields(
+            {name: "Username:", value: member.toString()},
+            {name: "Invoker:", value: invoker.toString()},
+            {name: "For Reason:", value: reason},
+            {name: "Sentence:", value: time}
+        );
 
-            //split the data by newline characters and init counts
-            const raw:string[] = data.toString().split("\n");
-            const counts:TOCounts = {};
-
-            //count the number of instances
-            for(const line of raw){
-                if(counts[line]) counts[line]++;
-                else counts[line] = 1;
-            }
-
-            resolve(counts);
-        });
-    });
-}
-
-/**
- * Populate the timeout counts after a bot startup, or update it
-*/
-export async function setTimeoutCounts(){
-    timeoutCounts = await counts();
+    return eventLog.send(embed);
 }

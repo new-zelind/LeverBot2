@@ -7,7 +7,7 @@ import {
 import {authorization} from "./access";
 import {client} from "../client";
 
-const owner = authorization("discord.owner");
+const owner:string = authorization("discord.owner");
 export const PREFIX = ["$"];
 
 type Message = FullMessage | PartialMessage;
@@ -204,7 +204,7 @@ export const Permissions = {
 
   //For the bot's owner only, typically for dev commands
   owner(message: Message) {
-    return message.author?.id === "286283133337206784";
+    return message.author?.id === owner;
   },
 
   //Only allowed within a text channel within a server
@@ -220,6 +220,10 @@ export const Permissions = {
   //Only allowed within a certain channel
   channel(name: string) {
     return (message: Message) => (message.channel as TextChannel).name === name;
+  },
+
+  role(name: string){
+    return (message: Message) => message.member.roles.highest.name === name;
   },
 
   //No restrictions

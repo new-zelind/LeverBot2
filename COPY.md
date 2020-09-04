@@ -4,15 +4,12 @@ This guide will guide you through creating your own instance to run.
 
 ## Step 1: Secure Dependencies
 Ensure that you have successfully installed the following:
-* Node.js (v 14.0.0 or above):
+* Node.js v 14.9.0:
   * Not sure if you have Node installed? Run `node -v` in your terminal. If nothing pops up, you can install Node.js from [here](https://nodejs.org/en/).
   * Note: make sure you install the current version and add Node to your PATH variable. For a guide on how to do the latter, visit [here](https://helpdeskgeek.com/windows-10/add-windows-path-environment-variable/).
   * You should also be able to run the `npm -v` command.
-* SQLite 3 (v 3.33.0):
-  * This bot also utilizes SQL databases as a long-term data storage solution. However, you don't need to know any SQL - the `keya` package does all that for you.
-  * Note: SQLite is a bit finicky to install on Windows systems, so ensure that the package installation script runs correctly.
-  * You can install SQLite from [here](https://sqlite.org/index.html).
- 
+  * Ensure that you have version 14.0.0 or above: anything less causes memory leaks and can wreak havoc on your RAM. Don't ask me why, I was too lazy to figure it out.
+
 ## Step 2: Create A Testing Server
 It's a good idea to make a Discord server with you and your bot so you can test it out. Create a new Discord server and call it whatever you want. Be sure to add the following channels:
 * #verification
@@ -22,11 +19,13 @@ It's a good idea to make a Discord server with you and your bot so you can test 
 * #event-log
 * #bot-commands
 * #wall-of-fame
-
-It's very important that these channels are added. Some functionality may be lost if you fail to do so!
+You should also make these roles:
+* @admin
+* @timeout
+It's very important that these channels and roles are added. Some functionality may be lost if you fail to do so!
 
 ## Step 3: Create a Discord Bot Token
-You'll need to register and create a bot user through the Discord Developer Portal. A Discord login is required.
+You'll need to register and create a bot user through the Discord Developer Portal. A working Discord login is required.
 * Go to the [DDP here](https://discord.com/developers/applications/) and log in, if necessary.
 * Click the "New Application" button next to your profile picture in the top right corner.
 * In the "Name" box, put in a name for your new bot. You can name it ByrnesBot, or LeverBot, or whatever suits you. Then click "Create". Congrats! You registered a bot user - now you need to activate it.
@@ -50,8 +49,8 @@ Now your bot needs some code. Lucky enough, I have some.
 ## Step 6: Last Few Steps
 We're getting close to a running bot.
 * Navigate to `/src/lib/command.ts` and locate line 11. This is where the bot's prefix to invoke commands is defined. The default prefix is `$`, but you can change it to any non-alphanumeric character (e.g. `!`, `#`, `.`, `~`, etc.).
-* In that same file, navigate to line 207, under `Permissions`. Put your User ID that you copied earlier in the place of the User ID currently there.
-* Next, naviate back to the `/LeverBot2/` directory and run the command `npm i`. This will install all dependencies needed in a directory called `/node_modules/`.
+* Now open another terminal instance as an administrator. For Windows users, run Powershell as administrator. Type in the command `npm i --global windows-build-tools`. This takes a minute to properly install, but it's extremely crucial that you do so to save a few headaches in the next step. After this finishes, you may exit this terminal instance.
+* Next, navigate back to the `/LeverBot2/` directory and run the command `npm i`. This will install all dependencies needed in a directory called `/node_modules/`.
 * Now you should be ready to roll! Run the command `npx tsc` to compile the code into an `/out/` directory, then run `node out/main.js` to start up the bot. You should see a confirmation message in the terminal if it works correctly! Try sending `[your_prefix_here]ping` in your test server.
 
 ## Step 7: File Structure
@@ -67,14 +66,14 @@ The command structure developed by MayorMonty makes it super easy to add a new c
 * Each command on the bot is actually an instance of a `Command` interface found in `/src/lib/command.ts`. These commands require five items:
    * `names`: The name(s) that can be used to invoke the command.
    * `documentation`: The documentation section contains a short description of the command, example syntax, and the grouping of the command for the `help` command.
-   * `check`: Certain commands may be restricted to certain users, channels, or roles. You can see an example of all the Permissions and their descriptions under the `Permissions` object in `command.ts`.
+   * `check`: Certain commands may be restricted to certain users, channels, or roles. You can see an example of all the Permissions and their descriptions under the `Permissions` object in `/sec/lib/command.ts`.
    * `async fail()`: This is what the bot does if the invoker fails the Permissions check listed above.
    * `async exec()`: Put the actual command code here.
 * You can dig through the existing files in `/cmd/` to see examples of how to do this. Make sure you `export` your commands and set them to `default`!
 * Once you add a new command, be sure to add an `import` statement in `/cmd/index.js` for each command you create. Otherwise, the bot won't know it exists.
 
 ## Questions? Issues? Bugs?
-If you have any questions about development, feel free to add me on Discord: `Segfault#2289`. You can also consult the Discord.js documentation [here](https://discord.js.org/#/docs/main/stable/general/welcome) for more information. If you find any bugs or issues with the existing code, please file an Issue report [here](https://github.com/new-zelind/LeverBot2/issues). If you come up with something really, really cool that you think should be added to the bot, go ahead and make a pull request! Be sure you rebase and squash your commits before you do - it'll make things easier for both of us.
+If you have any questions about development, feel free to add me on Discord: `Segfault#2289`. You can also consult the Discord.js documentation [here](https://discord.js.org/#/docs/main/stable/general/welcome) for more information. If you find any bugs or issues with the existing code, please file an Issue report [here](https://github.com/new-zelind/LeverBot2/issues). If you come up with something really, really cool that you think should be added to the bot, go ahead and make a pull request! Be sure you rebase and squash your commits before you do - it'll make things easier for both of us. If enough people start making bots, I might make a bot testing Discord server.
 
 I'm excited to see what other people come up with! Happy coding, and good luck!
 *- Zach*

@@ -31,7 +31,7 @@ const rankings:string[] = [
  *         the author, the channel, and the content of the message
  */
 async function makeMessage(message:Message, doots:number):Promise<string>{
-    let msg = `**WALL OF FAME**:`;
+    let msg:string = `**WALL OF FAME**:`;
     msg += `\n${rankings[Math.floor((doots - THRESHOLD)/THRESHOLD)]} - `;
     msg += `${doots} upvote(s)`;
     msg += `\n_By ${message.member.nickname} in ${message.channel.toString()}_`;
@@ -177,7 +177,7 @@ async function checkForUpdate(
     user:User | PartialUser
 ):Promise<boolean>{
 
-    //only workrs for 'upvote' emote
+    //only works for 'upvote' emote
     if(!(reaction.emoji.name === "upvote")) return false;
 
     //voting open for 48 hours
@@ -190,8 +190,7 @@ async function checkForUpdate(
     if(reaction.message.author.id === client.user.id) return false;
 
     //only consider messages with 5 or more legal upvotes
-    //FIXME
-    if(reaction.count < 1) return false;
+    if(reaction.count < 5) return false;
     
     return true;
 }

@@ -13,11 +13,11 @@ export default Command({
 
     check: Permissions.owner,
 
-    fail(message: Message):Promise<Message>{
+    async fail(message: Message):Promise<Message>{
         return message.channel.send("I'm sorry. I'm afraid I can't do that.");
     },
 
-    exec(message: Message):Promise<Message>{
+    async exec(message: Message):Promise<Message>{
 
         //sole purpose of this is to eliminate double runtime instances
         const {username}:os.UserInfo<String> = os.userInfo();

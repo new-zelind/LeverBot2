@@ -12,7 +12,7 @@ export default Command({
 
     check: Permissions.admin,
 
-    fail(message: Message):Promise<Message>{
+    async fail(message: Message):Promise<Message>{
         timeout(
             message.member,
             message.member.guild.me,

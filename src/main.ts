@@ -108,9 +108,7 @@ client.on("messageReactionAdd", async (
     reaction:MessageReaction,
     user: User | PartialUser
 ) => {
-    if(checkForUpdate(reaction, user)){
-        updateWallOfFame(reaction, true);
-    }
+    if(!checkForUpdate(reaction, user)) updateWallOfFame(reaction, true);
     else return false;
 });
 
@@ -119,9 +117,7 @@ client.on("messageReactionRemove", async (
     reaction: MessageReaction,
     user: User | PartialUser
 ) => {
-    if(checkForUpdate(reaction, user)){
-        updateWallOfFame(reaction, false);
-    }
+    if(!checkForUpdate(reaction, user)) updateWallOfFame(reaction, false);
     else return;
 });
 

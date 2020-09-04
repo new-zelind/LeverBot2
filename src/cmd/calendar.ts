@@ -19,7 +19,7 @@ export default Command({
     return message.channel.send("In #bot-commands, please!");
   },
 
-  exec(message:Message):Promise<Message>{
+  async exec(message:Message):Promise<Message>{
 
     //make a new embed with the following information:
     const embed:MessageEmbed = makeEmbed(message)

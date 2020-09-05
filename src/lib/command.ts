@@ -8,7 +8,7 @@ import {authorization} from "./access";
 import {client} from "../client";
 
 const owner:string = authorization("discord.owner");
-export const PREFIX = ["$"];
+export const PREFIX:string = authorization("discord.prefix");
 
 type Message = FullMessage | PartialMessage;
 

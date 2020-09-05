@@ -48,8 +48,8 @@ Now your bot needs some code. Lucky enough, I have some.
 
 ## Step 6: Last Few Steps
 We're getting close to a running bot.
-* Navigate to `/src/lib/command.ts` and locate line 11. This is where the bot's prefix to invoke commands is defined. The default prefix is `$`, but you can change it to any non-alphanumeric character (e.g. `!`, `#`, `.`, `~`, etc.).
-* Now open another terminal instance as an administrator. For Windows users, run Powershell as administrator. Type in the command `npm i --global windows-build-tools`. This takes a minute to properly install, but it's extremely crucial that you do so to save a few headaches in the next step. After this finishes, you may exit this terminal instance.
+* Open another terminal instance as an administrator. (IMPORTANT FOR WINDOWS USERS: Windows users, run Powershell as administrator instead.) Type in the command `npm i --global windows-build-tools`. This takes a few minutes to properly install, but it's extremely crucial that you do so to save a few headaches in the next step. After this finishes, you may exit this terminal instance.
+* The bot's invocation command is defined in `authorization.json`, next to the "prefix" header. The default is `$`, but you can change it to whatever you want. Try to make sure it's a single non-alphanumeric character, such as `@`, `#`, or `.`, to name a few examples.
 * Next, navigate back to the `/LeverBot2/` directory and run the command `npm i`. This will install all dependencies needed in a directory called `/node_modules/`.
 * Now you should be ready to roll! Run the command `npx tsc` to compile the code into an `/out/` directory, then run `node out/main.js` to start up the bot. You should see a confirmation message in the terminal if it works correctly! Try sending `[your_prefix_here]ping` in your test server.
 

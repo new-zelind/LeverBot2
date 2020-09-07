@@ -6,7 +6,8 @@ import {
     User,
     MessageReaction,
     PartialGuildMember,
-    ReactionCollector
+    ReactionCollector,
+    Guild
 } from "discord.js";
 
 /**
@@ -47,9 +48,21 @@ export default async function approve(
     if(override) embed.addField("OVERRIDE:", reason);
 
     //find the member approval channel
-    const channel = member.guild.channels.cache.find(
+    let channel = member.guild.channels.cache.find(
         (channel) => channel.name === "member-approval"
     ) as TextChannel;
+
+    //if the channel doesn't exist, make a new one and remind the owners
+    if(!channel){
+        channel = await member.guild.channels.create(
+            'member-approval',
+            {type:"text"}
+        ) as TextChannel;
+
+        channel.send(
+            "Hey server owner, please make this channel admin-only!"
+        );
+    }
 
     //send the embed and give the thumbs up and thumbs down options
     const approval = (await channel.send(embed)) as Message;

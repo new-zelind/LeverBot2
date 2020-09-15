@@ -29,8 +29,8 @@ export default Command({
             .setDescription("Nice to meet you.")
             .addFields(
                 {
-                    name: "Tell me about yourself, ByrnesBot.",
-                    value: "Hello. I am ByrnesBot, a Discord.js application powered by Node.js. I am a moderation bot made for the Byrnes 5th Floor Discord Server, but have recently been installed on other servers around Clemson Housing."
+                    name: "Tell me about yourself.",
+                    value: "Hello. I am BLBot, a Discord.js application powered by Node.js. I am a moderation bot made for the Byrnes 5th Floor Discord Server, but have recently been installed on other servers around Clemson Housing."
                 },
                 {
                     name: "Who made you?",
@@ -38,7 +38,7 @@ export default Command({
                 },
                 {
                     name: "What do you do?",
-                    value: "I am the law around here, as well as Zach's second-in-command. I enforce the rules of the server. However, I have many useful commands that you can use. Try sending `$help` in _#bot-commands_ to see what all I can do."
+                    value: "I am the law around here, as well as The RAs' second-in-command. I enforce the rules of the server. However, I have many useful commands that you can use. Try sending `$help` in _#bot-commands_ to see what all I can do."
                 },
                 {
                     name: "What if I find a bug?",

@@ -8,6 +8,38 @@ export interface TimeoutCount{
 }
 
 /**
+ * A function to send the #event-log message for the timeout
+ * @param member the targeted member
+ * @param invoker the admin/mod who performed the timeout
+ * @param time the duration of the timeout
+ * @param reason the specified reason for the timeoutn 
+ */
+export async function sendLogEmbed(
+    member: GuildMember,
+    invoker: GuildMember,
+    time: string,
+    reason: string
+):Promise<Message>{
+    const eventLog = member.guild.channels.cache.find(
+        channel => channel.name === "event-log"
+    ) as TextChannel;
+    if(!eventLog) return;
+
+    const embed:MessageEmbed = makeEmbed()
+        .setColor("EFDBB2")
+        .setTitle("TIMEOUT ASSIGNED")
+        .setImage(member.user.avatarURL())
+        .addFields(
+            {name: "Username:", value: member.toString()},
+            {name: "Invoker:", value: invoker.toString()},
+            {name: "For Reason:", value: reason},
+            {name: "Sentence:", value: time}
+        );
+
+    return eventLog.send(embed);
+}
+
+/**
  * A function to lift a timeout
  * @param member the member currently on timeout
  */
@@ -40,6 +72,7 @@ async function addTimeout(member:GuildMember):Promise<void>{
     //if the record doesn't exist, make a new one
     if(!record){
         await store.set(member.user.id, {total: 0});
+        record = await store.get(member.user.id);
     }
 
     //incrememnt timeout count and set the new record.
@@ -99,35 +132,3 @@ export async function timeout(
     //set timeout
     setTimeout(lift(member), parse(time));
 };
-
-/**
- * A function to send the #event-log message for the timeout
- * @param member the targeted member
- * @param invoker the admin/mod who performed the timeout
- * @param time the duration of the timeout
- * @param reason the specified reason for the timeoutn 
- */
-export async function sendLogEmbed(
-    member: GuildMember,
-    invoker: GuildMember,
-    time: string,
-    reason: string
-):Promise<Message>{
-    const eventLog = member.guild.channels.cache.find(
-        channel => channel.name === "event-log"
-    ) as TextChannel;
-    if(!eventLog) return;
-
-    const embed:MessageEmbed = makeEmbed()
-        .setColor("EFDBB2")
-        .setTitle("TIMEOUT ASSIGNED")
-        .setImage(member.user.avatarURL())
-        .addFields(
-            {name: "Username:", value: member.toString()},
-            {name: "Invoker:", value: invoker.toString()},
-            {name: "For Reason:", value: reason},
-            {name: "Sentence:", value: time}
-        );
-
-    return eventLog.send(embed);
-}

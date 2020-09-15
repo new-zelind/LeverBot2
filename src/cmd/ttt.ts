@@ -5,6 +5,7 @@ import listen from "../lib/reactions";
 import {client} from "../client";
 import * as keya from "keya";
 import SQLiteStore from "keya/out/node/sqlite";
+import { makeString } from "./connect4/gameboard";
 
 async function logWin(id:string):Promise<number>{
 
@@ -92,8 +93,6 @@ export default Command({
         await message.react("🔥");
 
         message.channel.send("Challenged: react with '🔥' to play!");
-
-        let msg:string = "";
         
         listen(message, ["🔥"], async (reaction) => {
             const users = await reaction.users.fetch();
@@ -109,40 +108,40 @@ export default Command({
                 //send ending DMs
                 if(winner === challenger){
 
-                    let win:number = await logWin(challenger.id);
-                    let loss:number = await logLoss(challenged.id);
+                    await logWin(challenger.id);
+                    await logLoss(challenged.id);
 
                     (await challenger.createDM()).send(
-                        `You win!\n_Win #${win}_`
+                        `You win!\n${makeString()}`
                     );
                     (await challenged.createDM()).send(
-                        `You lost. Better luck next time!\n_Loss #${loss}_`
+                        `You lost. Better luck next time!\n${makeString()}`
                     );                    
                 }
                 
                 else if(winner == client.user){
 
-                    let draw1:number = await logDraw(challenger.id);
-                    let draw2:number = await logDraw(challenged.id);
+                    await logDraw(challenged.id);
+                    await logDraw(challenger.id);
 
                     (await challenger.createDM()).send(
-                        `It's a tie!\n_Draw #${draw1}_`
+                        `It's a tie!\n${makeString()}`
                     );
                     (await challenged.createDM()).send(
-                        `It's a tie!\n_Draw #${draw2}_`
+                        `It's a tie!\n${makeString()}`
                     );
                 }
 
                 else{
 
-                    let win:number = await logWin(challenged.id);
-                    let loss:number = await logLoss(challenger.id);
+                    await logWin(challenged.id);
+                    await logLoss(challenger.id);
 
                     (await challenged.createDM()).send(
-                        `You win!\n_Win #${win}_`
+                        `You win!\n${makeString()}`
                     );
                     (await challenger.createDM()).send(
-                        `You lost. Better luck next time!\n_Loss #${loss}_`
+                        `You lost. Better luck next time!\n${makeString()}`
                     );
 
 
@@ -150,15 +149,17 @@ export default Command({
 
                 //congratulate the winner, or shame the players for a tie.
                 if(winner == client.user){
-                    msg = "The game resulted in a draw. Rematch?";
+                    message.channel.send(
+                        "The game resulted in a draw. Rematch?"
+                    );
                 }
                 else{
-                    msg = `${winner.toString()} won! 🏆`;
+                    message.channel.send(
+                        `${winner.toString()} won! 🏆`
+                    );
                 }
             }
         });
-
-        return message.channel.send(msg);
 
     }
 })

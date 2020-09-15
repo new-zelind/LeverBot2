@@ -28,16 +28,14 @@ export default Command ({
             .setDescription("Here's a list of all important contact information.")
             .addFields(
                 {name: "Byrnes RA On Call", value: "864.986.1111"},
-                {name: "Byrnes Hall Front Desk", value: "864.656.2140"},
-                {name: "Zach's Phone", value: "803.546.9216"},
-                {name: "{RA Phone 2}", value: "RA Phone 2"},
+                {name: "Lever RA On Call", value: "864.656.1113"},
                 {name: "CU Police / CAPS On-Call", value: "864.656.2222"},
                 {name: "Redfern Health Center", value: "864.656.2233"},
                 {name: "CCIT", value: "864.656.3494"},
                 {name: "Maintenance", value: "864.656.5450"},
                 {name: "Taylor Hanley, Byrnes/Lever Director", value: "tahanle@clemson.edu"},
-                {name: "{BYRNES GRAD}", value: "{GRAD EMAIL}"},
-                {name: "{LEVER GRAD}", value: "{GRAD EMAIL}"}
+                {name: "Noah Burks, Byrnes Graduate Director", value: "nharrie@g.clemson.edu"},
+                {name: "Pamela Ianiro, Lever Graduate Director", value: "pianiro@g.clemson.edu"}
             );
 
         return message.channel.send(embed);

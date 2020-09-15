@@ -18,7 +18,7 @@ type callback = (
  * @param emojis an array of the emojis to listen for
  * @param callback an instance of the collector callback
  */
-export default async function listen(
+/*export default async function listen(
     message: Message,
     emojis: string[],
     callback: callback
@@ -39,6 +39,32 @@ export default async function listen(
                 boolean | void | Promise<boolean> | Promise<void>
             ) = callback(element, collector);
 
+            if(response){
+                collector.emit("end");
+                collector.off("collect", handler);
+                collector.stop();
+            }
+        })
+    );
+}*/
+export default async function listen(
+    message:Message,
+    emojis:string[],
+    callback:(
+        vote:MessageReaction,
+        collector:Collector<string, MessageReaction>
+    ) => boolean | void | Promise<boolean> | Promise<void>
+): Promise<void> {
+    const collector:ReactionCollector = message.createReactionCollector(
+        (reaction:MessageReaction, user:User) =>
+            emojis.includes(reaction.emoji.name) && !user.bot
+    );
+
+    let handler:(element:MessageReaction) => void;
+    collector.on(
+        "collect",
+        (handler = (element:MessageReaction) => {
+            const response = callback(element, collector);
             if(response){
                 collector.emit("end");
                 collector.off("collect", handler);

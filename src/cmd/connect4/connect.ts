@@ -20,11 +20,11 @@ async function getChoice(dm:DMChannel):Promise<number> {
 
     //this whole thing is so bad
     while(
-        parseInt(choice) == NaN ||
+        isNaN(parseInt(choice)) ||
         parseInt(choice) >= getCols() ||
         parseInt(choice) < 0
     ){
-        if(parseInt(choice) == NaN){
+        if(isNaN(parseInt(choice))){
             dm.send("I'm sorry, that's not a column number.");
         }
         if(parseInt(choice) >= getCols()) {

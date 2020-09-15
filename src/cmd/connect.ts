@@ -1,9 +1,10 @@
 import Command, {Permissions} from "../lib/command";
-import {Message, User, PartialMessage, Collection} from "discord.js";
+import {Message, User, Collection} from "discord.js";
 import connect from "./connect4/connect";
 import listen from "../lib/reactions";
 import { client } from "../client";
 import * as keya from "keya";
+import { makeString } from "./connect4/gameboard";
 
 async function logWin(id:string):Promise<number>{
 
@@ -123,26 +124,26 @@ export default Command({
                 }
                 else if(winner == client.user){
 
-                    let draw1:number = await logDraw(challenger.id);
-                    let draw2:number = await logDraw(challenged.id);
+                    await logDraw(challenger.id);
+                    await logDraw(challenged.id);
 
                     (await challenger.createDM()).send(
-                        `It's a tie!\n_Draw #${draw1}_`
+                        `It's a tie!\n${makeString}`
                     );
                     (await challenged.createDM()).send(
-                        `It's a tie!\n_Draw #${draw2}_`
+                        `It's a tie!\n${makeString}`
                     );
                 }
                 else{
 
-                    let win:number = await logWin(challenged.id);
-                    let loss:number = await logLoss(challenger.id);
+                    await logWin(challenged.id);
+                    await logLoss(challenger.id);
 
                     (await challenged.createDM()).send(
-                        `You win!\n_Win #${win}_`
+                        `You win!\n${makeString()}`
                     );
                     (await challenger.createDM()).send(
-                        `You lost. Better luck next time!\n_Loss #${loss}_`
+                        `You lost. Better luck next time!\n${makeString()}`
                     );
                 }
 

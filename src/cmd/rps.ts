@@ -142,11 +142,15 @@ export default Command({
 
         await message.react("🔥");
 
+        message.channel.send("Challenged: react with '🔥' to play!");
+
         listen(message, ["🔥"], async reaction => {
             const users:Collection<string, User> = await reaction.users.fetch();
 
             if(users.has(challenged.id)){
                 message.channel.send("Game on! Competitors, check your DMs!");
+
+                message.delete();
                 
                 const winner:User = await rps(
                     message.channel as TextChannel,

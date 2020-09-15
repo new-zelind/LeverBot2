@@ -15,12 +15,14 @@ async function getChoice(dm:DMChannel):Promise<number> {
         dm
     );
 
+    console.log(parseInt(choice))
+
     while(
-        parseInt(choice) == NaN ||
+        isNaN(parseInt(choice)) || 
         parseInt(choice) >= 9 ||
         parseInt(choice) < 0
     ){
-        if(parseInt(choice) == NaN){
+        if(isNaN(parseInt(choice))){
             dm.send("I'm sorry, that's not a number.");
         }
         if(parseInt(choice) >= 9){

@@ -143,7 +143,7 @@ async function updateWallOfFame(
     //if the reaction was added and the number of upvote reactions is 5,
     //add the message to the wall of fame
     //FIXME
-    if(bit && doots == 1) add(msg);
+    if(bit && doots == 5) add(msg);
 
     //if the reaction was added, but the number of reaction is not 5, update
     //the wall of fame message
@@ -152,7 +152,7 @@ async function updateWallOfFame(
     //if the reaction was removed, but the number of reactions is still greater
     //than 5, update the wall of fame message
     //FIXME
-    else if(!bit && doots >= 1) update(msg, doots);
+    else if(!bit && doots >= 5) update(msg, doots);
 
     //if the reaction was removed and the number of reactions is less than 5,
     //remove the message from the wall of fame

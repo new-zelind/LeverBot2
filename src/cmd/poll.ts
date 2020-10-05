@@ -21,14 +21,10 @@ export default Command({
   documentation: {
     description: "Start a poll with up to ten options.",
     group: "GENERAL",
-    usage: `poll <time> <"Question"> <Option 1, Option 2, ... "Option n">`,
+    usage: `poll <time> <"Question"> "<Option 1>" "<Option 2>" ... "Option n">`,
   },
 
   check: Permissions.all,
-
-  async fail(message:Message):Promise<Message>{
-    return message.channel.send("In #bot-commands, please!");
-  },
 
   async exec(
     message:Message,

@@ -1,4 +1,4 @@
-# ByrnesBot
+# BLBot
 <div align="center">
   <a href="https://github.com/new-zelind/LeverBot2">
     <img src="https://img.shields.io/github/stars/new-zelind/LeverBot2?label=Star%20This%20Repo%21&style=social" alt="Star this Repo!">
@@ -13,9 +13,9 @@
   </a>
 </div>
 
-> A Discord.js moderation bot powered by Node.js, ByrnesBot offers a moderation solution for Discord Servers created for the Byrnes/Lever Communities at Clemson University.
+> A Discord.js moderation bot powered by Node.js, BLBot offers a moderation solution for Discord Servers created for the Byrnes/Lever Communities at Clemson University.
 
-> Originally created by /new-zelind and /MayorMonty in Summer 2019, ByrnesBot is a reproduction and overhaul of [LeverBot](https://github.com/new-zelind/LeverBot). It offers more streamlined code, more efficient processing, as well as a few new features.
+> Originally created by /new-zelind and /MayorMonty in Summer 2019, BLBot is a reproduction and overhaul of [LeverBot](https://github.com/new-zelind/LeverBot). It offers more streamlined code, more efficient processing, as well as a few new features.
 
 # Capabilities
 - Auto-Verification of users upon server entry.
@@ -26,9 +26,9 @@
 - Ease of use for all, no matter how long you've been on Discord!
 - Try sending `$help` to see what the bot can do!
 
-# How to Add ByrnesBot
+# How to Add BLBot
 - See [COPY.md](https://github.com/new-zelind/LeverBot2/blob/master/COPY.md) for more info!
 
 # Licensing
-- ByrnesBot is licensed under the MIT License, as seen in the 'LICENSE' file.
-- tl;dr: ByrnesBot is open source, so you are free to clone/fork the project and do whatever you want to it. Just be sure to credit me and MayorMonty where credit is due.
+- BLBot is licensed under the MIT License, as seen in the 'LICENSE' file.
+- tl;dr: BLBot is open source, so you are free to clone/fork the project and do whatever you want to it. Just be sure to credit me and MayorMonty where credit is due.

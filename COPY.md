@@ -28,7 +28,7 @@ It's very important that these channels and roles are added. Some functionality 
 You'll need to register and create a bot user through the Discord Developer Portal. A working Discord login is required.
 * Go to the [DDP here](https://discord.com/developers/applications/) and log in, if necessary.
 * Click the "New Application" button next to your profile picture in the top right corner.
-* In the "Name" box, put in a name for your new bot. You can name it ByrnesBot, or LeverBot, or whatever suits you. Then click "Create". Congrats! You registered a bot user - now you need to activate it.
+* In the "Name" box, put in a name for your new bot. You can name it BLBot or whatever suits you. Then click "Create". Congrats! You registered a bot user - now you need to activate it.
 * In the menu on the left-hand side of the screen, click the "Bot" icon with the puzzle piece. On the other side of the screen, click the "Add Bot" button, and follow through with the confirmation message. You have now activated your bot.
 
 ## Step 4: Get The Bot Onto Your Server

@@ -17,6 +17,7 @@ const fuckYou:string[] = [
 
 //don't ping the bot
 addMessageHandler((message:Message) => {
+    if(message.author.id == client.user.id) return false;
     if(!client.user || !message.mentions.users.has(client.user.id)) return false;
 
     const pingEmote:GuildEmoji = client.emojis.cache.find((emoji) => emoji.name === "ping");
@@ -27,6 +28,7 @@ addMessageHandler((message:Message) => {
 
 //react to "fuck you"
 addMessageHandler((message:Message) => {
+    if(message.author.id == client.user.id) return false;
     if(!client.user || !message.mentions.users.has(client.user.id)) return false;
     if(!message.content.includes("fuck you")) return false;
 
@@ -37,6 +39,7 @@ addMessageHandler((message:Message) => {
 
 //creeper, aww man
 addMessageHandler((message:Message) => {
+    if(message.author.id == client.user.id) return false;
     if(!message.content.includes("creeper")) return false;
 
     message.channel.send("Aww man");
@@ -45,6 +48,7 @@ addMessageHandler((message:Message) => {
 //Heja BVB!
 addMessageHandler((message:Message) => {
     if(!message.content.includes("BVB")) return false;
+    if(message.author.id == client.user.id) return false;
 
     message.channel.send("Heja BVB!");
 });

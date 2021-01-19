@@ -22,5 +22,8 @@
     "dlv": "^1.1.3",
     "keya": "^2.0.0",
     "parse-duration": "^0.4.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.3"
   }
 }

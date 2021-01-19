@@ -28,6 +28,7 @@ import "./remindme";
 import "./rm";
 import "./roll";
 import "./rps";
+import "./send";
 import "./source";
 import "./timeout";
 import "./trivia";

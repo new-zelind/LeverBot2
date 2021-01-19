@@ -1,6 +1,7 @@
 {
    "discord":{
 	  "token": "your token goes here",
-	  "owner": "your User ID goes here"
+     "owner": "your User ID goes here",
+     "prefix": "your prefix goes here"
    }
 }

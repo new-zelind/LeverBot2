@@ -15,7 +15,12 @@
 
 > A Discord.js moderation bot powered by Node.js, BLBot offers a moderation solution for Discord Servers created for the Byrnes/Lever Communities at Clemson University.
 
-> Originally created by /new-zelind and /MayorMonty in Summer 2019, BLBot is a reproduction and overhaul of [LeverBot](https://github.com/new-zelind/LeverBot). It offers more streamlined code, more efficient processing, as well as a few new features.
+> Originally created by @new-zelind and @MayorMonty in Summer 2019, BLBot is a reproduction and overhaul of [LeverBot](https://github.com/new-zelind/LeverBot). It offers more streamlined code, more efficient processing, as well as a few new features.
+
+# COMING SOON TO A BOT NEAR YOU
+- Full modularity for all types of housing Discord servers.
+- Ability to set custom channels for verification, message logging, and so forth.
+- A fun server teamwork counting activity - how high can you get before crashing out?
 
 # Capabilities
 - Auto-Verification of users upon server entry.
